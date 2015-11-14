@@ -1,0 +1,66 @@
+<?= $this->render('sidemenu/product.html') ?>
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+    <?=$this->tes?>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/product/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'project') ?>
+            <?= $this->form->getElement('project') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Item No.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'product_no') ?>
+            <?= $this->form->getElement('product_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Article</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'article') ?>
+            <?= $this->form->getElement('article_front') ?> - <?= $this->form->getElement('article_end') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Call</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'call') ?>
+            <?= $this->form->getElement('call') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Type</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'type') ?>
+            <?= $this->form->getElement('type') ?>
+          </td>
+        </tr>
+        <!--tr>
+          <td class="color2">Image</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'image_url') ?>
+            <input type="file" name="image_url"> <font color="#FF0000">※JPG|PNG|GIF</font>
+          </td>
+        </tr-->
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" name="confirm" class="input_b2" value="Create" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

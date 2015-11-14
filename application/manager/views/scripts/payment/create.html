@@ -1,0 +1,106 @@
+<?= $this->render('sidemenu/finance.html') ?>
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+			<?= $this->subtitle ?>
+    </div>
+	<?=$this->tes?>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/purchase/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">会員ID</td>
+          <td width="80%" class="color_gray">1</td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">表示</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'disp_flag') ?>
+            <?= $this->form->getElement('disp_flag') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">ジャンル名</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'genre_id') ?>
+            <?= $this->form->getElement('genre_id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">カテゴリ名</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'category_id') ?>
+            <?= $this->form->getElement('category_id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">サブカテゴリ</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'sub_category_id') ?>
+            <?= $this->form->getElement('sub_category_id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">アイテム名</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'purchase_name') ?>
+            <?= $this->form->getElement('purchase_name') ?> 
+          </td>
+        </tr>        
+        <tr>
+          <td class="color2">内容</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'content') ?>
+            <?= $this->form->getElement('content') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">画像</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'image_url') ?>
+            <input type="file" name="image_url"> <font color="#FF0000">※JPG|PNG|GIF</font>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">購入先URL</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'buy_url') ?>
+            <?= $this->form->getElement('buy_url') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">cawaiiね!</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'likes') ?>
+            <?= $this->form->getElement('likes') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">通報数</td>
+          <td class="color_gray">
+            <!--  <?php if (isset($this->error_str['reports'])) : ?><font color="#FF0000"><?= $this->error_str['reports'] ?></font><br><?php endif ?> -->
+           0
+		   <!--  <?= $this->form->getElement('reports') ?> -->
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">管理メモ</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'memo') ?>
+            <?= $this->form->getElement('memo') ?><br/>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="一覧に戻る" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" name="confirm" class="input_b2" value="登録" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

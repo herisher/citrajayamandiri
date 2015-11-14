@@ -1,0 +1,101 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background-color:#FEFAEF;
+	font-size:13px
+}
+
+dl,dl.space{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+dt{
+	clear: left;
+	float: left;
+}
+
+dd{
+	margin-left: 24px;
+}
+
+#content {
+	width: 98%;
+	margin: 0px 5px 0px 5px;
+	background-color:#FFF;
+	border-radius: 10px; 
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px; 
+	border: 0px solid #800000;
+}
+
+#text1 {
+	margin: 0px 0px 0px 10px;
+}
+
+#text2 {
+	margin: 0px 10px 10px 10px;
+	word-break: break-all;
+}
+
+#text3 {
+
+	margin: 0px 10px 10px 10px;
+	font-weight: bold;
+}
+
+#text4 {
+	font-size: 0.84em;
+	margin-bottom: 10px;
+	word-break: break-all;
+}
+
+#number {
+	color:#02A4DA;
+	font-weight: bold;
+}
+
+#header { margin: 0px 0px 0px 10px; padding: 0px; }
+#footer { border-top: 0px solid rgb(192, 22, 54); padding: 10px; text-align: center; }
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+#content dl dt {
+    font-weight: bold;
+}
+#content ol {
+    padding: 10px 0;
+}
+#content ol li {
+    padding: 0 0 3px;
+}
+#content p {
+    line-height: 20px;
+}
+#content p.topic {
+    font-weight: bold;
+    margin: 15px 0 0;
+}
+table.numberTable tr th {
+    font-weight: normal;
+    vertical-align: top;
+    width: 25px;
+}
+table.numberTable {
+    margin: 5px 0 15px 20px;
+}
+/*faq */
+.faq h2{background:#5B371F;border:1px solid #5B371F;border-radius:10px 10px 0 0;margin:0;color:#fff;padding:10px 5px}
+.faq #text1 h4 a{text-decoration:none}
+.qblock {
+    background:#E3D4C5;
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+}
+p.qblock span{font-weight:bold}

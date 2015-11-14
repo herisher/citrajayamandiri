@@ -1,0 +1,67 @@
+<!--コンテンツ-->
+<div id="contents_index">
+  <div id="contents_in">
+
+    <div id="contents_title">
+      TOP Page
+    </div>
+    <div class="contents_space" align="center">
+		Welcome, Admin :)
+        <br><br>
+        <br><br>
+        
+      <!-- OUTSTANDING -->
+      OUTSTANDING #<?= date('W') ?><br>
+      ======================<br>
+      <input type="button" class="input_b1" value="Print Outstanding" onClick="location.href='/manager/order/print-outstanding'">
+      <br><br>
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">Week</td>
+          <td class="color">Plan</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Total (Ps)</td>
+          <td class="color">Delivery (Ps)</td>
+          <td class="color">Outstanding (Ps)</td>
+        </tr>
+<?php 
+    $quantity = 0;
+    $delivery = 0;
+    $outstanding = 0;
+    $i = 1;
+    foreach ($this->models as $model) : 
+        $grey = '';
+        if( ($i++ % 2 == 0) ) $grey = 'class="color_gray"';
+?>
+        <tr <?= $grey ?>>
+          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= $model['plan'] ?></td>
+          <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
+          <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['project']) ?></a></td>
+          <td align="left"><?= $model['article'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="right"><?= number_format($model['delivery']) ?></td>
+          <td align="right"><?= number_format($model['outstanding']) ?></td>
+        </tr>
+<?php 
+    $quantity += $model['quantity'];
+    $delivery += $model['delivery'];
+    $outstanding += $model['outstanding'];
+    endforeach ; 
+?>
+        <tr>
+          <td class="color2" colspan="5">Total</td>
+          <td class="color_gray" align="right"><?= number_format($quantity) ?></td>
+          <td class="color_gray" align="right"><?= number_format($delivery) ?></td>
+          <td class="color_gray" align="right"><?= number_format($outstanding) ?></td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

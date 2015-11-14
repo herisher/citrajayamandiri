@@ -1,0 +1,127 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#delivery_date").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+    
+    function sum() {
+        var i;
+        var sum = parseInt(0);
+        <?php if( count($this->models) ) :?>
+        <?php foreach($this->models as $model) : ?>
+            sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
+        <?php endforeach; ?>
+        <?php endif; ?>
+        document.getElementById("quantity").value = sum;
+    }
+
+    function openPopup() {
+        window.open("/manager/delivery-popup/list",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
+    }
+    
+    function doDelete() {
+      document.form2.action = "/manager/delivery/create?delete=1";
+      document.form2.submit();
+    }
+    
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+    <?=$this->tes?>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/delivery/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="40%" class="color2">Order</td>
+          <td width="60%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'order') ?>
+              <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                  <td class="color">Order No.</td>
+                  <td class="color">Quantity</td>
+                  <td class="color">Project</td>
+                  <td class="color">Article</td>
+                  <td class="color">Delete</td>
+                </tr>
+              <?php if(count($this->order_list)) : ?>
+                <tr>
+                  <td align="center"><?= $this->order_list['order_no'] ?></td>
+                  <td align="center"><?= number_format($this->order_list['quantity']) ?></td>
+                  <td align="center"><?= h($this->order_list['project']) ?></td>
+                  <td align="center"><?= $this->order_list['article'] ?></td>
+                  <td align="center"><input type="button" onclick="doDelete();" name="delete" class="input_b1" value="Delete"></td>
+                </tr>
+              <?php endif; ?>
+                <tr>
+                  <td align="center" colspan="5">
+                    <input type="button" onclick="openPopup();" class="input_b2" value="Choose Order">
+                  </td>
+                </tr>
+              </table>
+          </td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Delivery No</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_no') ?>
+            <?= $this->form->getElement('delivery_no') ?> - 
+            <?= my_mb_error($this->error_str, 'delivery_no_add') ?>
+            <?= $this->form->getElement('delivery_no_add') ?><br>
+            [filled if delivery number is different with delivery book]
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_date') ?>
+            <?= $this->form->getElement('delivery_date') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'description') ?>
+            <?= $this->form->getElement('description') ?>
+          </td>
+        </tr>
+        <?php if( count($this->models) ) :?>
+        <? foreach( $this->models as $model ) :?>
+        <? $id=$model['id'] ?>
+        <tr>
+          <td class="color2">Size <?= $model['size']?> (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'pairs') ?>
+            <?= $this->form->getElement("quantity_{$id}") ?>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php endif; ?>
+        <tr>
+          <td class="color2">Quantity</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'quantity') ?>
+            <?= $this->form->getElement('quantity') ?> 
+            <?= $this->form->getElement('quantity_ori') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" name="confirm" class="input_b2" value="Create" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

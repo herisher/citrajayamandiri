@@ -1,0 +1,134 @@
+<?= $this->render('sidemenu/finance.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#invoice_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#invoice_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#due_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#due_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/invoice/list">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">ID</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Invoice No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('invoice_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Delivery No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('delivery_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Article</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('article') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Project</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('project') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Status</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('status') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Invoice Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('invoice_date_start') ?> - <?= $this->form->getElement('invoice_date_end') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Due Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('due_date_start') ?> - <?= $this->form->getElement('due_date_end') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order By</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_by') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="clear" value="Clear" />
+          </td>
+        </tr>
+      </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/invoice/list">
+      <?= $this->render('pager.html') ?>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Invoice No.</td>
+          <td class="color">Invoice Date</td>
+          <td class="color">Due Date</td>
+          <td class="color">Total</td>
+          <td class="color">Total with tax</td>
+          <td class="color">Edit</td>
+          <td class="color">Print</td>
+          <td class="color">Delete</td>
+        </tr>
+<?php foreach ($this->models as $model) : ?>
+        <tr>
+          <td align="center"><?= $model['id'] ?></td>
+          <td align="left"><?= $model['invoice_no'] ?></td>
+          <td align="center"><?= $model['invoice_date'] ?></td>
+          <td align="left"><?= $model['due_date'] ?></td>
+          <td align="right"><?= number_format($model['total']) ?></td>
+          <td align="right"><?= number_format($model['total_include_tax']) ?></td>
+          <td align="center"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>">Edit</a></td>
+          <td align="center"><a href="/manager/invoice/print/id/<?= $model['id'] ?>">Print</a></td>
+          <td align="center">
+          <a href="#" onClick="confirmDelete('/manager/invoice/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
+          </td>
+        </tr>
+<?php endforeach ; ?>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

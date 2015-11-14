@@ -1,0 +1,35 @@
+http://citrajm.dev:8080/manager/product/create
+http://citrajm.dev:8080/manager/product/edit/id/xx
+1. kecilkan kotak pertama dan kedua article 
+2. article hanya bisa diisi oleh digit
+3. kotak pertama article hanya boleh diisi max. 3 digit
+4. kotak kedua article hanya boleh diisi oleh max. 4 digit
+5. tambahkan fungsi insert dan delete gambar
+
+http://citrajm.dev:8080/manager/order/create
+http://citrajm.dev:8080/manager/order/edit/id/xx
+1. Ubah posisi Order No. di bawah Product
+2. Ubah posisi price di bawah quantity
+3. tambah field total (price * quantity) di bawah quantity -> otomatis terhitung
+4. tambah field tax (10% dari total) di bawah total -> otomatis terhitung
+5. tambah field total_include_tax (total+tax) di bawah tax -> otomatis terhitung
+6. saat popup product tampil, tambahkan link ke halaman http://citrajm.dev:8080/manager/product/create
+
+http://citrajm.dev/manager/order/edit/id/12
+1. Align quantity per size tolong dijadikan rata kanan, sama seperti di http://citrajm.dev/manager/delivery/create?select=1
+
+http://citrajm.dev/manager/delivery/create
+http://citrajm.dev/manager/delivery/edit
+1. setelah ngepost, form yg udah di isi ga ke set. tolong fix!
+2. jika semua barang sudah dikirim semua, tolong ganti status order jadi "Delivery Finish"
+3. tambahkan "plan" di "Order"
+4. saat popup order, jadikan value status default nya jadi "process"
+5. tambahkan validasi jika order tersebut status nya sudah "delivery finish"
+6. tambahkan validasi jika quantity per size melebihi quantity yg ada pada order
+7. tolong jadikan order bisa di edit (di edit page)
+ 
+http://citrajm.dev/manager/delivery/list/page/1/limit/20
+1. tambahkan delivery date di list
+
+http://citrajm.dev/manager/order/detail/id/11
+1. Notice: Undefined variable: all_total_invoice in C:\xampp\htdocs\citrajm\application\manager\views\scripts\order\detail.html on line 2810

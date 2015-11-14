@@ -1,0 +1,135 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#delivery_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#delivery_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/delivery/list">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">ID</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Delivery No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('delivery_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Article</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('article') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Project</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('project') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Status</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('status') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('delivery_date_start') ?> - <?= $this->form->getElement('delivery_date_end') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('create_date_start') ?> - <?= $this->form->getElement('create_date_end') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Order By</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_by') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="clear" value="Clear" />
+          </td>
+        </tr>
+      </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/delivery/list">
+      <?= $this->render('pager.html') ?>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Delivery No.</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Quantity (Ps)</td>
+          <td class="color">Delivery Date</td>
+          <td class="color">Status</td>
+          <td class="color">Edit</td>
+          <td class="color">Delete</td>
+        </tr>
+<?php foreach ($this->models as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><?= $model['delivery_no'] ?></td>
+          <td align="left"><a href="/manager/order/edit/id/<?=$model['order_id']?>"><?= $model['order']['order_no'] ?></a></td>
+          <td align="left"><?= h($model['product']['project']) ?></td>
+          <td align="left"><?= $model['product']['article'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="left"><?= $model['delivery_date'] ?></td>
+          <td align="left"><?= $model['disp_status'] ?>
+                            <?php if(isset($model['invoice'])) : ?>
+                            <br><a href="/manager/invoice/edit/id/<?= $model['invoice']['id'] ?>" target="_blank"><?= $model['invoice']['invoice_no'] ?></a>
+                            <?php endif;?>
+          <br></td>
+          <td align="center"><a href="/manager/delivery/edit/id/<?= $model['id'] ?>">Edit</a></td>
+          <td align="center">
+          <a href="#" onClick="confirmDelete('/manager/delivery/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
+          </td>
+        </tr>
+<?php endforeach ; ?>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

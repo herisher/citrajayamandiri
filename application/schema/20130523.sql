@@ -1,0 +1,1 @@
+alter table `dtb_invoice` add column `total_min_discount` int(11) default 0 after `total`;

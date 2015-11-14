@@ -1,0 +1,51 @@
+
+#contents_in { margin: 5px; }
+#contents_title { border-top: 1px solid rgb(192, 22, 54); border-bottom: 1px solid rgb(192, 22, 54); padding: 5px 10px; background-color: rgb(253, 238, 241); text-align: left; color: rgb(192, 22, 54); margin-top: 10px; margin-bottom: 10px; }
+#contents_title_index { border-top: 1px solid rgb(192, 22, 54); border-bottom: 1px solid rgb(192, 22, 54); padding: 5px 10px; background-color: rgb(253, 238, 241); text-align: left; color: rgb(192, 22, 54); margin-bottom: 10px; margin-top: 10px; }
+.contents_sub_area { margin: 5px; padding: 5px; }
+.contents_sub_area_half_left { margin: 5px 0pt; padding: 5px 0pt; float: left; width: 50%; text-align: left; }
+.contents_sub_area_half_right { margin: 5px 0pt; padding: 5px 0pt; float: left; width: 50%; text-align: right; }
+.contents_space { margin-top: 10px; }
+.contents_space2 { margin-top: 5px; }
+.contents_box { border: 1px solid rgb(1, 23, 87); padding: 5px 10px; text-align: center; margin-top: 5px; margin-left: 50px; margin-right: 50px; margin-bottom:5px; }
+.contents_message { margin: 5px; text-align: center; }
+.item_img { margin: 3px; float: left; }
+.color { border-top: 3px solid rgb(192, 22, 54); background-color: rgb(253, 238, 241); font-weight: bold; }
+.color2 { border-left: 3px solid rgb(192, 22, 54); background-color: rgb(253, 238, 241); font-weight: bold; }
+.color3 { background-color: rgb(253, 238, 241); }
+#login { margin: 100px auto; width: 260px; }
+.color_gray { background-color: rgb(238, 238, 238); }
+.color_gray_red { background-color: rgb(238, 238, 238); color: rgb(255, 0, 0); text-align: center; }
+.input_b1 { border: 1px solid rgb(192, 22, 54); background-color: rgb(253, 238, 241); }
+.input_b2 { border: 1px solid rgb(192, 22, 54); padding: 2px; background-color: rgb(253, 238, 241); width: 120px; }
+#recommend_item_area { margin: 10px auto; padding: 0px; width: 600px; }
+
+body { margin: 0px; padding: 0px; font-size: small; }
+img { border-width: 0px; }
+form { margin: 0px; padding: 0px; }
+.cl { padding: 0pt; clear: both; visibility: hidden; }
+#area { margin: 0px; padding: 0px; width: 950px; }
+#header { margin: 0px; padding: 0px; }
+#header_l { width: 50%; float: left; }
+#header_l img { margin: 10px; }
+#header_r { width: 50%; float: left; }
+#header_r p { padding: 10px; text-align: right; }
+#menu { border-top: 1px solid rgb(192, 22, 54); border-bottom: 1px solid rgb(192, 22, 54); padding: 10px; text-align: center; background-color: rgb(253, 238, 241); }
+#contents { float: left; width: 80%; }
+#contents_index { width: 100%; }
+#footer { border-top: 1px solid rgb(192, 22, 54); padding: 10px; text-align: center; }
+#menu ul { margin: 0px; padding: 0px; }
+#menu li { margin: 0px 20px; display: inline; list-style-type: none; list-style-image: none; list-style-position: outside; }
+#menu ul li a { border-top: 2px solid rgb(192, 22, 54); border-bottom: 2px solid rgb(192, 22, 54); padding: 3px; text-decoration: none; color: rgb(192, 22, 54); }
+#menu ul li a:hover { border-top: 2px solid rgb(240, 128, 128); border-bottom: 2px solid rgb(240, 128, 128); padding: 3px; text-decoration: none; color: rgb(240, 128, 128); }
+#menu ul li a#current { border-top: 2px solid rgb(240, 128, 128); border-bottom: 2px solid rgb(240, 128, 128); }
+#side_menu { margin: 0px; padding: 0px; float: left; width: 20%; }
+#side_menu_in { border-top: 1px solid rgb(192, 22, 54); border-bottom: 1px solid rgb(192, 22, 54); margin: 10px 5px 5px; padding: 5px 0px; background-color: rgb(253, 238, 241); }
+#side_menu ul { margin: 0px; padding: 0px; }
+#side_menu li { margin: 10px; list-style-type: none; list-style-image: none; list-style-position: outside; }
+#side_menu ul li a { border-left: 4px solid rgb(192, 22, 54); padding: 1px 3px 1px 5px; text-decoration: none; color: rgb(192, 22, 54); }
+#side_menu ul li a:hover { border-left: 4px solid rgb(240, 128, 128); padding: 1px 3px 1px 5px; text-decoration: none; color: rgb(240, 128, 128); }
+#side_menu ul li a#current { border-top: 2px solid rgb(240, 128, 128); border-bottom: 2px solid rgb(240, 128, 128); }
+a:link { color: rgb(0, 0, 0); }
+a:visited { color: rgb(0, 0, 0); }
+a:hover { color: rgb(0, 0, 0); }

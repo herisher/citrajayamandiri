@@ -1,0 +1,169 @@
+<?= $this->render('sidemenu/finance.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+		$("#invoice_date").datepicker({
+			dateFormat: 'yy-mm-dd',
+			onSelect: function(){
+				$.post('/manager/invoice/generate-number/',{ q: $(this).val() }, function(result) {
+					$('#due_date').val(result)
+				});
+			}
+		});
+		$(".inputwidth1").change(function(){
+			var total = $('#quantity').val() * $('#price').val();
+			var tot_disc = total - $('#discount').val();
+			var tax = tot_disc * 0.1;
+			var grand_total = tot_disc + tax;
+			
+			$('#total').val(total);
+			$('#total_min_discount').val(tot_disc);
+			$('#tax').val(Math.round(tax));
+			$('#total_include_tax').val(grand_total);
+		});
+    });
+	
+	function openPopup() {
+		window.open("/manager/invoice-popup/list",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
+	}
+	
+	function doDelete() {
+	  document.form2.action = "/manager/invoice/create?delete=1";
+	  document.form2.submit();
+	}
+	
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+			<?= $this->subtitle ?>
+    </div>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/invoice/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">Delivery</td>
+          <td width="70%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'order') ?>
+              <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                  <td class="color">Delivery No</td>
+                  <td class="color">Order No.</td>
+                  <td class="color">Project</td>
+                  <td class="color">Article</td>
+                  <td class="color">Delete</td>
+                </tr>
+              <?php if(count($this->delivery_list)) : ?>
+                <tr>
+                  <td align="center">
+                    <?= $this->form->getElement('delivery_id') ?>
+                    <?= $this->delivery_list['delivery_no'] ?></td>
+                  <td align="center"><?= $this->delivery_list['order_no'] ?></td>
+                  <td align="center"><?= h($this->delivery_list['project']) ?></td>
+                  <td align="center"><?= $this->delivery_list['article'] ?></td>
+                  <td align="center"><input type="button" onclick="doDelete();" name="delete" class="input_b1" value="Delete"></td>
+                </tr>
+              <?php endif; ?>
+                <tr>
+                  <td align="center" colspan="5">
+                    <input type="button" onclick="openPopup();" class="input_b2" value="Choose Delivery">
+                  </td>
+                </tr>
+              </table>
+          </td>
+        </tr>
+		<?php //if($this->delivery_list) : ?>
+        <tr>
+          <td class="color2">Invoice No.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'invoice_no') ?>
+            <?= $this->form->getElement('invoice_no') ?> - <?= $this->form->getElement('call') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">OB No.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'ob_no') ?>
+            <?= $this->form->getElement('ob_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Invoice Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'invoice_date') ?>
+            <?= $this->form->getElement('invoice_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Due Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'due_date') ?>
+            <?= $this->form->getElement('due_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+		<tbody>
+        <tr>
+          <td class="color2">Quantity (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'quantity') ?>
+            <?= $this->form->getElement('quantity') ?><br/>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Price (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'price') ?>
+            <?= $this->form->getElement('price') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total') ?>
+            <?= $this->form->getElement('total') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Discount (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'discount') ?>
+            <?= $this->form->getElement('discount') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Total - Discount (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total_min_discount') ?>
+            <?= $this->form->getElement('total_min_discount') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Tax (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'tax') ?>
+            <?= $this->form->getElement('tax') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Grand Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total_include_tax') ?>
+            <?= $this->form->getElement('total_include_tax') ?></td>
+        </tr>
+		</tbody>
+		<?php //endif; ?>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" name="confirm" class="input_b2" value="Create" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

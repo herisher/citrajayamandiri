@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Citra Jaya Mandiri</title>
+</head>
+
+<body>
+
+<table align="center">
+    <tr>
+        <td colspan="3">Jakarta, <?php echo date('j M Y',strtotime($this->model["receipt_date"]));?></td>
+    </tr>
+    <tr>
+        <td colspan="2"></td>
+        <td align="center">
+        Kepada Yth, <br/>
+        PT. SEPATU BATA, Tbk. <br/>
+        di <br/>
+        J A K A R T A
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="font-size:16pt"><strong>TANDA TERIMA</strong></td>
+    </tr>
+    <tr>
+        <td colspan="3" style="font-size:0pt"><hr/></td>
+    </tr>
+    <tr>
+        <td colspan="3">BANYAKNYA : <?= count($this->model['detail']) ?> Lbr</td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <table border="1" cellpadding="0" cellspacing="0" >
+                <tr align="center" style="font-weight:bold">
+                    <td width="250">NO. INVOICE</td>
+                    <td width="150">TERTANGGAL</td>
+                    <td width="200">JUMLAH (Rp)</td>
+                </tr>
+                <?php foreach( $this->detail as $rs3) : ?>
+                <tr style="font-size:11pt">
+                    <td><?= $rs3["invoice_no"] ?></td>
+                    <td align="center"><?= date('j M Y',strtotime($rs3["invoice_date"])) ?></td>
+                    <td align="right"><?= number_format($rs3["total_include_tax"])?></td>
+                </tr>';
+                <?php endforeach; ?>
+                <tr style="font-weight:bold">
+                    <td colspan="2" align="center">TOTAL</td>
+                    <td align="right"><?= number_format($this->model['total']) ?></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <table>
+                <tr>
+                    <td valign="top"><br/>TERBILANG</td>
+                    <td valign="top"><br/>:</td>
+                    <td width="550" style="text-transform:capitalize"><br/><?= $this->model['terbilang'] ?></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td width="80" valign="top"><br/>Yang Menerima,</td>
+        <td width="200"></td>
+        <td width="200" align="center">
+        <br/>Hormat Kami,<br/><br/><br/><br/><br/>
+        CV. CITRA JAYA MANDIRI
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

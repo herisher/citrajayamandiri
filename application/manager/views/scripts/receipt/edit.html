@@ -1,0 +1,50 @@
+<?= $this->render('sidemenu/finance.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+	$(document).ready(function() {
+        $("#receipt_date").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/receipt/edit/id/<?= $this->model['id'] ?>">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray"><?= $this->model['id'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Receipt No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['receipt_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Receipt Date</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'receipt_date') ?>
+            <?= $this->form->getElement('receipt_date') ?></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="confirm" value="Edit" />&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" class="input_b2" value="Print" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/print/id/<?= $this->model['id'] ?>';" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

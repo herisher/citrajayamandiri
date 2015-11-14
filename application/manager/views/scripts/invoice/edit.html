@@ -1,0 +1,147 @@
+<?= $this->render('sidemenu/finance.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#invoice_date").datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function(){
+                $.post('/manager/invoice/generate-number/',{ q: $(this).val() }, function(result) {
+                    $('#due_date').val(result)
+                });
+            }
+        });
+    });
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/invoice/edit/id/<?= $this->model['id'] ?>">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray"><?= $this->model['id'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Order No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['order']['order_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['project'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Article</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['article'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Delivery No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['delivery']['delivery_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">OB No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['ob_no'] ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Invoice No.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'invoice_no') ?>
+            <?= $this->form->getElement('invoice_no') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Invoice Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'invoice_date') ?>
+            <?= $this->form->getElement('invoice_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Due Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'due_date') ?>
+            <?= $this->form->getElement('due_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'payment_status') ?>
+            <?= $this->form->getElement('payment_status') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'status') ?>
+            <?= $this->form->getElement('status') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Quantity (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'quantity') ?>
+            <?= $this->form->getElement('quantity') ?><br/>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Price (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'price') ?>
+            <?= $this->form->getElement('price') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total') ?>
+            <?= $this->form->getElement('total') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Discount (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'discount') ?>
+            <?= $this->form->getElement('discount') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Total - Discount (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total_min_discount') ?>
+            <?= $this->form->getElement('total_min_discount') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Tax (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'tax') ?>
+            <?= $this->form->getElement('tax') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Grand Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total_include_tax') ?>
+            <?= $this->form->getElement('total_include_tax') ?></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="confirm" value="Edit" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" class="input_b2" value="Print" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/print/id/<?=$this->model['id']?>';" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

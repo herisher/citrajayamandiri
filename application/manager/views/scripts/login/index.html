@@ -1,0 +1,35 @@
+<!--コンテンツ-->
+<div id="contents_index">
+  <div id="contents_in">
+
+    <div id="contents_title">
+      <?= $this->subtitle ?>
+    </div>
+
+    <div id="login">
+
+<?php if ($this->error_str) : ?>
+<font color="#ff0000"><?= $this->error_str ?></font>
+<?php endif ; ?>
+
+    <form id="form1" name="form1" method="post" action="/manager/login">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="50%" class="color2">Username</td>
+          <td width="50%" class="color_gray"><?= $this->form->getElement('login_id') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Password</td>
+          <td class="color_gray"><?= $this->form->getElement('login_pw') ?></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center"><input name="submit" type="submit" class="input_b2" value="Log In" /></td>
+        </tr>
+      </table>
+      <?= $this->form->getElement('return_path') ?>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

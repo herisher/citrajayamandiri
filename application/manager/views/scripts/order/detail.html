@@ -1,0 +1,285 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray">
+            <?= $this->model['id'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Order No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['order_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['project'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Article</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['article'] ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Order Date</td>
+          <td class="color_gray">
+            <?= $this->model['order_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Receipt Date</td>
+          <td class="color_gray">
+            <?= $this->model['receipt_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Dept.</td>
+          <td class="color_gray">
+            <?= $this->model['dept'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Week</td>
+          <td class="color_gray">
+            <?= $this->model['delivery_week'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Plan</td>
+          <td class="color_gray">
+            <?= $this->model['plan'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Term (month)</td>
+          <td class="color_gray">
+            <?= $this->model['payment_term'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Status</td>
+          <td class="color_gray">
+            <?= $this->model['status_disp'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Status</td>
+          <td class="color_gray">
+            <?= $this->model['payment_disp'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Document Status</td>
+          <td class="color_gray">
+            <?= $this->model['document_disp'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Size<br>-----<br>Pairs</td>
+          <td class="color_gray">
+            <?php if( count($this->models) ) : ?>
+            <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                <? foreach( $this->models as $model ) : ?>
+                <? $id=$model['id'] ?>
+                    <td class="color"><?= $model['size'] ?></td>
+                <?php endforeach; ?>
+                </tr>
+                <tr align="center">
+                <? foreach( $this->models as $model ) : ?>
+                    <td><?= $model['quantity'] ?></td>
+                <?php endforeach; ?>
+                </tr>
+            </table>
+            <?php endif; ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Quantity (Ps)</td>
+          <td class="color_gray">
+            <?= number_format($this->model['quantity']) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Price (Rp)</td>
+          <td class="color_gray">
+            <?= number_format($this->model['price']) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Sub Total (Rp)</td>
+          <td class="color_gray">
+            <?= number_format($this->model['sub_total']) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">PPn (Rp)</td>
+          <td class="color_gray">
+            <?= number_format($this->model['ppn']) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Total (Rp)</td>
+          <td class="color_gray">
+            <?= number_format($this->model['total']) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= $this->model['description'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray">
+            <?= $this->model['create_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Update Date</td>
+          <td class="color_gray">
+            <?= $this->model['update_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" class="input_b2" name="edit" value="Edit" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/edit/id/<?= $this->model['id'] ?>';" /></td>
+        </tr>
+      </table>
+    </form>
+
+        <br>
+      <!-- delivery sheet -->
+      <?php if( count($this->delivery) ) : ?>
+      Delivery List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Delivery No.</td>
+          <td class="color">Delivery Date</td>
+          <td class="color">Quantity (Ps)</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->delivery as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/delivery/edit/id/<?= $model['id'] ?>"><?= $model['delivery_no'] ?></a></td>
+          <td align="left"><?= $model['delivery_date'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['quantity'];
+            endforeach ; ?>
+        <tr>
+          <td class="color2" colspan="3">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; ?>
+
+      <br>
+      <!-- invoice list -->
+      <?php if( count($this->invoice) ) : ?>
+      Invoice List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Invoice No.</td>
+          <td class="color">Invoice Date</td>
+          <td class="color">Due Date</td>
+          <td class="color">Total (Inc. Discount)</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->invoice as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>"><?= $model['invoice_no'] ?></a></td>
+          <td align="left"><?= $model['invoice_date'] ?></td>
+          <td align="left"><?= $model['due_date'] ?></td>
+          <td align="right"><?= number_format($model['total_min_discount']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['total_min_discount'];
+            endforeach ; 
+            $ppn = $total/10;
+            $all_total_invoice = $total + $ppn;
+        ?>
+        <tr>
+          <td class="color2" colspan="4">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="4">Total + PPn</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_invoice) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; ?>
+
+      <br>
+      <!-- purchase list -->
+      <?php if( count($this->purchase) ) : ?>
+      Purchase List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Purchase No.</td>
+          <!-- TODO -->
+          <td class="color">Total</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->purchase as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/purchase/edit/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
+          <!-- TODO -->
+          <td align="right"><?= number_format($model['total']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['total'];
+            endforeach ; 
+            //TODO
+            $ppn = $total/10;
+            $all_total_purchase = $total + $ppn;
+        ?>
+        <tr>
+          <td class="color2" colspan="4">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="4">Total + PPn</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_purchase) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; 
+            $all_total_purchase = 0;?>
+
+      <br>
+      <!-- TODO -->
+      TRANSFER = <?= number_format($all_total_invoice - $all_total_purchase) ?>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

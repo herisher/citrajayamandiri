@@ -1,0 +1,104 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+		$("#delivery_date").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+	
+	function sum() {
+		var i;
+		var sum = parseInt(0);
+		<?php foreach($this->models as $model) : ?>
+			sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
+		<?php endforeach; ?>
+		document.getElementById("quantity").value = sum;
+	}
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+			<?= $this->subtitle ?>
+    </div>
+
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/delivery/edit/id/<?= $this->model['id'] ?>">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray"><?= $this->model['id'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Order No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['order']['order_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['project'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Article</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['article'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Delivery No.</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_no') ?>
+            <?= $this->form->getElement('delivery_no') ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_date') ?>
+            <?= $this->form->getElement('delivery_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'status') ?>
+            <?= $this->form->getElement('status') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'description') ?>
+            <?= $this->form->getElement('description') ?> 
+          </td>
+        </tr>
+		<?php if( count($this->models) ) :?>
+		<? foreach( $this->models as $model ) :?>
+		<? $id=$model['id'] ?>
+        <tr>
+          <td class="color2">Size <?= $model['size']?> (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'pairs') ?>
+			<?= $this->form->getElement("quantity_{$id}") ?>
+          </td>
+        </tr>
+		<?php endforeach; ?>
+		<?php endif; ?>
+        <tr>
+          <td class="color2">Quantity (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'quantity') ?>
+            <?= $this->form->getElement('quantity') ?><br/>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="confirm" value="Edit" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

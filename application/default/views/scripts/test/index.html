@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<?php for($i = 1; $i <= 27; $i++): ?>
+<a href="#api<?= sprintf("%03d",$i) ?>">API-<?= sprintf("%03d",$i) ?></a>
+<?php endfor; ?>
+<hr />
+<script Language="javascript">
+    function updateNameValue() {
+        document.getElementById("sort_by").value = document.getElementById("hit_sort_by").value;  
+    }
+</script>
+<?php $prefix = 'http://cawaii.buzoo.biz'; ?>
+
+<a name="api001"></a>
+<h3>API-001 /api/member/login</h3>
+<form action="<?= $prefix ?>/api/member/login" method="post">
+email <input type="text" name="email"><br />
+password <input type="text" name="password"><br />
+device_token <input type="text" name="device_token"><br />
+<input type="submit">
+</form>
+
+<a name="api002"></a>
+<h3>API-002 /api/member/create</h3>
+<form action="<?= $prefix ?>/api/member/create" method="post" enctype="multipart/form-data">
+email <input type="text" name="email"><br />
+password <input type="text" name="password"><br />
+nickname <input type="text" name="nickname"><br />
+address1 <input type="text" name="address1"><br />
+birthday <input type="text" name="birthday"><br />
+file_image <input type="file" name="file_image"><br />
+device_token <input type="text" name="device_token"><br />
+<input type="submit">
+</form>
+
+<a name="api003"></a>
+<h3>API-003 /api/member/update</h3>
+<form action="<?= $prefix ?>/api/member/update" method="post" enctype="multipart/form-data">
+accesskey <input type="text" name="accesskey"><br />
+nickname <input type="text" name="nickname"><br />
+birthday_public <input type="text" name="birthday_public"><br />
+file_image <input type="file" name="file_image"><br />
+profile <input type="text" name="profile"><br />
+<input type="submit">
+</form>
+
+<a name="api004"></a>
+<h3>API-004 /api/member/update-login</h3>
+<form action="<?= $prefix ?>/api/member/update-login" method="post">
+accesskey <input type="text" name="accesskey"><br />
+email <input type="text" name="email"><br />
+password_curr <input type="text" name="password_curr"><br />
+password_new <input type="text" name="password_new"><br />
+<input type="submit">
+</form>
+
+<a name="api005"></a>
+<h3>API-005 /api/member/detail</h3>
+<form action="<?= $prefix ?>/api/member/detail" method="get">
+accesskey <input type="text" name="accesskey"><br />
+member_id <input type="text" name="member_id"><br />
+<input type="submit">
+</form>
+
+<a name="api006"></a>
+<h3>API-006 /api/member/reminder</h3>
+<form action="<?= $prefix ?>/api/member/reminder" method="post">
+email <input type="text" name="email"><br />
+birthday <input type="text" name="birthday"><br />
+<input type="submit">
+</form>
+
+<a name="api007"></a>
+<h3>API-007 /api/news/list</h3>
+<form action="<?= $prefix ?>/api/news/list" method="get">
+page <input type="text" name="page" value="1"><br />
+limit <input type="text" name="limit" value="5"><br />
+<input type="submit">
+</form>
+
+<a name="api008"></a>
+<h3>API-008 /api/news/detail</h3>
+<form action="<?= $prefix ?>/api/news/detail" method="get">
+id <input type="text" name="id"><br />
+<input type="submit">
+</form>
+
+<a name="api009"></a>
+<h3>API-009 /api/item/detail</h3>
+<form action="<?= $prefix ?>/api/item/detail" method="get">
+item_id <input type="text" name="item_id"><br />
+<input type="submit">
+</form>
+
+<a name="api010"></a>
+<h3>API-010 /api/item/delete</h3>
+<form action="<?= $prefix ?>/api/item/delete" method="get">
+accesskey <input type="text" name="accesskey"><br />
+item_id <input type="text" name="item_id" value="1"><br />
+<input type="submit">
+</form>
+
+<a name="api011"></a>
+<h3>API-011 /api/item/like</h3>
+<form action="<?= $prefix ?>/api/item/like" method="get">
+accesskey <input type="text" name="accesskey"><br />
+item_id <input type="text" name="item_id"><br />
+<input type="submit">
+</form>
+
+<a name="api012"></a>
+<h3>API-012 /api/item/report</h3>
+<form action="<?= $prefix ?>/api/item/report" method="get">
+accesskey <input type="text" name="accesskey"><br />
+item_id <input type="text" name="item_id"><br />
+<input type="submit">
+</form>
+
+<a name="api013"></a>
+<h3>API-013 /api/genre/list</h3>
+<form action="<?= $prefix ?>/api/genre/list" method="get">
+No Request Parameter
+<input type="submit">
+</form>
+
+<a name="api014"></a>
+<h3>API-014 /api/category/list</h3>
+<form action="<?= $prefix ?>/api/category/list" method="get">
+genre_id <input type="text" name="genre_id"><br />
+<input type="submit">
+</form>
+
+<a name="api015"></a>
+<h3>API-015 /api/sub-category/list</h3>
+<form action="<?= $prefix ?>/api/sub-category/list" method="get">
+category_id <input type="text" name="category_id"><br />
+<input type="submit">
+</form>
+
+<a name="api016"></a>
+<h3>API-016 /api/item/list</h3>
+<form action="<?= $prefix ?>/api/item/list" method="get">
+page <input type="text" name="page" value="1"><br />
+limit <input type="text" name="limit" value="12"><br />
+genre_id <input type="text" name="genre_id"><br />
+category_id <input type="text" name="category_id"><br />
+sub_category_id <input type="text" name="sub_category_id"><br />
+sort_by <select id="hit_sort_by" name"sort_by" onChange="javascript:updateNameValue();">
+<option value="1"> id desc </option>
+<option value="2"> id asc </option>
+<option value="3"> likes desc </option>
+<option value="4"> likes asc </option>
+</select><br />
+<input type="hidden" name="sort_by" id="sort_by" value="1">
+keyword <input type="text" name="keyword"><br />
+<input type="submit">
+</form>
+
+<a name="api017"></a>
+<h3>API-017 /api/popular-item/list</h3>
+<form action="<?= $prefix ?>/api/popular-item/list" method="get">
+page <input type="text" name="page" value="1"><br />
+limit <input type="text" name="limit" value="12"><br />
+<input type="submit">
+</form>
+
+<a name="api018"></a>
+<h3>API-018 /api/member-item/list</h3>
+<form action="<?= $prefix ?>/api/member-item/list" method="get">
+page <input type="text" name="page" value="1"><br />
+limit <input type="text" name="limit" value="12"><br />
+member_id <input type="text" name="member_id"><br />
+<input type="submit">
+</form>
+
+<a name="api019"></a>
+<h3>API-019 /api/board/list</h3>
+<form action="<?= $prefix ?>/api/board/list" method="get">
+page <input type="text" name="page" value="1"><br />
+limit <input type="text" name="limit" value="12"><br />
+item_id <input type="text" name="item_id"><br />
+<input type="submit">
+</form>
+
+<a name="api020"></a>
+<h3>API-020 /api/board/post</h3>
+<form action="<?= $prefix ?>/api/board/post" method="get">
+accesskey <input type="text" name="accesskey"><br />
+item_id <input type="text" name="item_id"><br />
+title <input type="text" name="title"><br />
+content <input type="text" name="content"><br />
+<input type="submit">
+</form>
+    
+<a name="api021"></a>
+<h3>API-021 /api/item/create</h3>
+<form action="<?= $prefix ?>/api/item/create" method="post" enctype="multipart/form-data">
+accesskey <input type="text" name="accesskey"><br />
+genre_id <input type="text" name="genre_id"><br />
+category_id <input type="text" name="category_id"><br />
+sub_category_id <input type="text" name="sub_category_id"><br />
+item_name <input type="text" name="item_name"><br />
+content <input type="text" name="content"><br />
+file_image <input type="file" name="file_image"><br />
+buy_url <input type="text" name="buy_url"><br />
+<input type="submit">
+</form>
+
+<a name="api022"></a>
+<h3>API-022 /api/item/sns-login</h3>
+<form action="<?= $prefix ?>/api/member/sns-login" method="post">
+account_type <input type="text" name="account_type"><br />
+user_id <input type="text" name="user_id"><br />
+user_hash <input type="text" name="user_hash"><br />
+<input type="submit">
+</form>
+
+<a name="api023"></a>
+<h3>API-023 /api/member/sns-create</h3>
+<form action="<?= $prefix ?>/api/member/sns-create" method="post">
+account_type <input type="text" name="account_type"><br />
+user_id <input type="text" name="user_id"><br />
+user_hash <input type="text" name="user_hash"><br />
+nickname <input type="text" name="nickname"><br />
+image_url <input type="text" name="image_url"><br />
+device_token <input type="text" name="device_token"><br />
+<input type="submit">
+</form>
+
+<a name="api024"></a>
+<h3>API-024 /api/frame/list</h3>
+<form action="<?= $prefix ?>/api/frame/list" method="post">
+<input type="submit">
+</form>
+
+<a name="api025"></a>
+<h3>API-025 /api/item/genre</h3>
+<form action="<?= $prefix ?>/api/item/genre" method="post">
+<input type="submit">
+</form>
+
+<a name="api026"></a>
+<h3>API-026 /api/twitter/upload</h3>
+<form action="<?= $prefix ?>/api/twitter/upload" method="post">
+user_token <input type="text" name="user_token"><br />
+user_secret <input type="text" name="user_secret"><br />
+image_url <input type="text" name="image_url"><br />
+<input type="submit">
+</form>
+
+<a name="api027"></a>
+<h3>API-027 /api/member/logout</h3>
+<form action="<?= $prefix ?>/api/member/logout" method="post">
+accesskey <input type="text" name="accesskey"><br />
+<input type="submit">
+</form>
+
+</body>
+</html>

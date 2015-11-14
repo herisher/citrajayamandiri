@@ -1,0 +1,41 @@
+<?= $this->render('sidemenu/service.html') ?>
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+      管理者新規登録
+    </div>
+
+    <form name="form2" method="post" action="/manager/admin/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">アカウント</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'account') ?>
+            <?= $this->form->getElement('account') ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="color2">パスワード</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'password') ?>
+            <?= $this->form->getElement('password') ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="一覧に戻る" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" class="input_b2" value="保存" />
+          </td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

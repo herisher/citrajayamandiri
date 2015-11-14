@@ -1,0 +1,1 @@
+alter table `dtb_delivery` add column `status` tinyint(4) default 0 after `delivery_no`;

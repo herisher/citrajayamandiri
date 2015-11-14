@@ -1,0 +1,323 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#order_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#receipt_date").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+    
+    function sum() {
+        var i;
+        var sum = parseInt(0);
+        <?php foreach($this->models as $model) : ?>
+            sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
+        <?php endforeach; ?>
+        document.getElementById("quantity").value = sum;
+        document.getElementById("sub_total").value = sum * document.getElementById("price").value;
+        document.getElementById("ppn").value = (sum * document.getElementById("price").value) / 10;
+        document.getElementById("total").value = (sum * document.getElementById("price").value) + ((sum * document.getElementById("price").value) / 10);
+    }
+//-->
+</script>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/order/edit/id/<?= $this->model['id'] ?>">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray"><?= $this->model['id'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Order No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['order_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['project'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Article</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['article'] ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Order Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'order_date') ?>
+            <?= $this->form->getElement('order_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Receipt Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'receipt_date') ?>
+            <?= $this->form->getElement('receipt_date') ?>※YYYY-MM-DD 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Dept.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'dept') ?>
+            <?= $this->form->getElement('dept') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Week</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_week') ?>
+            <?= $this->form->getElement('delivery_week') ?>※YYYYMM
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Plan</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'plan') ?>
+            <?= $this->form->getElement('plan') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Term (month)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'payment_term') ?>
+            <?= $this->form->getElement('payment_term') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'status_flag') ?>
+            <?= $this->form->getElement('status_flag') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'payment_flag') ?>
+            <?= $this->form->getElement('payment_flag') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Document Status</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'document_flag') ?>
+            <?= $this->form->getElement('document_flag') ?> 
+          </td>
+        </tr>
+        <?php if( count($this->models) ) :?>
+        <tr>
+          <td class="color2">Size<br>-----<br>Pairs</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'pairs') ?>
+            <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                    <? foreach( $this->models as $model ) :?>
+                    <td class="color"><?= $model['size']?></td>
+                    <?php endforeach; ?>
+                </tr>
+                <tr align="center">
+                    <? foreach( $this->models as $model ) :?>
+                    <? $id=$model['id'] ?>
+                    <td><?= my_mb_error($this->error_str, 'pairs') ?>
+                        <?= $this->form->getElement("quantity_{$id}") ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+            </table>
+          </td>
+        </tr>
+        <?php endif; ?>
+        <tr>
+          <td class="color2">Quantity (Ps)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'quantity') ?>
+            <?= $this->form->getElement('quantity') ?>※automatic calculation, can't be edited
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Price</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'price') ?>
+            <?= $this->form->getElement('price') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Sub Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'sub_total') ?>
+            <?= $this->form->getElement('sub_total') ?>※automatic calculation, can't be edited
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">PPn (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'ppn') ?>
+            <?= $this->form->getElement('ppn') ?>※automatic calculation, can't be edited
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Total (Rp)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total') ?>
+            <?= $this->form->getElement('total') ?>※automatic calculation, can't be edited
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'description') ?>
+            <?= $this->form->getElement('description') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray">
+            <?= $this->model['create_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Update Date</td>
+          <td class="color_gray">
+            <?= $this->model['update_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="confirm" value="Edit" /></td>
+        </tr>
+      </table>
+    </form>
+
+        <br>
+      <!-- delivery sheet -->
+      <?php if( count($this->delivery) ) : ?>
+      Delivery List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Delivery No.</td>
+          <td class="color">Delivery Date</td>
+          <td class="color">Quantity (Ps)</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->delivery as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/delivery/edit/id/<?= $model['id'] ?>"><?= $model['delivery_no'] ?></a></td>
+          <td align="left"><?= $model['delivery_date'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['quantity'];
+            endforeach ; ?>
+        <tr>
+          <td class="color2" colspan="3">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; ?>
+
+      <br>
+      <!-- invoice list -->
+      <?php if( count($this->invoice) ) : ?>
+      Invoice List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Invoice No.</td>
+          <td class="color">Invoice Date</td>
+          <td class="color">Due Date</td>
+          <td class="color">Total (Inc. Discount)</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->invoice as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>"><?= $model['invoice_no'] ?></a></td>
+          <td align="left"><?= $model['invoice_date'] ?></td>
+          <td align="left"><?= $model['due_date'] ?></td>
+          <td align="right"><?= number_format($model['total_min_discount']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['total_min_discount'];
+            endforeach ; 
+            $ppn = $total/10;
+            $all_total_invoice = $total + $ppn;
+        ?>
+        <tr>
+          <td class="color2" colspan="4">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="4">Total + PPn</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_invoice) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; ?>
+
+      <br>
+      <!-- purchase list -->
+      <?php if( count($this->purchase) ) : ?>
+      Purchase List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Purchase No.</td>
+          <!-- TODO -->
+          <td class="color">Total</td>
+        </tr>
+        <?php 
+            $total = 0;
+            foreach ($this->purchase as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/purchase/edit/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
+          <!-- TODO -->
+          <td align="right"><?= number_format($model['total']) ?></td>
+        </tr>
+        <?php 
+            $total += $model['total'];
+            endforeach ; 
+            //TODO
+            $ppn = $total/10;
+            $all_total_purchase = $total + $ppn;
+        ?>
+        <tr>
+          <td class="color2" colspan="4">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="4">Total + PPn</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_purchase) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; 
+            $all_total_purchase = 0;?>
+
+      <br>
+      <!-- TODO -->
+      TRANSFER = <?= number_format($all_total_invoice - $all_total_purchase) ?>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

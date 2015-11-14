@@ -1,0 +1,62 @@
+<?= $this->render('sidemenu/service.html') ?>
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+      管理者一覧
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/admin/list">
+        <table width="100%" border="0" cellpadding="5">
+          <tr>
+            <td width="30%" class="color2">アカウント</td>
+            <td width="70%" class="color_gray" colspan="3">
+              <?= $this->form->getElement('account') ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" align="center">
+              <input type="submit" class="input_b2" name="search" value="検索" />&nbsp;
+              <input type="submit" class="input_b2" name="clear" value="クリア" />
+            </td>
+          </tr>
+        </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/admin/list">
+      <?= $this->render('pager.html') ?>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td align="center" class="color">ID</td>
+          <td align="center" class="color">アカウント</td>
+          <td align="center" class="color">登録日時</td>
+          <td align="center" class="color">編集</td>
+          <td align="center" class="color">削除</td>
+        </tr>
+<?php foreach ($this->models as $model) : ?>
+        <tr>
+          <td align="center"><?= $model['id'] ?></td>
+          <td align="left"><?= h($model['account']) ?></td>
+          <td align="center"><?= $model['create_date'] ?></td>
+          <td align="center"><a href="/manager/admin/edit/id/<?= $model['id'] ?>">編集</a></td>
+<?php if($this->admin['id'] == $model['id']): ?>
+          <td align="center">不可</td>
+<?php else: ?>
+          <td align="center"><a href="#" onClick="confirmDelete('/manager/admin/delete/id/<?= $model['id'] ?>');return false;">削除</a></td>
+<?php endif; ?>
+        </tr>
+<?php endforeach ; ?>
+      </table>
+    </div>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->
