@@ -11,6 +11,17 @@
                 });
             }
         });
+        $(".inputwidth1").change(function(){
+            var total = $('#quantity').val() * $('#price').val();
+            var tot_disc = total - $('#discount').val();
+            var tax = tot_disc * 0.1;
+            var grand_total = tot_disc + tax;
+            
+            $('#total').val(total);
+            $('#total_min_discount').val(tot_disc);
+            $('#tax').val(Math.round(tax));
+            $('#total_include_tax').val(grand_total);
+        });
     });
 //-->
 </script>

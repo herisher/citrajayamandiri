@@ -109,6 +109,7 @@ class Manager_InvoiceController extends ManagerBaseController {
         foreach ($this->view->paginator as $model) {
             $model = $model->toArray();
             $model['disp_status'] = Dao_Invoice::$statics['status'][$model['status']];
+            $model['disp_payment_status'] = Dao_Invoice::$statics['payment_status'][$model['payment_status']];
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
             $model['delivery'] = $this->model('Dao_Delivery')->retrieve($model['delivery_id']);
@@ -191,6 +192,7 @@ class Manager_InvoiceController extends ManagerBaseController {
                 'invoice_date'  => $form->getValue('invoice_date'),
                 'due_date'      => $form->getValue('due_date'),
                 'status'        => $form->getValue('status'),
+                'payment_status'=> $form->getValue('payment_status'),
                 'quantity'      => $form->getValue('quantity'),
                 'price'         => $form->getValue('price'),
                 'total'         => $form->getValue('total'),
@@ -345,6 +347,36 @@ class Manager_InvoiceController extends ManagerBaseController {
      *  カテゴリ詳細
      */
     public function printAction() {
+        $this->_helper->layout()->disableLayout();
+        $id = $this->getRequest()->getParam('id');
+        
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            $model = $this->model('Dao_Invoice')->retrieve($id);
+            
+            if (!$model) {
+                $this->view->error_str = 'Data does not exist or has been deleted.';
+                $this->_forward('error', 'Error');
+                return;
+            }
+
+            // 初期値設定
+            $model = $model->toArray();
+            $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $model['delivery'] = $this->model('Dao_Delivery')->retrieve($model['delivery_id']);
+            $model['terbilang'] = $this->model('Logic_Invoice')->convertion($model['total_include_tax']);
+            $model['kwitansi_no'] = $this->model('Logic_Invoice')->getKwitansiNo($model);
+            $model['invoice_no1'] = substr($model['invoice_no'],2,3);
+            $this->view->rs = $model;
+        }
+        else {
+            $this->view->error_str = 'Data does not exist or has been deleted.';
+            $this->_forward('error', 'Error');
+            return;
+        }
+    }
+    
+    public function printKwAction() {
         $this->_helper->layout()->disableLayout();
         $id = $this->getRequest()->getParam('id');
         

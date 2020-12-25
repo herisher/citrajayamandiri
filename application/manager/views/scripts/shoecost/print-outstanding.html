@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex,nofollow" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="copyright" content="CV.CJM" />
+
+<!--????====================-->
+
+<title>CV. Citra Jaya Mandiri | Admin</title>
+
+<!--????====================-->
+
+<link rel="stylesheet" type="text/css" href="/css/manager.css" media="all">
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.9.1.css" media="all">
+<script src="/js/Widget/Dialog.js" type="text/javascript"></script>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<script src="/js/jquery-1.8.2.js"></script>
+<script src="/js/jquery-ui-1.9.1.js"></script
+</head>
+<body>
+<div id="area">
+<div id="contents_index">
+  <div id="contents_in">
+    <div class="contents_space" align="center">
+      <!-- OUTSTANDING -->
+      <h1>CV. Citra Jaya Mandiri</h1>
+      <h3>OUTSTANDING #<?= date('W/Y') ?></h3>
+      
+      <table width="100%" border="1" cellpadding="8" cellspacing="0" style="font-family: sans-serif;font-size: medium;">
+        <tr align="center">
+          <td>Week</td>
+          <td>Plan</td>
+          <td>Order No.</td>
+          <td>Project</td>
+          <td>Article</td>
+          <td>Total (Ps)</td>
+          <td>Delivery (Ps)</td>
+          <td>Outstanding (Ps)</td>
+        </tr>
+<?php 
+    $quantity = 0;
+    $delivery = 0;
+    $outstanding = 0;
+    foreach ($this->models as $model) : 
+?>
+        <tr style="font-family:times">
+          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= $model['plan'] ?></td>
+          <td align="left"><?= $model['order_no'] ?></td>
+          <td align="left"><?= ($model['project']) ?></td>
+          <td align="left"><?= $model['article'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="right"><?= number_format($model['delivery']) ?></td>
+          <td align="right"><?= number_format($model['outstanding']) ?></td>
+        </tr>
+<?php 
+    $quantity += $model['quantity'];
+    $delivery += $model['delivery'];
+    $outstanding += $model['outstanding'];
+    endforeach ; 
+?>
+        <tr>
+          <td align="center" colspan="5">Total</td>
+          <td align="right"><?= number_format($quantity) ?></td>
+          <td align="right"><?= number_format($delivery) ?></td>
+          <td align="right"><?= number_format($outstanding) ?></td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+</div>
+<br class="cl">
+</div>
+</body>
+</html>

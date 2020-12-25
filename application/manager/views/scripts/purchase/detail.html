@@ -1,0 +1,131 @@
+<?= $this->render('sidemenu/purchase.html') ?>
+
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="20%" class="color2">ID</td>
+          <td width="80%" class="color_gray">
+            <?= $this->model['id'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Purchase No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['purchase_no'] ?></td>
+        </tr>
+        <tr>
+        <tr>
+          <td width="20%" class="color2">Order No.</td>
+          <td width="80%" class="color_gray"><?= $this->model['order_no'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['project'] ?></td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Article</td>
+          <td width="80%" class="color_gray"><?= $this->model['product']['article'] ?></td>
+        </tr>
+        <tr>
+          <td class="color2">Purchase Date</td>
+          <td class="color_gray">
+            <?= $this->model['purchase_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Type</td>
+          <td class="color_gray">
+            <?= $this->model['disp_type'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= $this->model['description'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray">
+            <?= $this->model['create_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Update Date</td>
+          <td class="color_gray">
+            <?= $this->model['update_date'] ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" class="input_b2" name="edit" value="Edit" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/edit/id/<?= $this->model['id'] ?>';" /></td>
+        </tr>
+      </table>
+    </form>
+
+        <br>
+      <!-- delivery sheet -->
+      <?php if( count($this->models) ) : ?>
+      Purchase List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Part No.</td>
+          <td class="color">Material Name</td>
+          <td class="color">Qty</td>
+          <td class="color">Bom</td>
+          <td class="color">Price</td>
+          <td class="color">Total</td>
+        </tr>
+        <?php 
+            $total = 0;
+            $i = 1;
+            foreach ($this->models as $material) : ?>
+            <?php $jumlah = $material['qty']*$material['price']; ?>
+        <tr>
+          <td class="color_gray" align="left"><?= $i++ ?></td>
+          <td class="color_gray" align="left"><?= $material['part_no'] ?></td>
+          <td class="color_gray" align="left"><?= $material['material_name'] ?></td>
+          <td class="color_gray" align="right"><?= number_format($material['qty']) ?></td>
+          <td class="color_gray" align="right"><?= $material['bom'] ?></td>
+          <td class="color_gray" align="right"><?= number_format($material['price']) ?></td>
+          <td class="color_gray" align="right"><?= number_format($jumlah) ?></td>
+        </tr>
+        <?php 
+            $total += $jumlah;
+            endforeach ; ?>
+            <?php $ppn = $total*10/100;
+                  $grand_total = $total+$ppn; ?>
+        <tr>
+          <td class="color2" colspan="6">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="6">Tax</td>
+          <td class="color_gray" align="right">
+            <?= number_format($ppn) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2" colspan="6">Total inc. Tax</td>
+          <td class="color_gray" align="right">
+            <?= number_format($grand_total) ?>
+          </td>
+        </tr>
+      </table>
+      <?php endif; ?>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

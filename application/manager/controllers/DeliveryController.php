@@ -310,12 +310,24 @@ class Manager_DeliveryController extends ManagerBaseController {
     public function deleteAction() {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
-            // データを削除
+			//get delivery detail
+            $model = $this->model('Dao_Delivery')->retrieve($id);
+            $model = $model->toArray();
+			
+            // delete delivery
             $table = $this->model('Dao_Delivery');
             $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
+			
+			//delete delivery detail
             $this->db()->query(
                 "DELETE FROM `dtb_delivery_detail` WHERE `delivery_id` = ?", $id
             );
+			
+			//update order status
+            $this->db()->query(
+                "UPDATE `dtb_order` SET `status_flag` = 0 WHERE `id` = ?", $model["order_id"]
+            );
+			
             $this->gobackList();
         }
         else {

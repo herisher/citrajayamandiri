@@ -106,6 +106,7 @@
           <td class="color">Due Date</td>
           <td class="color">Total</td>
           <td class="color">Total with tax</td>
+          <td class="color">Payment Status</td>
           <td class="color">Edit</td>
           <td class="color">Print</td>
           <td class="color">Delete</td>
@@ -118,6 +119,7 @@
           <td align="left"><?= $model['due_date'] ?></td>
           <td align="right"><?= number_format($model['total']) ?></td>
           <td align="right"><?= number_format($model['total_include_tax']) ?></td>
+          <td align="right"><?= $model['disp_payment_status'] ?></td>
           <td align="center"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>">Edit</a></td>
           <td align="center"><a href="/manager/invoice/print/id/<?= $model['id'] ?>">Print</a></td>
           <td align="center">

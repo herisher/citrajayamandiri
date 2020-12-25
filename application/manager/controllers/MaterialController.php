@@ -9,7 +9,7 @@ class Manager_MaterialController extends ManagerBaseController {
      * 検索条件作成
      */
     private function createWherePhrase($order_by = 'id desc') {
-        $table = $this->model('Dao_ViewItemMember');
+        $table = $this->model('Dao_Material');
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // セッションから検索条件を復元する
@@ -17,41 +17,14 @@ class Manager_MaterialController extends ManagerBaseController {
         if ($session->post) {
             foreach ((array)$session->post as $key => $value) {
                 // 検索条件セット
-                if ( $key === 'item_name' && $value ) {
-                    $where['item_name like ?'] = '%'.$value.'%';
-                }
-                if ( $key === 'reports' && $value != null ) {
-                    $where['reports = ?'] = $value;
-                }
-                if ( $key === 'disp_flag' && $value != null ) {
-                    $where['disp_flag = ?'] = $value;
+                if ( $key === 'material_desc' && $value ) {
+                    $where['material_desc like ?'] = '%'.$value.'%';
                 }
                 if ( $key === 'id' && $value != null ) {
                     $where['id = ?'] = $value;
                 }
-                if ( $key === 'nickname' && $value != null ) {
-                    $where['nickname = ?'] = $value;
-                }
-                if ( $key === 'email' && $value != null ) {
-                    $where['email = ?'] = $value;
-                }
-                if ( $key === 'create_date_start' && $value ) {
-                    $where['date(create_date) >= ?'] = $value;
-                }
-                if ( $key === 'create_date_end' && $value ) {
-                    $where['date(create_date) <= ?'] = $value;
-                }
-                if ( $key === 'report_date_start' && $value ) {
-                    return $this->model('Dao_ViewReportItem')->createWherePhrase(array(
-                        'date(create_date) >= ?' => $value,
-                    ), 'id desc');
-                    //$where['(select date(create_date) from dtb_item_reports where dtb_item_reports.item_id=view_item_member.id) >= ?'] = $value;
-                }
-                if ( $key === 'report_date_end' && $value ) {
-                    return $this->model('Dao_ViewReportItem')->createWherePhrase(array(
-                        'date(create_date) <= ?' => $value,
-                    ), 'id desc');
-                    //$where['(select date(create_date) from dtb_item_reports where dtb_item_reports.item_id=view_item_member.id) <= ?'] = $value;
+                if ( $key === 'part_no' && $value != null ) {
+                    $where['part_no = ?'] = $value;
                 }
             }
         }
@@ -72,13 +45,12 @@ class Manager_MaterialController extends ManagerBaseController {
     /**
      *  カテゴリ一覧
      */
-    public function listAction() {/*
+    public function listAction() {
         // 整列
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
         
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {
@@ -116,19 +88,29 @@ class Manager_MaterialController extends ManagerBaseController {
             $model = $model->toArray();
             array_push($models, $model);
         }
-        $this->view->models = $models;*/
-        $this->view->subtitle = "Purchase Order List";
+        $this->view->models = $models;
+        $this->view->subtitle = "Material List";
     }
 
     /**
      * 編集チェック
      */
-    private function editValid($form) {
+    private function editValid($id, $form) {
         $error_str = array();
         
         // フォームチェック
         if (! $form->isValid($_POST) ) {
             $this->checkForm($form, $this->view->config, $error_str);
+        }
+
+        $order = $this->model('Logic_Material')->findByNo($form->getValue('part_no'));
+        if($order) {
+            if( $order['id'] != $id) {
+                $error_str['part_no'] = 'Already Material Part No.';
+            }
+        }
+        
+        if(count($error_str)) {
             $this->view->error_str = $error_str;
             return false;
         }
@@ -138,19 +120,16 @@ class Manager_MaterialController extends ManagerBaseController {
     /**
      *  カテゴリ詳細
      */
-    public function editAction() {/*
+    public function editAction() {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
-        $form->getElement('genre_id')->setMultiOptions(array('' => '▼選択') + $this->model('Dao_Genre')->getGenreName());
-
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
-            $model = $this->model('Dao_ViewItemMember')->retrieve($id);
+            $model = $this->model('Dao_Material')->retrieve($id);
             
             if (!$model) {
-                $this->view->error_str = '指定されたデータは削除されたか存在しません。';
+                $this->view->error_str = 'Data does not exist or has been deleted.';
                 $this->_forward('error', 'Error');
                 return;
             }
@@ -160,71 +139,39 @@ class Manager_MaterialController extends ManagerBaseController {
             $form->setDefaults($item);
             $this->view->model = $item;
             
-            $genre = $this->model('Dao_Category')->getCategoryName($item['genre_id']);
-            $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $genre);
-
-            $category = $this->model('Dao_SubCategory')->getSubCategoryName($item['category_id']);
-            $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $category);
-
             // エラーチェック
             if ( $this->getRequest()->isPost() ) {
                 $form->setDefaults($_POST);
                 $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-
-                $genre_id = $form->getValue('genre_id');
-                $category = $this->model('Dao_Category')->getCategoryName($genre_id);
-                $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $category);
-
-                $category_id = $form->getValue('category_id');
-                $subcat = $this->model('Dao_SubCategory')->getSubCategoryName($category_id);
-                $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $subcat);
-
                 if ( $this->getRequest()->getParam('confirm') ) {
-                    if ( $this->editValid($form) ) {
+                    if ( $this->editValid($item['id'], $form) ) {
                         $this->doUpdate($item['id'], $form);
                     }
                 }
             }
         }
         else {
-            $this->view->error_str = '指定されたデータは削除されたか存在しません。';
+            $this->view->error_str = 'Data does not exist or has been deleted.';
             $this->_forward('error', 'Error');
             return;
-        }*/
-        $this->view->subtitle = "Purchase Order Edit";
+        }
+        $this->view->subtitle = "Material Edit";
     }
 
     /**
      * 編集開始
      */
     private function doUpdate($id, $form) {
-        $table = $this->model('Dao_Item');
+        $table = $this->model('Dao_Material');
 
         $item = $table->retrieve($id);
-        $image_url = $item['image_url'];
-        $thumb_url = $item['thumb_url'];
-
-        if( array_key_exists('image_url', $_FILES) && $_FILES['image_url']['size'] ) {
-            $results = $this->doUpload2('image_url', 80, 80, 640, 640);
-            if($results) {
-                $image_url = $results['image_url'];
-                $thumb_url = $results['thumb_url'];
-            }
-        }
-
+		
         $model_id = $table->update(
             array(
-                'genre_id'          => $form->getValue('genre_id'),
-                'category_id'       => $form->getValue('category_id'),
-                'sub_category_id'   => $form->getValue('sub_category_id'),
-                'item_name'         => $form->getValue('item_name'),
-                'content'           => $form->getValue('content'),
-                'likes'             => $form->getValue('likes'),
-                //'reports'         => $form->getValue('reports'),
-                'memo'              => $form->getValue('memo'),
-                'disp_flag'         => $form->getValue('disp_flag'),
-                'image_url'         => $image_url,
-                'thumb_url'         => $thumb_url,
+                'part_no'          	=> $form->getValue('part_no'),
+                'material_desc'     => $form->getValue('material_desc'),
+                'price'   			=> $form->getValue('price'),
+                'bom'         		=> $form->getValue('bom'),
                 'update_date'       => new Zend_Db_Expr('now()'),
             ),
             $table->getAdapter()->quoteInto(
@@ -243,77 +190,53 @@ class Manager_MaterialController extends ManagerBaseController {
         // フォームチェック
         if (! $form->isValid($_POST) ) {
             $this->checkForm($form, $this->view->config, $error_str);
+        }
+
+        $order = $this->model('Logic_Material')->findByNo($form->getValue('part_no'));
+        if($order) {
+            $error_str['part_no'] = 'Already Material Part No.';
+        }
+        
+        if(count($error_str)) {
             $this->view->error_str = $error_str;
             return false;
         }
-
         return true;
     }   
     
     /**
      * 新規登録
      */
-    public function createAction() {/*
+    public function createAction() {
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
-        $form->getElement('genre_id')->setMultiOptions(array('' => '▼選択') + $this->model('Dao_Genre')->getGenreName());
-        $form->getElement('category_id')->setMultiOptions(array('' => '▼選択'));
-        $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択'));
-        
+		
         // エラーチェック
         if ( $this->getRequest()->isPost() ) {
-            $form->setDefaults($_POST);
-            $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-
-            $genre_id = $form->getValue('genre_id');
-            $category = $this->model('Dao_Category')->getCategoryName($genre_id);
-            $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $category);
-
-            $category_id = $form->getValue('category_id');
-            $subcat = $this->model('Dao_SubCategory')->getSubCategoryName($category_id);
-            $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $subcat);
-
             if ( $this->getRequest()->getParam('confirm') ) {
                 if ( $this->createValid($form) ) {
                     $this->doCreate($form);
                 }
             }
-        }*/
-        $this->view->subtitle = "Purchase Order Create";
+        }
+        $this->view->subtitle = "Material Create";
     }
 
     /**
      * 新規登録開始
      */
     private function doCreate($form) {
-        $results = $this->doUpload2('image_url', 80, 80, 640, 640);
-
-        if($results) {
-            $image_url = $results['image_url'];
-            $thumb_url = $results['thumb_url'];
-        } else {
-            $image_url = "";
-            $thumb_url = "";
-        }
-
-            $table = $this->model('Dao_Item');
-            $model_id = $table->insert(
-                array(
-                    'member_id'         => '1',
-                    'genre_id'          => $form->getValue('genre_id'),
-                    'category_id'       => $form->getValue('category_id'),
-                    'sub_category_id'   => $form->getValue('sub_category_id'),
-                    'item_name'         => $form->getValue('item_name'),
-                    'content'           => $form->getValue('content'),
-                    'likes'             => $form->getValue('likes'),
-                    'memo'              => $form->getValue('memo'),
-                    'disp_flag'         => $form->getValue('disp_flag'),
-                    'image_url'         => $image_url,
-                    'thumb_url'         => $thumb_url,
-                    'create_date'       => new Zend_Db_Expr('now()'),
-                )
-            );
+        $table = $this->model('Dao_Material');
+		$model_id = $table->insert(
+			array(
+				'part_no'			=> $form->getValue('part_no'),
+				'material_desc'		=> $form->getValue('material_desc'),
+				'price'				=> $form->getValue('price'),
+				'bom'				=> $form->getValue('bom'),
+				'create_date'       => new Zend_Db_Expr('now()'),
+				'update_date'       => new Zend_Db_Expr('now()'),
+			)
+		);
         $this->gobackList();
     }
 
@@ -384,7 +307,7 @@ class Manager_MaterialController extends ManagerBaseController {
                     return;
                 }
             }
-        }
+        } 
     }
 
     /**
@@ -503,12 +426,12 @@ class Manager_MaterialController extends ManagerBaseController {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
             // データを削除
-            $table = $this->model('Dao_Item');
+            $table = $this->model('Dao_Material');
             $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
             $this->gobackList();
         }
         else {
-            $this->view->error_str = '不正なURLです。';
+            $this->view->error_str = 'It is an illegal URL.';
             $this->_forward('error', 'Error');
             return;
         }

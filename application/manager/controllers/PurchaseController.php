@@ -8,50 +8,48 @@ class Manager_PurchaseController extends ManagerBaseController {
     /**
      * 検索条件作成
      */
-    private function createWherePhrase($order_by = 'id desc') {
-        $table = $this->model('Dao_ViewItemMember');
+    private function createWherePhrase($order_by = 'purchase_date desc') {
+        $table = $this->model('Dao_Purchase');
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // セッションから検索条件を復元する
+        $order_by = array('purchase_date desc', 'id desc');
         $where = array();
         if ($session->post) {
             foreach ((array)$session->post as $key => $value) {
                 // 検索条件セット
-                if ( $key === 'item_name' && $value ) {
-                    $where['item_name like ?'] = '%'.$value.'%';
-                }
-                if ( $key === 'reports' && $value != null ) {
-                    $where['reports = ?'] = $value;
-                }
-                if ( $key === 'disp_flag' && $value != null ) {
-                    $where['disp_flag = ?'] = $value;
-                }
                 if ( $key === 'id' && $value != null ) {
                     $where['id = ?'] = $value;
                 }
-                if ( $key === 'nickname' && $value != null ) {
-                    $where['nickname = ?'] = $value;
+                if ( $key === 'order_no' && $value != null ) {
+                    $where['order_id IN (SELECT id FROM dtb_order WHERE order_no = ?)'] = $value;
                 }
-                if ( $key === 'email' && $value != null ) {
-                    $where['email = ?'] = $value;
+                if ( $key === 'purchase_no' && $value != null ) {
+                    $where['purchase_no LIKE ?'] = '%'.$value.'%';
                 }
-                if ( $key === 'create_date_start' && $value ) {
+                if ( $key === 'article' && $value != null ) {
+                    $where['product_id IN (SELECT id FROM dtb_product WHERE article LIKE ?)'] = '%'.$value.'%';
+                }
+                if ( $key === 'project' && $value != null ) {
+                    $where['product_id IN (SELECT id FROM dtb_product WHERE project LIKE ?)'] = '%'.$value.'%';
+                }
+                if ( $key === 'purchase_type' && $value != null ) {
+                    $where['purchase_type = ?'] = $value;
+                }
+                if ( $key === 'purchase_date_start' && $value != null ) {
+                    $where['date(purchase_date) >= ?'] = $value;
+                }
+                if ( $key === 'purchase_date_end' && $value != null ) {
+                    $where['date(purchase_date) <= ?'] = $value;
+                }
+                if ( $key === 'create_date_start' && $value != null ) {
                     $where['date(create_date) >= ?'] = $value;
                 }
-                if ( $key === 'create_date_end' && $value ) {
+                if ( $key === 'create_date_end' && $value != null ) {
                     $where['date(create_date) <= ?'] = $value;
                 }
-                if ( $key === 'report_date_start' && $value ) {
-                    return $this->model('Dao_ViewReportItem')->createWherePhrase(array(
-                        'date(create_date) >= ?' => $value,
-                    ), 'id desc');
-                    //$where['(select date(create_date) from dtb_item_reports where dtb_item_reports.item_id=view_item_member.id) >= ?'] = $value;
-                }
-                if ( $key === 'report_date_end' && $value ) {
-                    return $this->model('Dao_ViewReportItem')->createWherePhrase(array(
-                        'date(create_date) <= ?' => $value,
-                    ), 'id desc');
-                    //$where['(select date(create_date) from dtb_item_reports where dtb_item_reports.item_id=view_item_member.id) <= ?'] = $value;
+                if ( $key === 'order_by' && $value != null ) {
+                    $order_by = $value;
                 }
             }
         }
@@ -67,18 +65,18 @@ class Manager_PurchaseController extends ManagerBaseController {
             $form->setDefaults($session->post);
         }
     }
-    
 
     /**
      *  カテゴリ一覧
      */
-    public function listAction() {/*
+    public function listAction() {
         // 整列
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
+        $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
+        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['order_by']);
         
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {
@@ -91,12 +89,6 @@ class Manager_PurchaseController extends ManagerBaseController {
                 $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
                 $session->post = $_POST;
                 $this->_redirect(self::NAMESPACE_LIST);
-            } elseif ( $this->getRequest()->getParam('csv') ) {
-                // CSVダウンロード
-                $form->setDefaults($_POST);
-                $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-                $session->post = $_POST;
-                $this->_redirect('/manager/item/csv');
             } else {
                 // 検索条件復元
                 $this->restoreSearchForm($form);
@@ -112,11 +104,17 @@ class Manager_PurchaseController extends ManagerBaseController {
 
         // 表示用カスタマイズ
         $models = array();
+        // print_r($this->view->paginator);
         foreach ($this->view->paginator as $model) {
             $model = $model->toArray();
+            $model['disp_type'] = Dao_Purchase::$statics['purchase_type'][$model['purchase_type']];
+            $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $this_total = $this->db()->fetchRow("SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) as total FROM dtb_purchase_detail WHERE purchase_id = ?", $model['id']);
+            $model['total'] = $this_total["total"];
             array_push($models, $model);
         }
-        $this->view->models = $models;*/
+        $this->view->models = $models;
         $this->view->subtitle = "Purchase List";
     }
 
@@ -138,93 +136,59 @@ class Manager_PurchaseController extends ManagerBaseController {
     /**
      *  カテゴリ詳細
      */
-    public function editAction() {/*
-
-        // フォーム設定読み込み
-        $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
-        $form->getElement('genre_id')->setMultiOptions(array('' => '▼選択') + $this->model('Dao_Genre')->getGenreName());
-
+    public function editAction() {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
-            $model = $this->model('Dao_ViewItemMember')->retrieve($id);
+            // フォーム設定読み込み
+            $form = $this->view->form;
+            $form->getElement('status')->setMultiOptions(array('' => '▼Choose') + Dao_Delivery::$statics['status']);
+
+            $model = $this->model('Dao_Delivery')->retrieve($id);
             
             if (!$model) {
-                $this->view->error_str = '指定されたデータは削除されたか存在しません。';
+                $this->view->error_str = 'Data does not exist or has been deleted.';
                 $this->_forward('error', 'Error');
                 return;
             }
 
             // 初期値設定
-            $item = $model->toArray();
-            $form->setDefaults($item);
-            $this->view->model = $item;
-            
-            $genre = $this->model('Dao_Category')->getCategoryName($item['genre_id']);
-            $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $genre);
-
-            $category = $this->model('Dao_SubCategory')->getSubCategoryName($item['category_id']);
-            $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $category);
+            $model = $model->toArray();
+            $form->setDefaults($model);
+            $form = $this->model("Logic_DeliveryDetail")->getAllAsForm($id, $form);
+            $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $this->view->model = $model;
+            $this->view->models = $this->model("Logic_Delivery")->getDetail($id);
 
             // エラーチェック
             if ( $this->getRequest()->isPost() ) {
-                $form->setDefaults($_POST);
-                $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-
-                $genre_id = $form->getValue('genre_id');
-                $category = $this->model('Dao_Category')->getCategoryName($genre_id);
-                $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $category);
-
-                $category_id = $form->getValue('category_id');
-                $subcat = $this->model('Dao_SubCategory')->getSubCategoryName($category_id);
-                $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $subcat);
-
-                if ( $this->getRequest()->getParam('confirm') ) {
-                    if ( $this->editValid($form) ) {
-                        $this->doUpdate($item['id'], $form);
-                    }
+                if ( $this->editValid($form) ) {
+                    $params = $this->getRequest()->getParams();
+                    $this->model("Logic_DeliveryDetail")->doSave($model['id'], $params);
+                    $this->doUpdate($model['id'], $form);
                 }
             }
         }
         else {
-            $this->view->error_str = '指定されたデータは削除されたか存在しません。';
+            $this->view->error_str = 'Data does not exist or has been deleted.';
             $this->_forward('error', 'Error');
             return;
-        }*/
-        $this->view->subtitle = "Purchase Edit";
+        }
+        $this->view->subtitle = "Delivery Edit";
     }
 
     /**
      * 編集開始
      */
     private function doUpdate($id, $form) {
-        $table = $this->model('Dao_Item');
-
-        $item = $table->retrieve($id);
-        $image_url = $item['image_url'];
-        $thumb_url = $item['thumb_url'];
-
-        if( array_key_exists('image_url', $_FILES) && $_FILES['image_url']['size'] ) {
-            $results = $this->doUpload2('image_url', 80, 80, 640, 640);
-            if($results) {
-                $image_url = $results['image_url'];
-                $thumb_url = $results['thumb_url'];
-            }
-        }
-
+        $table = $this->model('Dao_Delivery');
         $model_id = $table->update(
             array(
-                'genre_id'          => $form->getValue('genre_id'),
-                'category_id'       => $form->getValue('category_id'),
-                'sub_category_id'   => $form->getValue('sub_category_id'),
-                'item_name'         => $form->getValue('item_name'),
-                'content'           => $form->getValue('content'),
-                'likes'             => $form->getValue('likes'),
-                //'reports'         => $form->getValue('reports'),
-                'memo'              => $form->getValue('memo'),
-                'disp_flag'         => $form->getValue('disp_flag'),
-                'image_url'         => $image_url,
-                'thumb_url'         => $thumb_url,
+                'delivery_no'        => $form->getValue('delivery_no'),
+                'delivery_date'        => $form->getValue('delivery_date'),
+                'status'            => $form->getValue('status'),
+                'description'        => $form->getValue('description'),
+                'quantity'             => $form->getValue('quantity'),
                 'update_date'       => new Zend_Db_Expr('now()'),
             ),
             $table->getAdapter()->quoteInto(
@@ -232,6 +196,35 @@ class Manager_PurchaseController extends ManagerBaseController {
             )
         );
         $this->gobackList();
+    }
+
+    public function detailAction() {
+        $id = $this->getRequest()->getParam('id');
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            $model = $this->model('Dao_Purchase')->retrieve($id);
+            
+            if (!$model) {
+                $this->view->error_str = 'Data does not exist or has been deleted.';
+                $this->_forward('error', 'Error');
+                return;
+            }
+
+            // 初期値設定
+            $model = $model->toArray();
+            $order = $this->model('Dao_Order')->retrieve($model['order_id']);
+            $model['order_no'] = $order['order_no'];
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $model['disp_type'] = isset(Dao_Purchase::$statics['purchase_type'][$model['purchase_type']]) ? Dao_Purchase::$statics['purchase_type'][$model['purchase_type']] : "";
+            $this->view->model = $model;
+            
+            $models = $this->model('Logic_Purchase')->getDetail($id);
+            $this->view->models = $models;
+        } else {
+            $this->view->error_str = 'Data does not exist or has been deleted.';
+            $this->_forward('error', 'Error');
+            return;
+        }
+        $this->view->subtitle = "Purchase Detail";
     }
 
     /**
@@ -253,308 +246,120 @@ class Manager_PurchaseController extends ManagerBaseController {
     /**
      * 新規登録
      */
-    public function createAction() {/*
+    public function createAction() {
+        //Zend_Session::namespaceUnset(self::NAMESPACE_LIST);
+        $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
+
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('disp_flag')->setMultiOptions(array('' => '▼選択') + Dao_News::$disp_flag);
-        $form->getElement('genre_id')->setMultiOptions(array('' => '▼選択') + $this->model('Dao_Genre')->getGenreName());
-        $form->getElement('category_id')->setMultiOptions(array('' => '▼選択'));
-        $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択'));
+        $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
+        
+        if ($session->order_list) {
+            $form = $this->model("Logic_DeliveryDetail")->getAllAsForm(null, $form, $session->order_list['id']);
+            $this->view->models = $this->model('Logic_Order')->getDetail($session->order_list['id']);
+            $this->view->order_list = $session->order_list;
+        }
+        
+        if ($session->material_list) {
+            $this->view->material_list = $session->material_list;
+        }
         
         // エラーチェック
         if ( $this->getRequest()->isPost() ) {
-            $form->setDefaults($_POST);
-            $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-
-            $genre_id = $form->getValue('genre_id');
-            $category = $this->model('Dao_Category')->getCategoryName($genre_id);
-            $form->getElement('category_id')->setMultiOptions(array('' => '▼選択') + $category);
-
-            $category_id = $form->getValue('category_id');
-            $subcat = $this->model('Dao_SubCategory')->getSubCategoryName($category_id);
-            $form->getElement('sub_category_id')->setMultiOptions(array('' => '▼選択') + $subcat);
-
-            if ( $this->getRequest()->getParam('confirm') ) {
-                if ( $this->createValid($form) ) {
-                    $this->doCreate($form);
-                }
+            if ( $this->getRequest()->getParam('delete') ) {
+                $form->isValid($_POST);
+                $session->order_list = null;
+                $this->view->order_list = null;
+                $this->view->models = null;
+                $form->setDefault('quantity', 0);
+            } elseif ( $this->getRequest()->getParam('select') ) {
+                //$form->isValid($_POST);
+            } elseif ( $this->createValid($form) ) {
+                $params = $this->getRequest()->getParams();
+                $this->doCreate($form, $params);
             }
-        }*/
-        $this->view->subtitle = "Purchase Create";
+        } else {
+            $session->order_list = null;
+            $this->view->models = $session->order_list;
+            $this->view->order_list = $session->order_list;
+            $this->view->material_list = $session->material_list;
+            $form->setDefault('quantity', 0);
+        }
+        $this->view->subtitle = "Delivery Create";
     }
 
     /**
      * 新規登録開始
      */
-    private function doCreate($form) {
-        $results = $this->doUpload2('image_url', 80, 80, 640, 640);
+    private function doCreate($form, $params) {
+        $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
+        $table = $this->model('Dao_Purchase');
+        $tableDetail = $this->model('Dao_PurchaseDetail');
+        
+        $order = $this->model('Dao_Order')->retrieve($session->order_list['id']);
+        $model_id = $table->insert(
+            array(
+                'purchase_no'       => $form->getValue('purchase_no'),
+                'purchase_date'     => $form->getValue('purchase_date'),
+                'order_id'          => $session->order_list['id'],
+                'product_id'        => $order['product_id'],
+                'purchase_type'     => $form->getValue('purchase_type'),
+                'description'       => $form->getValue('description'),
+                'update_date'       => new Zend_Db_Expr('now()'),
+                'create_date'       => new Zend_Db_Expr('now()'),
+            )
+        );
 
-        if($results) {
-            $image_url = $results['image_url'];
-            $thumb_url = $results['thumb_url'];
-        } else {
-            $image_url = "";
-            $thumb_url = "";
-        }
-
-            $table = $this->model('Dao_Item');
-            $model_id = $table->insert(
+        $i = 0;
+        foreach ($_POST['material_id'] as $key => $value) {
+            $detail_id = $tableDetail->insert(
                 array(
-                    'member_id'         => '1',
-                    'genre_id'          => $form->getValue('genre_id'),
-                    'category_id'       => $form->getValue('category_id'),
-                    'sub_category_id'   => $form->getValue('sub_category_id'),
-                    'item_name'         => $form->getValue('item_name'),
-                    'content'           => $form->getValue('content'),
-                    'likes'             => $form->getValue('likes'),
-                    'memo'              => $form->getValue('memo'),
-                    'disp_flag'         => $form->getValue('disp_flag'),
-                    'image_url'         => $image_url,
-                    'thumb_url'         => $thumb_url,
-                    'create_date'       => new Zend_Db_Expr('now()'),
+                    'purchase_id'   => $model_id,
+                    'material_id'   => $value,
+                    'qty'           => $_POST['qty'][$i],
+                    'bom'           => $_POST['bom'][$i],
+                    'price'         => $_POST['price'][$i],
+                    'update_date'   => new Zend_Db_Expr('now()'),
+                    'create_date'   => new Zend_Db_Expr('now()'),
                 )
             );
+            $i++;
+        }
+        
+        Zend_Session::namespaceUnset(self::NAMESPACE_LIST);
         $this->gobackList();
     }
-
-    /**
-     * CSVアップロード
-     */
-    public function csvuploadAction() {
-        $this->view->subtitle = "アイテム一括登録";
-
-        $form = $this->view->form;
-        if ($this->getRequest()->isPost()) {
-            if ($this->getRequest()->getParam('upload') ){
-                if (array_key_exists("filecsv", $_FILES) &&
-                    file_exists($_FILES["filecsv"]["tmp_name"]) &&
-                    filesize($_FILES["filecsv"]["tmp_name"]))
-                {
-                    if ($this->importcsv($_FILES["filecsv"]["tmp_name"], "")) {
-                        $this->_forward('csvcomplete');
-                        return;
-                    }
-                } else {
-                    $this->view->error_str = "CSVファイルを選択してください。";
-                    return;
-                }
-            }
-        }
-    }
-
-    /**
-     * ZIPアップロード
-     */
-    public function zipuploadAction() {
-        $this->view->subtitle = "アイテム一括登録";
-        $form = $this->view->form;
-        if ($this->getRequest()->isPost()) {
-            if ($this->getRequest()->getParam('upload') ){
-                // アップロードファイルサイズエラー
-                if (empty($_POST) || $_FILES['filezip']['error'] == UPLOAD_ERR_INI_SIZE) {
-                    $max = ini_get('upload_max_filesize');
-                    $this->view->error_str = "アップロードに失敗しました。ファイルサイズを{$max}バイトまでにしてください";
-                    return;
-                }
-
-                if (array_key_exists("filezip", $_FILES) &&
-                    file_exists($_FILES["filezip"]["tmp_name"]) &&
-                    filesize($_FILES["filezip"]["tmp_name"]))
-                {
-                    // ZIPファイル解析
-                    $logic = new Logic_Zipfile();
-                    $result = $logic->doUpload('filezip');
-                    if ($result) {
-                        // 画像が多すぎる
-                        if (count($result) > 100) {
-                            $this->view->error_str = "アップロードに失敗しました。画像は100個までにしてください";
-                            return;
-                        }
-                        // インポート開始
-                        if ($this->importcsv($logic->csv_file, $result)) {
-                            $this->_forward('csvcomplete');
-                            return;
-                        }
-                    } else {
-                        $this->view->error_str = "アップロードに失敗しました。";
-                        return;
-                    }
-                } else {
-                    $this->view->error_str = "ZIPファイルを選択してください。";
-                    return;
-                }
-            }
-        }
-    }
-
-    /**
-     * CSVインポート
-     */
-    public function importcsv($fn, $file_hash) {
-        $form = $this->view->form;
-
-        $inserted = 0;
-        $updated  = 0;
-
-        $fpointer = fopen($fn, "r");
-        if ($fpointer) {
-            $lines = 1;
-            while (false != ($data = Util_Csv::fgetcsv_reg($fpointer))) {
-                // 
-                if ($lines == 1) {
-                    $lines = 2;
-                    continue;
-                }
-
-                // 列数のチェック
-                if (count($data) != 11 && count($data) != 12) {
-                    $this->db()->rollback();
-                    $this->db()->beginTransaction();
-                    $this->view->error_str = "列数を確認してください。";
-                    return false;
-                }
-
-                // データ投入用データの生成（文字コード変換含む）
-                $datas = array(
-                    'member_id'         => mb_convert_encoding($data[1], 'UTF-8', 'SJIS-win'),
-                    'genre_id'          => mb_convert_encoding($data[2], 'UTF-8', 'SJIS-win'),
-                    'category_id'       => mb_convert_encoding($data[3], 'UTF-8', 'SJIS-win'),
-                    'sub_category_id'   => mb_convert_encoding($data[4], 'UTF-8', 'SJIS-win'),
-                    'item_name'         => mb_convert_encoding($data[5], 'UTF-8', 'SJIS-win'),
-                    'content'           => mb_convert_encoding($data[6], 'UTF-8', 'SJIS-win'),
-                    'buy_url'           => mb_convert_encoding($data[7], 'UTF-8', 'SJIS-win'),
-                    'likes'             => mb_convert_encoding($data[8], 'UTF-8', 'SJIS-win'),
-                    'memo'              => mb_convert_encoding($data[9], 'UTF-8', 'SJIS-win'),
-                    'disp_flag'         => mb_convert_encoding($data[10], 'UTF-8', 'SJIS-win'),
-                    'create_date'       => new Zend_Db_Expr('now()'),
-                    'update_date'       => new Zend_Db_Expr('now()'),
-                ); 
-
-                // ファイルアップロード
-                if ($data[11] && $file_hash && isset($file_hash[$data[11]])) {
-                    $results = $this->doUpload3($file_hash[$data[11]], 80, 80, 640, 640);
-                    if($results) {
-                        $datas['image_url'] = $results['image_url'];
-                        $datas['thumb_url'] = $results['thumb_url'];
-                    }
-                }
-
-                // エラーチェック
-                $_POST['member_id']         = $datas['member_id'];
-                $_POST['genre_id']          = $datas['genre_id'];
-                $_POST['category_id']       = $datas['category_id'];
-                $_POST['sub_category_id']   = $datas['sub_category_id'];
-                $_POST['item_name']         = $datas['item_name'];
-                $_POST['content']           = $datas['content'];
-                $_POST['buy_url']           = $datas['buy_url'];
-                $_POST['likes']             = $datas['likes'];
-                $_POST['memo']              = $datas['memo'];
-                $_POST['disp_flag']         = $datas['disp_flag'];
-
-                if ($form->isValid($_POST)) {
-                    if ($data[0]) {
-                        $this->model('Dao_Item')->update($datas, "id = ".intval($data[0]));
-                        $updated++;
-                    } else {
-                        $item_id = $this->model('Dao_Item')->insert($datas);
-                        $inserted++;
-                    }
-                } else {
-                    $this->db()->rollback();
-                    $this->db()->beginTransaction();
-                    
-                    $errors = array();
-                    $this->checkForm($form, $this->view->config, $errors);
-
-                    $error_str = "CSVファイルの内容に不備があります。";
-                    foreach ($errors as $key => $value) {
-                        $error_str .= "<br /><br />[".$lines."行目]".$value.":".$form->getValue($key);
-                    }
-                    $this->view->error_str = $error_str;
-
-                    return false;
-                }
-
-                $lines++;
-            }
-        } else {
-            $this->view->error_str = "ファイルを開けませんでした。";
-            return false;
-        } 
-        fclose($fpointer);
-
-        $this->view->inserted = $inserted;
-        $this->view->updated  = $updated;
-
-        return true;
-    }
-
-    /**
-     * CSVアップロード完了
-     */
-    public function csvcompleteAction() {
-        $this->view->subtitle = "アイテム一括登録";
-    }
-
+    
     /**
      * 削除
      */
     public function deleteAction() {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
-            // データを削除
-            $table = $this->model('Dao_Item');
+			//get delivery detail
+            $model = $this->model('Dao_Delivery')->retrieve($id);
+            $model = $model->toArray();
+			
+            // delete delivery
+            $table = $this->model('Dao_Delivery');
             $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
+			
+			//delete delivery detail
+            $this->db()->query(
+                "DELETE FROM `dtb_delivery_detail` WHERE `delivery_id` = ?", $id
+            );
+			
+			//update order status
+            $this->db()->query(
+                "UPDATE `dtb_order` SET `status_flag` = 0 WHERE `id` = ?", $model["order_id"]
+            );
+			
             $this->gobackList();
         }
         else {
-            $this->view->error_str = '不正なURLです。';
+            $this->view->error_str = 'It is an illegal URL.';
             $this->_forward('error', 'Error');
             return;
-        }
-    }
-
-    /**
-     * CSVダウンロード
-     */
-    public function csvAction() {
-        // リミッター解除
-        ini_set('memory_limit','-1');
-
-        $models = $this->model('Dao_Item')->fetchAll();
-
-        // ビューを無効にする
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
-        // ヘッダ出力
-        header('Content-type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=item' . time() . '.csv');
-
-        $arrCsvOutputCols = array('id','member_id','genre_id','category_id','sub_category_id','item_name','content','buy_url','likes','memo','disp_flag');
-
-        $arrCsvOutputTitle = mb_convert_encoding('"管理ID","会員ID","ジャンルID","カテゴリID","サブカテゴリID","アイテム名","内容","購入先URL","cawaiiね！数","管理者メモ","表示フラグ"', 'SJIS-win', 'UTF-8');
-
-        // CSV出力
-        echo $arrCsvOutputTitle . "\r\n";
-        foreach ($models as $model) {
-            $item = $model->toArray();
-            $cols = array();
-            foreach ($arrCsvOutputCols as $col) {
-                if ($col) {
-                    // 改行をトル
-                    $value = $item[$col];
-                    $value = str_replace("\r", "", $value);
-                    $value = str_replace("\n", "", $value);
-                    $value = str_replace("\"", "\"\"", $value);
-                    
-                    // 列ごとに整形
-                    array_push($cols, '"' . $value . '"');
-                } else {
-                    array_push($cols, '');
-                }
-            }
-            echo mb_convert_encoding(join(",", $cols), 'SJIS-win', 'UTF-8') . "\r\n";
         }
     }
 }

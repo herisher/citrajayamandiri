@@ -4,6 +4,7 @@
  */
 class Manager_RecapController extends ManagerBaseController {
     const NAMESPACE_LIST = '/manager/recap/list';
+	const NAMESPACE_DELIVERY = '/manager/recap/delivery';
 
     /**
      * 検索条件作成
@@ -19,6 +20,12 @@ class Manager_RecapController extends ManagerBaseController {
                 // 検索条件セット
                 if ( $key === 'id' && $value != null ) {
                     $where['id = ?'] = $value;
+                }
+                if ( $key === 'id_start' && $value != null ) {
+                    $where['id >= ?'] = $value;
+                }
+                if ( $key === 'id_end' && $value != null ) {
+                    $where['id <= ?'] = $value;
                 }
                 if ( $key === 'invoice_no' && $value != null ) {
                     $where['invoice_no LIKE ?'] = '%'.$value.'%';
@@ -38,11 +45,76 @@ class Manager_RecapController extends ManagerBaseController {
                 if ( $key === 'status' && $value != null ) {
                     $where['status = ?'] = $value;
                 }
+                if ( $key === 'payment_status' && $value != null ) {
+                    $where['payment_status = ?'] = $value;
+                }
                 if ( $key === 'invoice_date_start' && $value != null ) {
                     $where['date(invoice_date) >= ?'] = $value;
                 }
                 if ( $key === 'invoice_date_end' && $value != null ) {
                     $where['date(invoice_date) <= ?'] = $value;
+                }
+                if ( $key === 'due_date_start' && $value != null ) {
+                    $where['date(due_date) >= ?'] = $value;
+                }
+                if ( $key === 'due_date_end' && $value != null ) {
+                    $where['date(due_date) <= ?'] = $value;
+                }
+                if ( $key === 'order_by' && $value != null ) {
+                    $order_by = $value;
+                }
+            }
+        }
+        return $table->createWherePhrase($where, $order_by);
+    }
+
+    /**
+     * 検索条件作成
+     */
+    private function createWherePhrase2($order_by = 'id desc') {
+        $table = $this->model('Dao_Delivery');
+        $session = new Zend_Session_Namespace(self::NAMESPACE_DELIVERY);
+
+        // セッションから検索条件を復元する
+        $where = array();
+        if ($session->post) {
+            foreach ((array)$session->post as $key => $value) {
+                // 検索条件セット
+                if ( $key === 'id' && $value != null ) {
+                    $where['id = ?'] = $value;
+                }
+                if ( $key === 'id_start' && $value != null ) {
+                    $where['id >= ?'] = $value;
+                }
+                if ( $key === 'id_end' && $value != null ) {
+                    $where['id <= ?'] = $value;
+                }
+                if ( $key === 'invoice_no' && $value != null ) {
+                    $where['invoice_no LIKE ?'] = '%'.$value.'%';
+                }
+                if ( $key === 'delivery_no' && $value != null ) {
+                    $where['delivery_id IN (SELECT id FROM dtb_delivery WHERE delivery_no LIKE ?)'] = '%'.$value.'%';
+                }
+                if ( $key === 'order_no' && $value != null ) {
+                    $where['order_id IN (SELECT id FROM dtb_order WHERE order_no = ?)'] = $value;
+                }
+                if ( $key === 'article' && $value != null ) {
+                    $where['product_id IN (SELECT id FROM dtb_product WHERE article LIKE ?)'] = '%'.$value.'%';
+                }
+                if ( $key === 'project' && $value != null ) {
+                    $where['product_id IN (SELECT id FROM dtb_product WHERE project LIKE ?)'] = '%'.$value.'%';
+                }
+                if ( $key === 'status' && $value != null ) {
+                    $where['status = ?'] = $value;
+                }
+                if ( $key === 'payment_status' && $value != null ) {
+                    $where['payment_status = ?'] = $value;
+                }
+                if ( $key === 'invoice_date_start' && $value != null ) {
+                    $where['date(delivery_date) >= ?'] = $value;
+                }
+                if ( $key === 'invoice_date_end' && $value != null ) {
+                    $where['date(delivery_date) <= ?'] = $value;
                 }
                 if ( $key === 'due_date_start' && $value != null ) {
                     $where['date(due_date) >= ?'] = $value;
@@ -73,6 +145,20 @@ class Manager_RecapController extends ManagerBaseController {
     }
 
     /**
+     * 検索条件復元
+     */
+    private function restoreSearchForm2($form) {
+        $session = new Zend_Session_Namespace(self::NAMESPACE_DELIVERY);
+        if ($session->post) {
+            $form->setDefaults($session->post);
+        } else {
+            $session->post['invoice_date_start'] = date("Y-01-01");
+            $session->post['invoice_date_end'] = date("Y-12-31");
+            $form->setDefaults($session->post);
+        }
+    }
+
+    /**
      *  カテゴリ一覧
      */
     public function listAction() {
@@ -82,6 +168,7 @@ class Manager_RecapController extends ManagerBaseController {
         // フォーム設定読み込み
         $form = $this->view->form;
         $form->getElement('status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['status']);
+        $form->getElement('payment_status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['payment_status']);
         $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['order_by']);
         
         // 検索・クリア
@@ -104,6 +191,7 @@ class Manager_RecapController extends ManagerBaseController {
             $this->restoreSearchForm($form);
         }
         
+        //print_r($this->createWherePhrase()->__toString());
         $mod = $this->db()->fetchAll(
             $this->createWherePhrase()
         );
@@ -115,6 +203,7 @@ class Manager_RecapController extends ManagerBaseController {
         foreach ($mod as $model) {
             //$model = $model->toArray();
             $model['disp_status'] = Dao_Invoice::$statics['status'][$model['status']];
+            $model['disp_payment_status'] = Dao_Invoice::$statics['payment_status'][$model['payment_status']];
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
             $model['delivery'] = $this->model('Dao_Delivery')->retrieve($model['delivery_id']);
@@ -127,6 +216,61 @@ class Manager_RecapController extends ManagerBaseController {
         $this->view->total_with_tax = $total_with_tax;
         $this->view->models = $models;
         $this->view->subtitle = "Recapitulation List";
+    }
+
+    /**
+     *  カテゴリ一覧
+     */
+    public function deliveryAction() {
+        // 整列
+        $session = new Zend_Session_Namespace(self::NAMESPACE_DELIVERY);
+
+        // フォーム設定読み込み
+        $form = $this->view->form;
+        $form->getElement('status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['status']);
+        $form->getElement('payment_status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['payment_status']);
+        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['order_by']);
+        
+        // 検索・クリア
+        if ( $this->getRequest()->isPost() ) {
+            if ( $this->getRequest()->getParam('clear') ) {
+                // クリア
+                Zend_Session::namespaceUnset(self::NAMESPACE_DELIVERY);
+            } elseif ( $this->getRequest()->getParam('search') ) {
+                // 検索開始
+                $form->setDefaults($_POST);
+                $session = new Zend_Session_Namespace(self::NAMESPACE_DELIVERY);
+                $session->post = $_POST;
+                $this->_redirect(self::NAMESPACE_DELIVERY);
+            } else {
+                // 検索条件復元
+                $this->restoreSearchForm2($form);
+            }
+        } else {
+            // 検索条件復元
+            $this->restoreSearchForm2($form);
+        }
+        
+        //print_r($this->createWherePhrase2()->__toString());exit;
+        $mod = $this->db()->fetchAll(
+            $this->createWherePhrase2()
+        );
+
+        // 表示用カスタマイズ
+        $models = array();
+        $total = 0;
+        $total_with_tax = 0;
+        foreach ($mod as $model) {
+            $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $total += $model['quantity'];
+            array_push($models, $model);
+        }
+        
+        $this->view->total = $total;
+        $this->view->total_with_tax = $total_with_tax;
+        $this->view->models = $models;
+        $this->view->subtitle = "Recapitulation Delivery List";
     }
 
     /**
@@ -540,7 +684,7 @@ class Manager_RecapController extends ManagerBaseController {
         header('Content-type: application/octet-stream');
         header('Content-Disposition: attachment; filename=item' . time() . '.csv');
 
-        $arrCsvOutputCols = array('id','member_id','genre_id','category_id','sub_category_id','item_name','content','buy_url','likes','memo','disp_flag');
+        $arrCsvOutputCols = array('invoice_no','invoice_date','genre_id','category_id','sub_category_id','item_name','content','buy_url','likes','memo','disp_flag');
 
         $arrCsvOutputTitle = mb_convert_encoding('"管理ID","会員ID","ジャンルID","カテゴリID","サブカテゴリID","アイテム名","内容","購入先URL","cawaiiね！数","管理者メモ","表示フラグ"', 'SJIS-win', 'UTF-8');
 

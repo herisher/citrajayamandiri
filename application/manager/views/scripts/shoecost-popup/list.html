@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex,nofollow" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="copyright" content="CV.CJM" />
+
+<!--ページ値====================-->
+
+<title>CV. Citra Jaya Mandiri | Admin</title>
+
+<!--ページ値====================-->
+
+<link rel="stylesheet" type="text/css" href="/css/manager.css" media="all">
+
+<script type="text/javascript">
+<?php if($this->need_close): ?>
+//<![CDATA[
+window.close();
+window.opener.document.form2.submit();
+//]]>
+<?php endif; ?>
+
+function doSelect(id) {
+  document.form2.action = "/manager/shoecost-popup/list?select="+id;
+  document.form2.submit();
+}
+
+</script>
+
+</head>
+<body>
+<div id="area">
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+      Product List
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/shoecost-popup/list">
+        <table width="100%" border="0" cellpadding="5">
+          <tr>
+            <td width="30%" class="color2">ID</td>
+            <td width="70%" class="color_gray" colspan="3">
+				<?= $this->form->getElement('id') ?>
+            </td>
+          </tr>
+          <tr>
+            <td width="30%" class="color2">Project</td>
+            <td width="70%" class="color_gray" colspan="3">
+                <?= $this->form->getElement('project') ?>
+            </td>
+          </tr>
+          <tr>
+            <td width="30%" class="color2">Article</td>
+            <td width="70%" class="color_gray" colspan="3">
+                <?= $this->form->getElement('article') ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" align="center">
+              <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;
+              <input type="submit" class="input_b2" name="clear" value="Clear" />
+            </td>
+          </tr>
+        </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/shoecost-popup/list">
+      <?= $this->render('pager.html') ?>
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Select</td>
+        </tr>
+<?php foreach ($this->models as $model) : ?>
+        <tr>
+          <td align="center"><?= $model['id'] ?></td>
+          <td align="center"><?= $model['project'] ?></td>
+          <td align="left"><?= $model['article'] ?></td>
+          <td align="left"><input type="button" onClick="doSelect(<?=$model['id']?>)" class="input_b2" name="select" value="Select"></td>
+        </tr>
+<?php endforeach ; ?>
+      </table>
+      </form>
+    </div>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->
+
+</body>
+</html>

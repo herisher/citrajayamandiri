@@ -21,7 +21,7 @@
 
     <!--検索フォーム-->
     <div class="contents_space">
-      <form name="form2" method="post" action="/manager/recap/list">
+      <form name="form2" method="post" action="/manager/recap/delivery">
       <table width="100%" border="0" cellpadding="5">
         <tr>
           <td width="30%" class="color2">ID</td>
@@ -105,7 +105,7 @@
       </form>
 
       <!--ページャ
-      <form name="form1" method="post" action="/manager/invoice/list">
+      <form name="form1" method="post" action="/manager/recap/delivery">
       <?//= $this->render('pager.html') ?>
       </form>
         -->
@@ -114,13 +114,12 @@
         <tr align="center">
           <td class="color">No.</td>
           <td class="color">ID</td>
-          <td class="color">Invoice No.</td>
-          <td class="color">Invoice Date</td>
-          <td class="color">Due Date</td>
+          <td class="color">Delivery No.</td>
+          <td class="color">Delivery Date</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>		  
           <td class="color">Qty</td>
-          <td class="color">Total</td>
-          <td class="color">Total with tax</td>
-          <td class="color">Payment Status</td>
           <td class="color">Edit</td>
           <td class="color">Print</td>
           <td class="color">Delete</td>
@@ -129,13 +128,12 @@
         <tr>
           <td align="center"><?= $i++ ?></td>
           <td align="center"><?= $model['id'] ?></td>
-          <td align="left"><?= $model['invoice_no'] ?></td>
-          <td align="center"><?= $model['invoice_date'] ?></td>
-          <td align="left"><?= $model['due_date'] ?></td>
+          <td align="left"><?= $model['delivery_no'] ?></td>
+          <td align="center"><?= $model['delivery_date'] ?></td>
+          <td align="left"><a href="/manager/order/edit/id/<?=$model['order_id']?>"><?= $model['order']['order_no'] ?></a></td>
+          <td align="left"><?= h($model['product']['project']) ?></td>
+          <td align="left"><?= $model['product']['article'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="right"><?= number_format($model['total_min_discount']) ?></td>
-          <td align="right"><?= number_format($model['total_include_tax']) ?></td>
-          <td align="right"><?= $model['disp_payment_status'] ?></td>
           <td align="center"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>">Edit</a></td>
           <td align="center"><a href="/manager/invoice/print/id/<?= $model['id'] ?>">Print</a></td>
           <td align="center">
@@ -144,9 +142,8 @@
         </tr>
 <?php endforeach ; ?>
         <tr>
-          <td colspan="5" align="center">TOTAL</td>
+          <td colspan="7" align="center">TOTAL</td>
           <td align="right"><?= number_format($this->total) ?></td>
-          <td align="right"><?= number_format($this->total_with_tax) ?></td>
           <td colspan="3" align="right"></td>
         </tr>
       </table>
