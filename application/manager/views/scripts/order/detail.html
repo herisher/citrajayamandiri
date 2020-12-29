@@ -233,7 +233,9 @@
           </td>
         </tr>
       </table>
-      <?php endif; ?>
+      <?php else :
+            $all_total_invoice = 0;
+            endif; ?>
 
       <br>
       <!-- purchase list -->
@@ -243,43 +245,34 @@
         <tr align="center">
           <td class="color">ID</td>
           <td class="color">Purchase No.</td>
-          <!-- TODO -->
-          <td class="color">Total</td>
+          <td class="color">Purchase Date</td>
+          <td class="color">Total Inc. Tax (Rp.)</td>
         </tr>
         <?php 
-            $total = 0;
+            $all_total_purchase = 0;
             foreach ($this->purchase as $model) : ?>
         <tr>
           <td align="left"><?= $model['id'] ?></td>
-          <td align="left"><a href="/manager/purchase/edit/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
-          <!-- TODO -->
+          <td align="left"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
+          <td align="left"><?= $model['purchase_date'] ?></td>
           <td align="right"><?= number_format($model['total']) ?></td>
         </tr>
         <?php 
-            $total += $model['total'];
-            endforeach ; 
-            //TODO
-            $ppn = $total/10;
-            $all_total_purchase = $total + $ppn;
+            $all_total_purchase += $model['total'];
+            endforeach ;
         ?>
         <tr>
-          <td class="color2" colspan="4">Total</td>
-          <td class="color_gray" align="right">
-            <?= number_format($total) ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2" colspan="4">Total + PPn</td>
+          <td class="color2" colspan="3">Total</td>
           <td class="color_gray" align="right">
             <?= number_format($all_total_purchase) ?>
           </td>
         </tr>
       </table>
-      <?php endif; 
-            $all_total_purchase = 0;?>
+      <?php else :
+            $all_total_purchase = 0;
+            endif; ?>
 
       <br>
-      <!-- TODO -->
       TRANSFER = <?= number_format($all_total_invoice - $all_total_purchase) ?>
   </div>
 </div>

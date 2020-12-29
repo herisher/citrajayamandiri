@@ -255,7 +255,7 @@ class Manager_PurchaseController extends ManagerBaseController {
         $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
         
         if ($session->order_list) {
-            $form = $this->model("Logic_DeliveryDetail")->getAllAsForm(null, $form, $session->order_list['id']);
+            // $form = $this->model("Logic_DeliveryDetail")->getAllAsForm(null, $form, $session->order_list['id']);
             $this->view->models = $this->model('Logic_Order')->getDetail($session->order_list['id']);
             $this->view->order_list = $session->order_list;
         }
@@ -285,7 +285,7 @@ class Manager_PurchaseController extends ManagerBaseController {
             $this->view->material_list = $session->material_list;
             $form->setDefault('quantity', 0);
         }
-        $this->view->subtitle = "Delivery Create";
+        $this->view->subtitle = "Purchase Create";
     }
 
     /**
@@ -337,21 +337,16 @@ class Manager_PurchaseController extends ManagerBaseController {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
 			//get delivery detail
-            $model = $this->model('Dao_Delivery')->retrieve($id);
+            $model = $this->model('Dao_Purchase')->retrieve($id);
             $model = $model->toArray();
 			
             // delete delivery
-            $table = $this->model('Dao_Delivery');
+            $table = $this->model('Dao_Purchase');
             $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
 			
 			//delete delivery detail
             $this->db()->query(
-                "DELETE FROM `dtb_delivery_detail` WHERE `delivery_id` = ?", $id
-            );
-			
-			//update order status
-            $this->db()->query(
-                "UPDATE `dtb_order` SET `status_flag` = 0 WHERE `id` = ?", $model["order_id"]
+                "DELETE FROM `dtb_purchase_detail` WHERE `purchase_id` = ?", $id
             );
 			
             $this->gobackList();
