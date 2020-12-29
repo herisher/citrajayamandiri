@@ -113,32 +113,87 @@
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
           <td class="color">No.</td>
-          <td class="color">ID</td>
+          <td class="color">Order No.</td>
           <td class="color">Invoice No.</td>
-          <td class="color">Invoice Date</td>
           <td class="color">Due Date</td>
           <td class="color">Qty</td>
-          <td class="color">Total</td>
-          <td class="color">Total with tax</td>
-          <td class="color">Payment Status</td>
+          <td class="color">Total Invoice (inc.tax)</td>
+          <td class="color">Total Purchase (inc.tax)</td>
+          <td class="color">Balance</td>
         </tr>
-<?php $i=1;foreach ($this->models as $model) : ?>
+        <?php 
+            $i=1;
+            $end_balance = 0;
+            $qty = 0;
+            $total_inv = 0;
+            $total_purc = 0;
+            foreach ($this->models as $model) : 
+        ?>
         <tr>
           <td align="center"><?= $i++ ?></td>
-          <td align="center"><?= $model['id'] ?></td>
+          <td align="center"><?= $model['order']['order_no'] ?></td>
           <td align="left"><?= $model['invoice_no'] ?></td>
-          <td align="center"><?= $model['invoice_date'] ?></td>
           <td align="left"><?= $model['due_date'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="right"><?= number_format($model['total_min_discount']) ?></td>
           <td align="right"><?= number_format($model['total_include_tax']) ?></td>
-          <td align="right"><?= $model['disp_payment_status'] ?></td>
+          <td align="right">-</td>
+          <td align="right">-</td>
         </tr>
-<?php endforeach ; ?>
+        <?php
+            $total_purchase = 0;
+            $balance = $model['total_include_tax'];
+            if( count($model['purchase']) ) :
+              $j = 1;
+        ?>
         <tr>
-          <td colspan="6" align="center">TOTAL</td>
-          <td align="right"><?= number_format($this->total) ?></td>
-          <td align="right"><?= number_format($this->total_with_tax) ?></td>
+          <td align="center">-</td>
+          <td align="center">-</td>
+          <td>Purchase List</td>
+          <td align="center">-</td>
+          <td align="center">-</td>
+          <td align="right">-</td>
+          <td align="right">-</td>
+          <td align="right">-</td>
+        </tr>
+        <?php foreach( $model['purchase'] as $purchase ) :
+              $total_purchase += $purchase['total'];
+        ?>
+        <tr>
+          <td align="center">-</td>
+          <td align="center"><?= $j++ ?></td>
+          <td align="left"><?= $purchase['purchase_no'] ?></td>
+          <td align="left"><?= $purchase['purchase_date'] ?></td>
+          <td align="center">-</td>
+          <td align="right">-</td>
+          <td align="right"><?= number_format($purchase['total']) ?></td>
+          <td align="right">-</td>
+        </tr>
+        <?php 
+            endforeach;
+            $balance = $model['total_include_tax']-$total_purchase;
+        ?>
+        <?php endif; ?>
+        <tr>
+          <td align="center" style="border-bottom: solid 1px #000000;">-</td>
+          <td align="center" style="border-bottom: solid 1px #000000;">-</td>
+          <td style="border-bottom: solid 1px #000000;">Total Purchase</td>
+          <td align="center" style="border-bottom: solid 1px #000000;">-</td>
+          <td align="center" style="border-bottom: solid 1px #000000;">-</td>
+          <td align="right" style="border-bottom: solid 1px #000000;">-</td>
+          <td align="right" style="border-bottom: solid 1px #000000;"><?= ($total_purchase) ? number_format($total_purchase): '-' ?></td>
+          <td align="right" style="border-bottom: solid 1px #000000;"><?= number_format($balance) ?></td>
+        </tr>
+        <?php $end_balance += $balance; ?>
+        <?php $qty += $model['quantity']; ?>
+        <?php $total_inv += $model['total_include_tax']; ?>
+        <?php $total_purc += $total_purchase; ?>
+        <?php endforeach ; ?>
+        <tr>
+          <td colspan="4" align="center">TOTAL</td>
+          <td align="right"><?= number_format($qty) ?></td>
+          <td align="right"><?= number_format($total_inv) ?></td>
+          <td align="right"><?= number_format($total_purc) ?></td>
+          <td align="right"><?= number_format($end_balance) ?></td>
         </tr>
       </table>
 

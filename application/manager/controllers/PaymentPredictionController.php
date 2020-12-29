@@ -123,22 +123,23 @@ class Manager_PaymentPredictionController extends ManagerBaseController {
         $models = array();
         $total = 0;
         $total_with_tax = 0;
+        $order_arr = array();
         foreach ($mod as $model) {
             //$model = $model->toArray();
-            $model['disp_status'] = Dao_Invoice::$statics['status'][$model['status']];
-            $model['disp_payment_status'] = Dao_Invoice::$statics['payment_status'][$model['payment_status']];
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
-            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
-            $model['delivery'] = $this->model('Dao_Delivery')->retrieve($model['delivery_id']);
-            $total += $model['total_min_discount'];
-            $total_with_tax += $model['total_include_tax'];
+
+            $model['purchase'] = array();
+            if( !in_array($model['order_id'], $order_arr) ) {
+                $model['purchase'] = $this->model('Logic_Purchase')->getAllByOrderId($model['order_id']);
+                $order_arr[] = $model['order_id'];
+            }
             array_push($models, $model);
         }
         
         $this->view->total = $total;
         $this->view->total_with_tax = $total_with_tax;
         $this->view->models = $models;
-        $this->view->subtitle = "Recapitulation List";
+        $this->view->subtitle = "Payment Prediction List";
     }
 
 }
