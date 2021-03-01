@@ -51,7 +51,7 @@ $(document).ready(function(){
     </tr>
     <tr>
         <td>Invoice No. : <?= $this->rs["invoice_no"] ?></td>
-        <td>&nbsp;</td>
+        <td>Invoice Date : <?= date('j M Y',strtotime($this->rs["invoice_date"])) ?></td>
     </tr>
     <tr>
         <td colspan="2">
@@ -112,7 +112,7 @@ $(document).ready(function(){
     <tr>
         <td>&nbsp;</td>
         <td align="center"><span class="auto-style3"><br/><br/>Titin Muslimah</span><br/>
-        Pemilik</td>
+        Direktur</td>
     </tr>
 </table>
 

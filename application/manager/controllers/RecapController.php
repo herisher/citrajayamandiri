@@ -198,6 +198,7 @@ class Manager_RecapController extends ManagerBaseController {
 
         // 表示用カスタマイズ
         $models = array();
+        $qty = 0;
         $total = 0;
         $total_with_tax = 0;
         foreach ($mod as $model) {
@@ -207,11 +208,13 @@ class Manager_RecapController extends ManagerBaseController {
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
             $model['delivery'] = $this->model('Dao_Delivery')->retrieve($model['delivery_id']);
+            $qty += $model['quantity'];
             $total += $model['total_min_discount'];
             $total_with_tax += $model['total_include_tax'];
             array_push($models, $model);
         }
         
+        $this->view->total_qty = $qty;
         $this->view->total = $total;
         $this->view->total_with_tax = $total_with_tax;
         $this->view->models = $models;

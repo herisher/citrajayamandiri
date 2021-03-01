@@ -8,7 +8,7 @@ class Manager_PaymentPredictionController extends ManagerBaseController {
     /**
      * 検索条件作成
      */
-    private function createWherePhrase($order_by = 'id desc') {
+    private function createWherePhrase($order_by = 'id asc') {
         $table = $this->model('Dao_Invoice');
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
