@@ -11,10 +11,11 @@ class Dao_Order extends Dao_Base {
      */
     public static $statics = array(
         'status_flag' => array(
-            '0' => 'Process',    //include : material purchase, cutting, sewing, finishing
-            '1' => 'Delivery Finish',    //include : all goods already sent to BATA
+            '4' => 'Waiting Material',  //include : No Material
+            '0' => 'Process',           //include : material purchase, cutting, sewing, finishing
+            '1' => 'Delivery Finish',   //include : all goods already sent to BATA
             '2' => 'Invoice Finish',    //include : all invoice already sent to BATA
-            '3' => 'Returned',    //include : order is returned due to price changes or taken over by another company
+            '3' => 'Returned',          //include : order is returned due to price changes or taken over by 
         ),//not yet implemented
         'payment_flag' => array(
             '0' => 'Unpaid',
@@ -26,7 +27,8 @@ class Dao_Order extends Dao_Base {
         ),
         'order_by' => array(
             'plan desc' => 'plan',
-            'order_no desc' => 'order_no'
+            'order_no desc' => 'order no',
+            'update_date desc' => 'update date'
         ),
     );
 }

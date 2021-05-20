@@ -1,0 +1,139 @@
+<?= $this->render('sidemenu/recap.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#purchase_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#purchase_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/recap-purchase/index">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">ID</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Purchase No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('purchase_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Article</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('article') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Project</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('project') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Material</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('material') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Type</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('purchase_type') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Purchase Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('purchase_date_start') ?> - <?= $this->form->getElement('purchase_date_end') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('create_date_start') ?> - <?= $this->form->getElement('create_date_end') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Order By</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_by') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="clear" value="Clear" />
+          </td>
+        </tr>
+      </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/recap-purchase/index">
+      <?= $this->render('pager.html') ?>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">No</td>
+          <td class="color">Purchase Date</td>
+          <td class="color">Purchase No.</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Material Name</td>
+          <td class="color">Qty</td>
+          <td class="color">Price (Rp)</td>
+          <td class="color">Total</td>
+          <td class="color">Total Inc. Tax (Rp)</td>
+          <td class="color">Type</td>
+        </tr>
+<?php $i=1; foreach ($this->models as $model) : ?>
+        <tr>
+          <td align="left"><?= $i++ ?></td>
+          <td align="left"><?= $model['purchase']['purchase_date'] ?></td>
+          <td align="left"><a href="/manager/purchase/detail/id/<?=$model['purchase']['id']?>" target="_blank"><?= $model['purchase']['purchase_no'] ?></a></td>
+          <td align="left"><a href="/manager/order/detail/id/<?=$model['purchase']['order_id']?>" target="_blank"><?= $model['order']['order_no'] ?></a></td>
+          <td align="left"><?= h($model['product']['project']) ?></td>
+          <td align="left"><?= $model['product']['article'] ?></td>
+          <td align="left"><?= $model['material']['material_desc'] ?></td>
+          <td align="right"><?= number_format($model['qty']) . ' ' . $model['bom'] ?></td>
+          <td align="right"><?= number_format($model['price']) ?></td>
+          <td align="right"><?= number_format($model['qty']*$model['price']) ?></td>
+          <td align="right"><?= number_format($model['total']) ?></td>
+          <td align="left"><?= $model['disp_type'] ?></td>
+        </tr>
+<?php endforeach ; ?>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

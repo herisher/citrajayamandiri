@@ -2,8 +2,8 @@
 /**
  *  Order
  */
-class Manager_OrderController extends ManagerBaseController {
-    const NAMESPACE_LIST = '/manager/order/list';
+class Manager_RecapOrderController extends ManagerBaseController {
+    const NAMESPACE_LIST = '/manager/recap-order/index';
 
     /**
      * where phrase
@@ -42,10 +42,10 @@ class Manager_OrderController extends ManagerBaseController {
                     $where['document_flag = ?'] = $value;
                 }
                 if ( $key === 'create_date_start' && $value != null ) {
-                    $where['date(create_date) >= ?'] = $value;
+                    $where['date(update_date) >= ?'] = $value;
                 }
                 if ( $key === 'create_date_end' && $value != null ) {
-                    $where['date(create_date) <= ?'] = $value;
+                    $where['date(update_date) <= ?'] = $value;
                 }
                 if ( $key === 'order_by' && $value != null ) {
                     $order_by = $value;
@@ -68,7 +68,7 @@ class Manager_OrderController extends ManagerBaseController {
     /**
      *  カテゴリ一覧
      */
-    public function listAction() {
+    public function indexAction() {
         // 整列
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
@@ -99,17 +99,23 @@ class Manager_OrderController extends ManagerBaseController {
             $this->restoreSearchForm($form);
         }
         
-        $this->createNavigator(
+        // $this->createNavigator(
+        //     $this->createWherePhrase()
+        // );
+
+        $mod = $this->db()->fetchAll(
             $this->createWherePhrase()
         );
 
         // 表示用カスタマイズ
         $models = array();
-        foreach ($this->view->paginator as $model) {
-            $model = $model->toArray();
+        // foreach ($this->view->paginator as $model) {
+        foreach ($mod as $model) {
+            // $model = $model->toArray();
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
             $model['disp_status'] = Dao_Order::$statics['status_flag'][$model['status_flag']];
             $model['disp_payment'] = Dao_Order::$statics['payment_flag'][$model['payment_flag']];
+            $model['qty_deliv'] = $this->model('Logic_Delivery')->getQtyDelivByOrderId($model['id']);
             array_push($models, $model);
         }
         $this->view->models = $models;

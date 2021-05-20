@@ -159,6 +159,41 @@
     </form>
 
         <br>
+      <!-- purchase list -->
+      <?php if( count($this->purchase) ) : ?>
+      Purchase List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Purchase No.</td>
+          <td class="color">Purchase Date</td>
+          <td class="color">Total Inc. Tax (Rp.)</td>
+        </tr>
+        <?php 
+            $all_total_purchase = 0;
+            foreach ($this->purchase as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
+          <td align="left"><?= $model['purchase_date'] ?></td>
+          <td align="right"><?= number_format($model['total']) ?></td>
+        </tr>
+        <?php 
+            $all_total_purchase += $model['total'];
+            endforeach ;
+        ?>
+        <tr>
+          <td class="color2" colspan="3">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_purchase) ?>
+          </td>
+        </tr>
+      </table>
+      <?php else :
+            $all_total_purchase = 0;
+            endif; ?>
+
+      <br>
       <!-- delivery sheet -->
       <?php if( count($this->delivery) ) : ?>
       Delivery List
@@ -235,41 +270,6 @@
       </table>
       <?php else :
             $all_total_invoice = 0;
-            endif; ?>
-
-      <br>
-      <!-- purchase list -->
-      <?php if( count($this->purchase) ) : ?>
-      Purchase List
-      <table width="100%" border="0" cellpadding="5">
-        <tr align="center">
-          <td class="color">ID</td>
-          <td class="color">Purchase No.</td>
-          <td class="color">Purchase Date</td>
-          <td class="color">Total Inc. Tax (Rp.)</td>
-        </tr>
-        <?php 
-            $all_total_purchase = 0;
-            foreach ($this->purchase as $model) : ?>
-        <tr>
-          <td align="left"><?= $model['id'] ?></td>
-          <td align="left"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
-          <td align="left"><?= $model['purchase_date'] ?></td>
-          <td align="right"><?= number_format($model['total']) ?></td>
-        </tr>
-        <?php 
-            $all_total_purchase += $model['total'];
-            endforeach ;
-        ?>
-        <tr>
-          <td class="color2" colspan="3">Total</td>
-          <td class="color_gray" align="right">
-            <?= number_format($all_total_purchase) ?>
-          </td>
-        </tr>
-      </table>
-      <?php else :
-            $all_total_purchase = 0;
             endif; ?>
 
       <br>

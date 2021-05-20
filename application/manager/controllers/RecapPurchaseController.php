@@ -2,14 +2,14 @@
 /**
  *  カテゴリ管理
  */
-class Manager_PurchaseController extends ManagerBaseController {
-    const NAMESPACE_LIST = '/manager/purchase/list';
+class Manager_RecapPurchaseController extends ManagerBaseController {
+    const NAMESPACE_LIST = '/manager/recap-purchase/index';
 
     /**
      * 検索条件作成
      */
     private function createWherePhrase($order_by = 'create_date desc') {
-        $table = $this->model('Dao_Purchase');
+        $table = $this->model('Dao_PurchaseDetail');
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // セッションから検索条件を復元する
@@ -22,31 +22,34 @@ class Manager_PurchaseController extends ManagerBaseController {
                     $where['id = ?'] = $value;
                 }
                 if ( $key === 'order_no' && $value != null ) {
-                    $where['order_id IN (SELECT id FROM dtb_order WHERE order_no = ?)'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE order_id IN (SELECT id FROM dtb_order WHERE order_no = ?))'] = $value;
                 }
                 if ( $key === 'purchase_no' && $value != null ) {
-                    $where['purchase_no LIKE ?'] = '%'.$value.'%';
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE purchase_no LIKE ?)'] = '%'.$value.'%';
                 }
                 if ( $key === 'article' && $value != null ) {
-                    $where['product_id IN (SELECT id FROM dtb_product WHERE article LIKE ?)'] = '%'.$value.'%';
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE product_id IN (SELECT id FROM dtb_product WHERE article LIKE ?))'] = '%'.$value.'%';
                 }
                 if ( $key === 'project' && $value != null ) {
-                    $where['product_id IN (SELECT id FROM dtb_product WHERE project LIKE ?)'] = '%'.$value.'%';
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE product_id IN (SELECT id FROM dtb_product WHERE project LIKE ?))'] = '%'.$value.'%';
+                }
+                if ( $key === 'material' && $value != null ) {
+                    $where['material_id IN (SELECT id FROM dtb_material WHERE material_desc LIKE ?)'] = '%'.$value.'%';
                 }
                 if ( $key === 'purchase_type' && $value != null ) {
-                    $where['purchase_type = ?'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE purchase_type = ?)'] = $value;
                 }
                 if ( $key === 'purchase_date_start' && $value != null ) {
-                    $where['date(purchase_date) >= ?'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE date(purchase_date) >= ?)'] = $value;
                 }
                 if ( $key === 'purchase_date_end' && $value != null ) {
-                    $where['date(purchase_date) <= ?'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE date(purchase_date) <= ?)'] = $value;
                 }
                 if ( $key === 'create_date_start' && $value != null ) {
-                    $where['date(create_date) >= ?'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE date(create_date) >= ?)'] = $value;
                 }
                 if ( $key === 'create_date_end' && $value != null ) {
-                    $where['date(create_date) <= ?'] = $value;
+                    $where['purchase_id IN (SELECT id FROM dtb_purchase WHERE date(create_date) <= ?)'] = $value;
                 }
                 if ( $key === 'order_by' && $value != null ) {
                     $order_by = $value;
@@ -69,14 +72,14 @@ class Manager_PurchaseController extends ManagerBaseController {
     /**
      *  カテゴリ一覧
      */
-    public function listAction() {
+    public function indexAction() {
         // 整列
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // フォーム設定読み込み
         $form = $this->view->form;
         $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
-        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['order_by']);
+        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_PurchaseDetail::$statics['order_by']);
         
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {
@@ -107,10 +110,14 @@ class Manager_PurchaseController extends ManagerBaseController {
         // print_r($this->view->paginator);
         foreach ($this->view->paginator as $model) {
             $model = $model->toArray();
-            $model['disp_type'] = Dao_Purchase::$statics['purchase_type'][$model['purchase_type']];
-            $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
-            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
-            $this_total = $this->db()->fetchRow("SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) as total FROM dtb_purchase_detail WHERE purchase_id = ?", $model['id']);
+            $tb_purchase = $this->model('Dao_Purchase')->retrieve($model['purchase_id']);
+            $model['purchase'] = $tb_purchase;
+            $model['order'] = $this->model('Dao_Order')->retrieve($tb_purchase['order_id']);
+            $model['disp_type'] = Dao_Purchase::$statics['purchase_type'][$tb_purchase['purchase_type']];
+            $model['order'] = $this->model('Dao_Order')->retrieve($tb_purchase['order_id']);
+            $model['product'] = $this->model('Dao_Product')->retrieve($tb_purchase['product_id']);
+            $model['material'] = $this->model('Dao_Material')->retrieve($model['material_id']);
+            $this_total = $this->db()->fetchRow("SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) as total FROM dtb_purchase_detail WHERE purchase_id = ?", $tb_purchase['id']);
             $model['total'] = $this_total["total"];
             array_push($models, $model);
         }
@@ -299,13 +306,13 @@ class Manager_PurchaseController extends ManagerBaseController {
         $order = $this->model('Dao_Order')->retrieve($session->order_list['id']);
 
         if( $order['status_flag'] == 4 ) {
-            $table_order = $this->model('Dao_Order');
-            $model_id = $table_order->update(
+            $table = $this->model('Dao_Order');
+            $model_id = $table->update(
                 array(
                     'status_flag'       => 1,   //Process
                     'update_date'       => new Zend_Db_Expr('now()'),
                 ),
-                $table_order->getAdapter()->quoteInto(
+                $table->getAdapter()->quoteInto(
                     'id = ?', $order['id']
                 )
             );

@@ -41,4 +41,11 @@ class Logic_Delivery extends Logic_Base {
             array($order_id)
         );
     }
+
+    public function getQtyDelivByOrderId( $order_id ) {
+        return $this->db()->fetchOne(
+            "SELECT sum(dd.quantity) FROM `dtb_delivery_detail` dd JOIN `dtb_delivery` d ON dd.delivery_id = d.id WHERE `order_id` = ? ORDER BY `delivery_date` ASC",
+            array($order_id)
+        );
+    }
 }

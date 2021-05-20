@@ -218,7 +218,7 @@ class Manager_RecapController extends ManagerBaseController {
         $this->view->total = $total;
         $this->view->total_with_tax = $total_with_tax;
         $this->view->models = $models;
-        $this->view->subtitle = "Recapitulation List";
+        $this->view->subtitle = "Recap Invoice List";
     }
 
     /**
