@@ -7,6 +7,19 @@
             dateFormat: 'yy-mm-dd'
         });
     });
+
+    function check_uncheck_checkbox(isChecked) {
+        if(isChecked) {
+            $('input[name="checkRow[]"]').each(function() { 
+                this.checked = true; 
+            });
+        } else {
+            $('input[name="checkRow[]"]').each(function() {
+                this.checked = false;
+            });
+        }
+    }
+
 //-->
 </script>
 
@@ -32,6 +45,43 @@
           <td class="color_gray">
             <?= my_mb_error($this->error_str, 'receipt_date') ?>
             <?= $this->form->getElement('receipt_date') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="40%" class="color2">Invoice</td>
+          <td width="60%" class="color_gray">
+            Invoice List :
+          </td>
+        </tr>
+        <tr>
+          <td width="100%" class="color_gray" colspan="2">
+            <?= my_mb_error($this->error_str, 'invoice') ?>
+              <table width="100%" border="0" cellpadding="5" id="invoice_table">
+                <tr align="center">
+                  <td class="color"><input class='custom-control-input' type='checkbox' value='1' id='checkAll' onClick="check_uncheck_checkbox(this.checked);"><label class='custom-control-label mx-auto' for='checkAll'></label></td>
+                  <td class="color">No.</td>
+                  <td class="color">Invoice No.</td>
+                  <td class="color">Invoice Date</td>
+                  <td class="color">Due Date</td>
+                  <td class="color">Qty</td>
+                  <td class="color">Total</td>
+                  <td class="color">Total with tax</td>
+                </tr>
+              <?php if(count($this->invoice_list)) : $i=1; ?>
+                <?php foreach( $this->invoice_list as $model ) : ?>
+                <tr id="material_<?=$model['id']?>">
+                  <td align="center"><input class='custom-control-input' type='checkbox' value="<?= $model['id'] ?>" name='checkRow[]' id="<?= $i ?>"><label class='custom-control-label' for="<?= $i ?>"></label></td>
+                  <td align="left"><?= $i++ ?></td>
+                  <td align="left"><?= $model['invoice_no'] ?></td>
+                  <td align="center"><?= $model['invoice_date'] ?></td>
+                  <td align="left"><?= $model['due_date'] ?></td>
+                  <td align="right"><?= number_format($model['quantity']) ?></td>
+                  <td align="right"><?= number_format($model['total_min_discount']) ?></td>
+                  <td align="right"><?= number_format($model['total_include_tax']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+              </table>
           </td>
         </tr>
         <tr>

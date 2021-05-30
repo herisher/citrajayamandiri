@@ -58,7 +58,8 @@
           <td class="color">Receipt Date</td>
           <td class="color">Jumlah Invoice</td>
           <td class="color">Total Invoice (Rp)</td>
-          <td class="color">Edit</td>
+          <td class="color">Detail</td>
+          <td class="color">Print</td>
           <td class="color">Delete</td>
         </tr>
 <?php foreach ($this->models as $model) : ?>
@@ -68,7 +69,8 @@
           <td align="center"><?= ($model['receipt_date']) ?></td>
           <td align="right"><?= count($model['detail']) ?></td>
           <td align="right"><?= ($model['total']) ?></td>
-          <td align="center"><a href="/manager/receipt/edit/id/<?= $model['id'] ?>">Edit</a></td>
+          <td align="center"><a href="/manager/receipt/detail/id/<?= $model['id'] ?>">Detail</a></td>
+          <td align="center"><a href="/manager/receipt/print/id/<?= $model['id'] ?>" target="_blank">Print</a></td>
           <td align="center">
           <a href="#" onClick="confirmDelete('/manager/receipt/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
           </td>

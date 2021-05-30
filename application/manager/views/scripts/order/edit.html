@@ -10,9 +10,11 @@
     function sum() {
         var i;
         var sum = parseInt(0);
-        <?php foreach($this->models as $model) : ?>
+        <?php if(count($this->models)) : foreach($this->models as $model) : ?>
             sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
-        <?php endforeach; ?>
+        <?php endforeach; else : for($i=1;$i<=13;$i++) : ?>
+            sum = sum + parseInt(document.getElementById("quantity_"+<?=$i?>).value);
+        <?php endfor; endif; ?>
         document.getElementById("quantity").value = sum;
         document.getElementById("sub_total").value = sum * document.getElementById("price").value;
         document.getElementById("ppn").value = (sum * document.getElementById("price").value) / 10;
@@ -132,6 +134,47 @@
             </table>
           </td>
         </tr>
+        <?php else : ?>
+        <tr>
+          <td class="color2">Size<br>-----<br>Pairs</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'pairs') ?>
+            <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                    <td class="color">1</td>
+                    <td class="color">2</td>
+                    <td class="color">3</td>
+                    <td class="color">4</td>
+                    <td class="color">5</td>
+                    <td class="color">6</td>
+                    <td class="color">7</td>
+                    <td class="color">8</td>
+                    <td class="color">9</td>
+                    <td class="color">10</td>
+                    <td class="color">11</td>
+                    <td class="color">12</td>
+                    <td class="color">13</td>
+                    <!--td class="color">14</td>
+                    <td class="color">15</td-->
+                </tr>
+                <tr align="center">
+                    <td><?= $this->form->getElement('quantity_1') ?></td>
+                    <td><?= $this->form->getElement('quantity_2') ?></td>
+                    <td><?= $this->form->getElement('quantity_3') ?></td>
+                    <td><?= $this->form->getElement('quantity_4') ?></td>
+                    <td><?= $this->form->getElement('quantity_5') ?></td>
+                    <td><?= $this->form->getElement('quantity_6') ?></td>
+                    <td><?= $this->form->getElement('quantity_7') ?></td>
+                    <td><?= $this->form->getElement('quantity_8') ?></td>
+                    <td><?= $this->form->getElement('quantity_9') ?></td>
+                    <td><?= $this->form->getElement('quantity_10') ?></td>
+                    <td><?= $this->form->getElement('quantity_11') ?></td>
+                    <td><?= $this->form->getElement('quantity_12') ?></td>
+                    <td><?= $this->form->getElement('quantity_13') ?></td>
+                </tr>
+            </table>
+          </td>
+        </tr>
         <?php endif; ?>
         <tr>
           <td class="color2">Quantity (Ps)</td>
@@ -197,6 +240,41 @@
     </form>
 
         <br>
+      <!-- purchase list -->
+      <?php if( count($this->purchase) ) : ?>
+      Purchase List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Purchase No.</td>
+          <td class="color">Purchase Date</td>
+          <td class="color">Total Inc. Tax (Rp.)</td>
+        </tr>
+        <?php 
+            $all_total_purchase = 0;
+            foreach ($this->purchase as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
+          <td align="left"><?= $model['purchase_date'] ?></td>
+          <td align="right"><?= number_format($model['total']) ?></td>
+        </tr>
+        <?php 
+            $all_total_purchase += $model['total'];
+            endforeach ;
+        ?>
+        <tr>
+          <td class="color2" colspan="3">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_purchase) ?>
+          </td>
+        </tr>
+      </table>
+      <?php else :
+            $all_total_purchase = 0;
+            endif; ?>
+
+      <br>
       <!-- delivery sheet -->
       <?php if( count($this->delivery) ) : ?>
       Delivery List
@@ -230,7 +308,7 @@
 
       <br>
       <!-- invoice list -->
-      <?php if( count($this->invoice) ) : ?>
+      <?php $all_total_invoice=0; if( count($this->invoice) ) : ?>
       Invoice List
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
@@ -272,51 +350,8 @@
       <?php endif; ?>
 
       <br>
-      <!-- purchase list -->
-      <?php if( count($this->purchase) ) : ?>
-      Purchase List
-      <table width="100%" border="0" cellpadding="5">
-        <tr align="center">
-          <td class="color">ID</td>
-          <td class="color">Purchase No.</td>
-          <!-- TODO -->
-          <td class="color">Total</td>
-        </tr>
-        <?php 
-            $total = 0;
-            foreach ($this->purchase as $model) : ?>
-        <tr>
-          <td align="left"><?= $model['id'] ?></td>
-          <td align="left"><a href="/manager/purchase/edit/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
-          <!-- TODO -->
-          <td align="right"><?= number_format($model['total']) ?></td>
-        </tr>
-        <?php 
-            $total += $model['total'];
-            endforeach ; 
-            //TODO
-            $ppn = $total/10;
-            $all_total_purchase = $total + $ppn;
-        ?>
-        <tr>
-          <td class="color2" colspan="4">Total</td>
-          <td class="color_gray" align="right">
-            <?= number_format($total) ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2" colspan="4">Total + PPn</td>
-          <td class="color_gray" align="right">
-            <?= number_format($all_total_purchase) ?>
-          </td>
-        </tr>
-      </table>
-      <?php endif; 
-            $all_total_purchase = 0;?>
-
-      <br>
-      <!-- TODO -->
-      TRANSFER = <?= number_format($all_total_invoice - $all_total_purchase) ?>
+      <?php $total_income = ($all_total_invoice!=0) ? $all_total_invoice : $this->model['total'];?>
+      TRANSFER = <?= number_format($total_income - $all_total_purchase) ?>
   </div>
 </div>
 <br class="cl">

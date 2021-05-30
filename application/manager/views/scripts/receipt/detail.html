@@ -30,15 +30,11 @@
         </tr>
         <tr>
           <td width="20%" class="color2">Receipt No.</td>
-          <td width="80%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'receipt_no') ?>
-            <?= $this->form->getElement('receipt_no') ?></td>
+          <td width="80%" class="color_gray"><?= $this->model['receipt_no'] ?></td>
         </tr>
         <tr>
           <td width="20%" class="color2">Receipt Date</td>
-          <td width="80%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'receipt_date') ?>
-            <?= $this->form->getElement('receipt_date') ?></td>
+          <td width="80%" class="color_gray"><?= $this->model['receipt_date'] ?></td>
         </tr>
         <tr>
           <td width="40%" class="color2">Invoice</td>
@@ -58,7 +54,6 @@
                   <td class="color">Qty</td>
                   <td class="color">Total</td>
                   <td class="color">Total with tax</td>
-                  <td class="color">Delete</td>
                 </tr>
               <?php if(count($this->invoice_list)) : $i=1; ?>
                 <?php foreach( $this->invoice_list as $model ) : ?>
@@ -70,9 +65,6 @@
                   <td align="right"><?= number_format($model['quantity']) ?></td>
                   <td align="right"><?= number_format($model['total_min_discount']) ?></td>
                   <td align="right"><?= number_format($model['total_include_tax']) ?></td>
-                  <td align="center">
-                    <input type="hidden" name="checkRow[]" value="<?=$model['id']?>">
-                    <input type="button" onclick="doDelete2(<?=$model['id']?>);" name="delete" class="input_b1" value="Delete"></td>
                 </tr>
                 <?php endforeach; ?>
               <?php endif; ?>
@@ -83,7 +75,6 @@
           <td colspan="2" align="center">
             <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="submit" class="input_b2" name="confirm" value="Edit" />&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="button" class="input_b2" value="Print" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/print/id/<?= $this->model['id'] ?>';" /></td>
         </tr>
       </table>

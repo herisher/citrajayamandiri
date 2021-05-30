@@ -273,7 +273,8 @@
             endif; ?>
 
       <br>
-      TRANSFER = <?= number_format($all_total_invoice - $all_total_purchase) ?>
+      <?php $total_income = ($all_total_invoice!=0) ? $all_total_invoice : $this->model['total'];?>
+      TRANSFER = <?= number_format($total_income - $all_total_purchase) ?>
   </div>
 </div>
 <br class="cl">

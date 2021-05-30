@@ -216,7 +216,7 @@ class Manager_OrderController extends ManagerBaseController {
             }
             $this->view->delivery = $this->model('Logic_Delivery')->getAllByOrderId($id);
             $this->view->invoice = $this->model('Logic_Invoice')->getAllByOrderId($id);
-            //$this->view->purchase = $this->model('Logic_Purchase')->getAllByOrderId($id);   
+            $this->view->purchase = $this->model('Logic_Purchase')->getAllByOrderId($id);   
         }
         else {
             $this->view->error_str = 'Data does not exist or has been deleted.';
@@ -371,7 +371,7 @@ class Manager_OrderController extends ManagerBaseController {
             )
         );
         
-        for( $i=1; $i<=15; $i++) {
+        for( $i=1; $i<=13; $i++) {
             if( $form->getValue('size_'.$i) ) {
                 $mod_id = $this->model('Dao_OrderDetail')->insert(
                     array(

@@ -92,6 +92,13 @@
           </td>
         </tr>
         <tr>
+          <td class="color2">Tax No.</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'tax_no') ?>
+            <?= $this->form->getElement('tax_no') ?>
+          </td>
+        </tr>
+        <tr>
           <td class="color2">Invoice Date</td>
           <td class="color_gray">
             <?= my_mb_error($this->error_str, 'invoice_date') ?>

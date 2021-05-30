@@ -138,8 +138,8 @@ class Manager_ReceiptController extends ManagerBaseController {
             $form->setDefaults($item);
             $this->view->model = $item;
             
-            $detail = $this->model('Logic_Receipt')->getDetail($item['id']);
-            $this->view->detail = $detail;
+            $detail = $this->model('Logic_Receipt')->getDetailForm($item['id']);
+            $this->view->invoice_list = $detail;
             
             // エラーチェック
             if ( $this->getRequest()->isPost() ) {
@@ -198,7 +198,16 @@ class Manager_ReceiptController extends ManagerBaseController {
      */
     public function createAction() {
         // フォーム設定読み込み
+        $Logic_Invoice = $this->model('Logic_Invoice');
+        $latest = $this->model('Logic_Receipt')->getLatest();
+        if(!$latest) {
+            $receipt_no = "TT001/CJM/".date('y');
+        } else {
+            $receipt_no = $this->customizeNumber($latest['receipt_no']);
+        }
+        
         $form = $this->view->form;
+        $form->setDefault('receipt_no', $receipt_no);
         
         // エラーチェック
         if ( $this->getRequest()->isPost() ) {
@@ -206,6 +215,8 @@ class Manager_ReceiptController extends ManagerBaseController {
                 $this->doCreate($form);
             }
         }
+
+        $this->view->invoice_list = $Logic_Invoice->getAllForReceipt(); 
         $this->view->subtitle = "Receipt Create";
     }
 
@@ -214,7 +225,8 @@ class Manager_ReceiptController extends ManagerBaseController {
      */
     private function doCreate($form) {
         $table = $this->model('Dao_Receipt');
-        $model_id = $table->insert(
+        $table_dt = $this->model('Dao_ReceiptDetail');
+        $model_id = $table->insert( 
             array(
                 'receipt_no'     => $form->getValue('receipt_no'),
                 'receipt_date'   => $form->getValue('receipt_date'),
@@ -222,7 +234,50 @@ class Manager_ReceiptController extends ManagerBaseController {
                 'update_date'    => new Zend_Db_Expr('now()'),
             )
         );
+
+        $checked = $_POST['checkRow'];
+        foreach( $checked as $key => $value ) {
+            $insert_dt = $table_dt->insert(
+                array(
+                    'receipt_id'     => $model_id,
+                    'invoice_id'     => $value,
+                    'create_date'    => new Zend_Db_Expr('now()'),
+                    'update_date'    => new Zend_Db_Expr('now()'),
+                )
+            );
+        }
         $this->gobackList();
+    }
+
+    /**
+     *  カテゴリ詳細
+     */
+    public function detailAction() {
+        
+        $id = $this->getRequest()->getParam('id');
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            $model = $this->model('Dao_Receipt')->retrieve($id);
+            
+            if (!$model) {
+                $this->view->error_str = 'Data does not exist or has been deleted.';
+                $this->_forward('error', 'Error');
+                return;
+            }
+
+            // 初期値設定
+            $item = $model->toArray();
+            $this->view->model = $item;
+            
+            $detail = $this->model('Logic_Receipt')->getDetailForm($item['id']);
+            $this->view->invoice_list = $detail;
+            
+        }
+        else {
+            $this->view->error_str = 'Data does not exist or has been deleted.';
+            $this->_forward('error', 'Error');
+            return;
+        }
+        $this->view->subtitle = "Receipt Detail";
     }
 
     /**
@@ -265,7 +320,7 @@ class Manager_ReceiptController extends ManagerBaseController {
             $item['terbilang'] = $this->model('Logic_Invoice')->convertion($model['total']);
             $this->view->model = $item;
             
-            $detail = $this->model('Logic_Receipt')->getDetail($item['id']);
+            $detail = $this->model('Logic_Receipt')->getDetailForm($item['id']);
             $this->view->detail = $detail;
             
             // エラーチェック

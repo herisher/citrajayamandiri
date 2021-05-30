@@ -16,16 +16,23 @@ class Logic_OrderDetail extends Logic_Base {
 		);
 		
         if (!$models) {
-            return;
-        }
-		
-        foreach($models as $model) {
-            $id = $model['id'];
+            for($i=1; $i<=13; $i++) {
+                $id = $i;
 
-            $elem = new Zend_Form_Element_Text("quantity_{$id}");
-            $elem->setOptions(array('size' => '3', 'onkeyup' => 'sum()'));
-            $elem->setValue($model['quantity']);
-            $form->addElement($elem);
+                $elem = new Zend_Form_Element_Text("quantity_{$id}");
+                $elem->setOptions(array('size' => '3', 'onkeyup' => 'sum()'));
+                $elem->setValue(0);
+                $form->addElement($elem);
+            }
+        } else {
+            foreach($models as $model) {
+                $id = $model['id'];
+
+                $elem = new Zend_Form_Element_Text("quantity_{$id}");
+                $elem->setOptions(array('size' => '3', 'onkeyup' => 'sum()'));
+                $elem->setValue($model['quantity']);
+                $form->addElement($elem);
+            }
         }
 
         return $form;
@@ -41,12 +48,29 @@ class Logic_OrderDetail extends Logic_Base {
 			"SELECT * FROM `dtb_order_detail` WHERE `order_id` = ? ORDER BY size", $order_id
 		);
         
-        foreach ($models as $model) {
-            $id = $model['id'];
+        if( $models ) {
+            foreach ($models as $model) {
+                $id = $model['id'];
 
-            $db->update("dtb_order_detail", array(
-                'quantity'     => $params["quantity_{$id}"],
-            ),"id = {$id}");
+                $db->update("dtb_order_detail", array(
+                    'quantity'     => $params["quantity_{$id}"],
+                ),"id = {$id}");
+            }
+        } else {
+            for( $i=1; $i<=13; $i++) {
+                if( $params['quantity_'.$i] ) {
+                    $mod_id = $this->model('Dao_OrderDetail')->insert(
+                        array(
+                            'order_id'  => $order_id,
+                            'size'      => $i,
+                            'quantity'  => $params['quantity_'.$i],
+                        )
+                    );
+                }
+            }
+
         }
+
+        
     }
 }

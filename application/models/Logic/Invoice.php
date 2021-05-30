@@ -203,4 +203,10 @@ class Logic_Invoice extends Logic_Base {
         
         return $b . " Rupiah";
     }
+
+    public function getAllForReceipt() {
+        return $this->db()->fetchAll(
+            "SELECT * FROM `dtb_invoice` WHERE `id` NOT IN (SELECT invoice_id FROM dtb_receipt_detail) ORDER BY `id`"
+        );
+    }
 }

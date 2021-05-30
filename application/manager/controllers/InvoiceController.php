@@ -189,6 +189,7 @@ class Manager_InvoiceController extends ManagerBaseController {
         $model_id = $table->update(
             array(
                 'invoice_no'    => $form->getValue('invoice_no'),
+                'tax_no'    => $form->getValue('tax_no'),
                 'invoice_date'  => $form->getValue('invoice_date'),
                 'due_date'      => $form->getValue('due_date'),
                 'status'        => $form->getValue('status'),
@@ -292,6 +293,7 @@ class Manager_InvoiceController extends ManagerBaseController {
                 'order_id'          => $session->delivery_list['order_id'],
                 'product_id'        => $session->delivery_list['product_id'],
                 'ob_no'             => $form->getValue('ob_no'),
+                'tax_no'             => $form->getValue('tax_no'),
                 'invoice_date'      => $form->getValue('invoice_date'),
                 'due_date'          => $form->getValue('due_date'),
                 'quantity'          => $form->getValue('quantity'),
