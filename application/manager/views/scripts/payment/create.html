@@ -1,101 +1,94 @@
 <?= $this->render('sidemenu/finance.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#payment_date").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+
+    function check_uncheck_checkbox(isChecked) {
+        if(isChecked) {
+            $('input[name="checkRow[]"]').each(function() { 
+                this.checked = true; 
+            });
+        } else {
+            $('input[name="checkRow[]"]').each(function() {
+                this.checked = false;
+            });
+        }
+    }
+
+//-->
+</script>
+
 <!--コンテンツ-->
 <div id="contents">
   <div id="contents_in">
 
     <div id="contents_title">
-			<?= $this->subtitle ?>
+            <?= $this->subtitle ?>
     </div>
-	<?=$this->tes?>
-    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/purchase/create">
+    <?=$this->tes?>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/payment/create">
       <table width="100%" border="0" cellpadding="5">
         <tr>
-          <td width="20%" class="color2">会員ID</td>
-          <td width="80%" class="color_gray">1</td>
-        </tr>
-        <tr>
-          <td width="20%" class="color2">表示</td>
+          <td width="20%" class="color2">Payment No.</td>
           <td width="80%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'disp_flag') ?>
-            <?= $this->form->getElement('disp_flag') ?>
+            <?= my_mb_error($this->error_str, 'payment_no') ?>
+            <?= $this->form->getElement('payment_no') ?>
           </td>
         </tr>
         <tr>
-          <td class="color2">ジャンル名</td>
+          <td class="color2">Payment Date</td>
           <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'genre_id') ?>
-            <?= $this->form->getElement('genre_id') ?>
+            <?= my_mb_error($this->error_str, 'payment_date') ?>
+            <?= $this->form->getElement('payment_date') ?>
           </td>
         </tr>
         <tr>
-          <td class="color2">カテゴリ名</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'category_id') ?>
-            <?= $this->form->getElement('category_id') ?>
+          <td width="40%" class="color2">Invoice</td>
+          <td width="60%" class="color_gray">
+            Invoice List :
           </td>
         </tr>
         <tr>
-          <td class="color2">サブカテゴリ</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'sub_category_id') ?>
-            <?= $this->form->getElement('sub_category_id') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">アイテム名</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'purchase_name') ?>
-            <?= $this->form->getElement('purchase_name') ?> 
-          </td>
-        </tr>        
-        <tr>
-          <td class="color2">内容</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'content') ?>
-            <?= $this->form->getElement('content') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">画像</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'image_url') ?>
-            <input type="file" name="image_url"> <font color="#FF0000">※JPG|PNG|GIF</font>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">購入先URL</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'buy_url') ?>
-            <?= $this->form->getElement('buy_url') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">cawaiiね!</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'likes') ?>
-            <?= $this->form->getElement('likes') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">通報数</td>
-          <td class="color_gray">
-            <!--  <?php if (isset($this->error_str['reports'])) : ?><font color="#FF0000"><?= $this->error_str['reports'] ?></font><br><?php endif ?> -->
-           0
-		   <!--  <?= $this->form->getElement('reports') ?> -->
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">管理メモ</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'memo') ?>
-            <?= $this->form->getElement('memo') ?><br/>
+          <td width="100%" class="color_gray" colspan="2">
+            <?= my_mb_error($this->error_str, 'invoice') ?>
+              <table width="100%" border="0" cellpadding="5" id="invoice_table">
+                <tr align="center">
+                  <td class="color"><input class='custom-control-input' type='checkbox' value='1' id='checkAll' onClick="check_uncheck_checkbox(this.checked);"><label class='custom-control-label mx-auto' for='checkAll'></label></td>
+                  <td class="color">No.</td>
+                  <td class="color">Invoice No.</td>
+                  <td class="color">Invoice Date</td>
+                  <td class="color">Due Date</td>
+                  <td class="color">Qty</td>
+                  <td class="color">Total</td>
+                  <td class="color">Total with tax</td>
+                </tr>
+              <?php if(count($this->invoice_list)) : $i=1; ?>
+                <?php foreach( $this->invoice_list as $model ) : ?>
+                <tr id="material_<?=$model['id']?>">
+                  <td align="center"><input class='custom-control-input' type='checkbox' value="<?= $model['id'] ?>" name='checkRow[]' id="<?= $i ?>"><label class='custom-control-label' for="<?= $i ?>"></label></td>
+                  <td align="left"><?= $i++ ?></td>
+                  <td align="left"><?= $model['invoice_no'] ?></td>
+                  <td align="center"><?= $model['invoice_date'] ?></td>
+                  <td align="left"><?= $model['due_date'] ?></td>
+                  <td align="right"><?= number_format($model['quantity']) ?></td>
+                  <td align="right"><?= number_format($model['total_min_discount']) ?></td>
+                  <td align="right"><?= number_format($model['total_include_tax']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+              </table>
           </td>
         </tr>
         <tr>
           <td colspan="2" align="center">
-            <input type="button" class="input_b2" value="一覧に戻る" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="submit" name="confirm" class="input_b2" value="登録" /></td>
+            <input type="submit" name="confirm" class="input_b2" value="Create" /></td>
         </tr>
       </table>
     </form>

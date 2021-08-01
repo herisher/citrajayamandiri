@@ -160,30 +160,45 @@
 
         <br>
       <!-- purchase list -->
-      <?php if( count($this->purchase) ) : ?>
+      <?php 
+            $all_total = 0;
+            $all_total_tax = 0;
+            $all_total_purchase = 0;
+        if( count($this->purchase) ) : ?>
       Purchase List
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
           <td class="color">ID</td>
           <td class="color">Purchase No.</td>
           <td class="color">Purchase Date</td>
+          <td class="color">Total</td>
+          <td class="color">Tax</td>
           <td class="color">Total Inc. Tax (Rp.)</td>
         </tr>
         <?php 
-            $all_total_purchase = 0;
             foreach ($this->purchase as $model) : ?>
         <tr>
           <td align="left"><?= $model['id'] ?></td>
           <td align="left"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>"><?= $model['purchase_no'] ?></a></td>
           <td align="left"><?= $model['purchase_date'] ?></td>
           <td align="right"><?= number_format($model['total']) ?></td>
+          <td align="right"><?= number_format($model['tax']) ?></td>
+          <td align="right"><?= number_format($model['total_all']) ?></td>
         </tr>
         <?php 
-            $all_total_purchase += $model['total'];
+            $all_total += $model['total'];
+            $all_total_tax += $model['tax'];
+            $all_total_purchase += $model['total_all'];
             endforeach ;
         ?>
         <tr>
           <td class="color2" colspan="3">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total) ?>
+          </td>
+          <td class="color_gray" align="right">
+            <?= number_format($all_total_tax) ?>
+          </td>
           <td class="color_gray" align="right">
             <?= number_format($all_total_purchase) ?>
           </td>
@@ -193,6 +208,41 @@
             $all_total_purchase = 0;
             endif; ?>
 
+      <?php if( count($this->wages) ) : ?>
+      <br>
+      Wages List
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Name</td>
+          <td class="color">Price</td>
+          <td class="color">Quantity (Ps)</td>
+          <td class="color">BOM</td>
+          <td class="color">Total (Rp)</td>
+        </tr>
+        <?php 
+            $total_wages = 0;
+            foreach ($this->wages as $model) : ?>
+        <tr>
+          <td align="left"><?= $model['id'] ?></td>
+          <td align="left"><a href="/manager/wages/detail/id/<?= $model['wages_id'] ?>"><?= $model['name'] ?></a></td>
+          <td align="right"><?= number_format($model['price']) ?></td>
+          <td align="right"><?= number_format($model['qty']) ?></td>
+          <td align="left"><?= $model['bom'] ?></td>
+          <td align="right"><?= number_format($model['total_price']) ?></td>
+        </tr>
+        <?php 
+            $total_wages += $model['total_price'];
+            endforeach ; ?>
+        <tr>
+          <td class="color2" colspan="5">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total_wages) ?>
+          </td>
+        </tr>
+      </table>
+      <?php else : $total_wages = 0; ?>
+      <?php endif; ?>
       <br>
       <!-- delivery sheet -->
       <?php if( count($this->delivery) ) : ?>
@@ -273,8 +323,16 @@
             endif; ?>
 
       <br>
-      <?php $total_income = ($all_total_invoice!=0) ? $all_total_invoice : $this->model['total'];?>
-      TRANSFER = <?= number_format($total_income - $all_total_purchase) ?>
+      <?php
+        $total_income = ($all_total_invoice!=0) ? $all_total_invoice : $this->model['total'];
+        $total_min_wages = $this->model['sub_total'] - $all_total - $total_wages;
+        $total_pay_tax = $this->model['ppn'] - $all_total_tax;
+      ?>
+      TRANSFER FROM BATA = <?= number_format($total_income - $all_total_purchase) ?>
+      <br>
+      Remaining Total = <?= number_format($total_min_wages) ?>
+      <br>
+      Tax must be paid = <?= number_format($total_pay_tax) ?>
   </div>
 </div>
 <br class="cl">

@@ -1,10 +1,10 @@
-<?= $this->render('sidemenu/purchase.html') ?>
+<?= $this->render('sidemenu/wages.html') ?>
 
 <script type="text/javascript" language="javascript">
 <!--
     $(function() {
-        $("#purchase_date_start").datepicker({dateFormat: 'yy-mm-dd'});
-        $("#purchase_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#wages_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#wages_date_end").datepicker({dateFormat: 'yy-mm-dd'});
         $("#create_date_start").datepicker({dateFormat: 'yy-mm-dd'});
         $("#create_date_end").datepicker({dateFormat: 'yy-mm-dd'});
     });
@@ -21,7 +21,7 @@
 
     <!--検索フォーム-->
     <div class="contents_space">
-      <form name="form2" method="post" action="/manager/purchase/list">
+      <form name="form2" method="post" action="/manager/wages/list">
       <table width="100%" border="0" cellpadding="5">
         <tr>
           <td width="30%" class="color2">ID</td>
@@ -36,9 +36,9 @@
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">Purchase No.</td>
+          <td width="30%" class="color2">Wages No.</td>
           <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('purchase_no') ?>
+            <?= $this->form->getElement('wages_no') ?>
           </td>
         </tr>
         <tr>
@@ -56,13 +56,13 @@
         <tr>
           <td width="30%" class="color2">Type</td>
           <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('purchase_type') ?>
+            <?= $this->form->getElement('wages_type') ?>
           </td>
         </tr>
         <tr>
-          <td class="color2">Purchase Date</td>
+          <td class="color2">Wages Date</td>
           <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('purchase_date_start') ?> - <?= $this->form->getElement('purchase_date_end') ?>※YYYY-MM-DD
+            <?= $this->form->getElement('wages_date_start') ?> - <?= $this->form->getElement('wages_date_end') ?>※YYYY-MM-DD
           </td>
         </tr>
         <tr>
@@ -88,7 +88,7 @@
       </form>
 
       <!--ページャ-->
-      <form name="form1" method="post" action="/manager/purchase/list">
+      <form name="form1" method="post" action="/manager/wages/list">
       <?= $this->render('pager.html') ?>
       </form>
 
@@ -96,30 +96,24 @@
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
           <td class="color">ID</td>
-          <td class="color">Purchase No.</td>
           <td class="color">Order No.</td>
           <td class="color">Project</td>
           <td class="color">Article</td>
-          <td class="color">Total Inc. Tax (Rp)</td>
-          <td class="color">Purchase Date</td>
-          <td class="color">Type</td>
+          <td class="color">Total</td>
           <td class="color">Detail</td>
           <td class="color">Delete</td>
         </tr>
 <?php foreach ($this->models as $model) : ?>
         <tr>
           <td align="left"><?= $model['id'] ?></td>
-          <td align="left"><?= $model['purchase_no'] ?></td>
           <td align="left"><a href="/manager/order/edit/id/<?=$model['order_id']?>"><?= $model['order']['order_no'] ?></a></td>
           <td align="left"><?= h($model['product']['project']) ?></td>
           <td align="left"><?= $model['product']['article'] ?></td>
           <td align="right"><?= number_format($model['total']) ?></td>
-          <td align="left"><?= $model['purchase_date'] ?></td>
-          <td align="left"><?= $model['disp_type'] ?></td>
-          <td align="center"><a href="/manager/purchase/detail/id/<?= $model['id'] ?>">Detail</a></td>
+          <td align="center"><a href="/manager/wages/detail/id/<?= $model['id'] ?>">Detail</a></td>
           <td align="center">
                             <?php if(!isset($model['invoice'])) : ?>
-          <a href="#" onClick="confirmDelete('/manager/purchase/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
+          <a href="#" onClick="confirmDelete('/manager/wages/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
 							<?php else : ?>
 							-
 							<?php endif;?>

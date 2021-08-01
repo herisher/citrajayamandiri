@@ -1,0 +1,157 @@
+<?= $this->render('sidemenu/wages.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#wages_date").datepicker({dateFormat: 'yy-mm-dd'});
+
+        $('#work_table input').on('input', function() {
+            var $tr = $(this).closest('tr'); // get tr which contains the input
+            var tot = 0; // variable to sore sum
+            var pr = Number($('input.price-tr', $tr).val()) || 0; // get price
+            var qty = Number($('input.qty-tr', $tr).val()) || 0; // get price
+
+            $('input.total-tr', $tr).val(qty*pr); // update last column value
+            
+        }).trigger('input'); // trigger input to set initial value in column
+
+    });
+    
+    function sum() {
+        var i;
+        var sum = parseInt(0);
+        <?php if( count($this->models) ) :?>
+        <?php foreach($this->models as $model) : ?>
+            sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
+        <?php endforeach; ?>
+        <?php endif; ?>
+        document.getElementById("quantity").value = sum;
+    }
+
+    function openPopup() {
+        window.open("/manager/wages-popup/list",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
+    }
+    
+    function openPopupWork() {
+        window.open("/manager/wages-popup/work",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
+    }
+    
+    function doDelete() {
+      document.form2.action = "/manager/wages/create?delete=1";
+      document.form2.submit();
+    }
+    
+    function doDelete2($id) {
+      document.getElementById("work_"+$id).remove();
+    }
+    
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+    <?=$this->tes?>
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/wages/create">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="40%" class="color2">Order</td>
+          <td width="60%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'order') ?>
+              <table width="100%" border="0" cellpadding="5">
+                <tr align="center">
+                  <td class="color">Order No.</td>
+                  <td class="color">Quantity</td>
+                  <td class="color">Project</td>
+                  <td class="color">Article</td>
+                  <td class="color">Delete</td>
+                </tr>
+              <?php 
+                  $qty = 0;
+                  if(count($this->order_list)) :
+                  $qty = $this->order_list['quantity'];
+                ?>
+                <tr>
+                  <td align="center"><?= $this->order_list['order_no'] ?></td>
+                  <td align="center"><?= number_format($this->order_list['quantity']) ?></td>
+                  <td align="center"><?= h($this->order_list['project']) ?></td>
+                  <td align="center"><?= $this->order_list['article'] ?></td>
+                  <td align="center"><input type="button" onclick="doDelete();" name="delete" class="input_b1" value="Delete"></td>
+                </tr>
+              <?php endif; ?>
+                <tr>
+                  <td align="center" colspan="5">
+                    <input type="button" onclick="openPopup();" class="input_b2" value="Choose Order">
+                  </td>
+                </tr>
+              </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Description</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'description') ?>
+            <?= $this->form->getElement('description') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="40%" class="color2">Type of Work</td>
+          <td width="60%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'type_work') ?>
+            <input type="button" onclick="openPopupWork();" class="input_b2" value="Choose Work Type">
+          </td>
+        </tr>
+        <tr>
+          <td width="100%" class="color_gray" colspan="2">
+            <?= my_mb_error($this->error_str, 'work') ?>
+              <table width="100%" border="0" cellpadding="5" id="work_table">
+                <tr align="center">
+                  <td class="color">Name</td>
+                  <td class="color">Wages</td>
+                  <td class="color">Qty</td>
+                  <td class="color">BOM</td>
+                  <td class="color">Total</td>
+                  <td class="color">Delete</td>
+                </tr>
+              <?php if(count($this->work_list)) : ?>
+                <?php foreach( $this->work_list as $work_list ) : ?>
+                <tr id="work_<?=$work_list['id']?>">
+                  <td align="center"><?= $work_list['name'] ?></td>
+                  <td align="center"><input class="number-only price-tr" name="price[]" value=""/></td>
+                  <td align="center">
+                    <input class="number-only qty-tr" name="qty[]" value="<?=$qty?>"/>
+                    <input type="hidden" name="work_id[]" value="<?= $work_list['id'] ?>" />
+                  </td>
+                  <td align="center"><input name="bom[]" value="prs" readonly /></td>
+                  <td align="left"><input class="number-only total-tr" name="total" value="" readonly="" /></td>
+                  <td align="center"><input type="button" onclick="doDelete2(<?=$work_list['id']?>);" name="delete" class="input_b1" value="Delete"></td>
+                </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+              </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Total</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'total') ?>
+            <?= $this->form->getElement('total') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit" name="confirm" class="input_b2" value="Create" /></td>
+        </tr>
+      </table>
+    </form>
+
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

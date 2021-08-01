@@ -14,7 +14,7 @@ class Logic_Purchase extends Logic_Base {
 
     public function getAllByOrderId( $order_id ) {
         return $this->db()->fetchAll(
-            "SELECT `dtb_purchase`.*, (SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) as total FROM `dtb_purchase_detail` WHERE `purchase_id` = `dtb_purchase`.`id`) as total FROM `dtb_purchase` WHERE `order_id` = ? ORDER BY `purchase_date` ASC",
+            "SELECT `dtb_purchase`.*, (SELECT (SUM(qty*price))FROM `dtb_purchase_detail` WHERE `purchase_id` = `dtb_purchase`.`id`) as total, (SELECT ((SUM(qty*price)*10/100)) FROM `dtb_purchase_detail` WHERE `purchase_id` = `dtb_purchase`.`id`) as tax, (SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) FROM `dtb_purchase_detail` WHERE `purchase_id` = `dtb_purchase`.`id`) as total_all FROM `dtb_purchase` WHERE `order_id` = ? ORDER BY `purchase_date` ASC",
             array($order_id)
         );
     }

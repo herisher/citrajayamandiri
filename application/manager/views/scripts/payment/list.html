@@ -4,97 +4,75 @@
   <div id="contents_in">
 
     <div id="contents_title">
-			<?= $this->subtitle ?>
+            <?= $this->subtitle ?>
     </div>
 
     <!--検索フォーム-->
     <div class="contents_space">
-      <form name="form2" method="post" action="/manager/purchase/list">
+      <form name="form2" method="post" action="/manager/payment/list">
       <table width="100%" border="0" cellpadding="5">
         <tr>
-          <td width="30%" class="color2">管理ID</td>
+          <td width="30%" class="color2">ID</td>
           <td width="70%" class="color_gray" colspan="3">
             <?= $this->form->getElement('id') ?>
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">ニックネーム</td>
+          <td width="30%" class="color2">Payment No.</td>
           <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('nickname') ?>
+            <?= $this->form->getElement('payment_no') ?>
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">メールアドレス</td>
+          <td width="30%" class="color2">Invoice No.</td>
           <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('email') ?>
+            <?= $this->form->getElement('invoice_no') ?>
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">表示</td>
+          <td width="30%" class="color2">Payment Date</td>
           <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('disp_flag') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">アイテム名</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('purchase_name') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">通報数</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('reports') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">通報日</td>
-          <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('report_date_start') ?> - <?= $this->form->getElement('report_date_end') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">登録日時</td>
-          <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('create_date_start') ?> - <?= $this->form->getElement('create_date_end') ?>
+            <?= $this->form->getElement('payment_date_start') ?> ~ <?= $this->form->getElement('payment_date_end') ?>
           </td>
         </tr>
         <tr>
           <td colspan="4" align="center">
-            <input type="submit" class="input_b2" name="search" value="検索" />&nbsp;&nbsp;
-            <input type="submit" class="input_b2" name="csv" value="CSVダウンロード" />&nbsp;&nbsp;
-            <input type="submit" class="input_b2" name="clear" value="クリア" />
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <!--input type="submit" class="input_b2" name="csv" value="CSVダウンロード" /-->
+            <input type="submit" class="input_b2" name="clear" value="Clear" />
           </td>
         </tr>
       </table>
       </form>
 
       <!--ページャ-->
-      <form name="form1" method="post" action="/manager/purchase/list">
+      <form name="form1" method="post" action="/manager/payment/list">
       <?= $this->render('pager.html') ?>
       </form>
 
       <!--一覧-->
       <table width="100%" border="0" cellpadding="5">
-        <tr>
-          <td class="color">管理ID</td>
-          <td class="color">ニックネーム</td>
-          <td class="color">表示</td>
-          <td class="color">アイテム名</td>
-          <td class="color">イメージ</td>
-          <td class="color">編集</td>
-          <td class="color">削除</td>
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Payment No.</td>
+          <td class="color">Payment Date</td>
+          <td class="color">Jumlah Invoice</td>
+          <td class="color">Total Invoice (Rp)</td>
+          <td class="color">Detail</td>
+          <td class="color">Print</td>
+          <td class="color">Delete</td>
         </tr>
 <?php foreach ($this->models as $model) : ?>
         <tr>
           <td align="center"><?= $model['id'] ?></td>
-          <td align="left"><?= $model['nickname'] ?></td>
-          <td align="center"><?= ($model['disp_flag']) ? '○' : '×'; ?></td>
-          <td align="left"><?= $model['purchase_name'] ?></td>
-          <td align="left"><img src="<?= $model['thumb_url'] ?>"></td>
-          <td align="center"><a href="/manager/purchase/edit/id/<?= $model['id'] ?>">編集</a></td>
+          <td align="left"><?= $model['payment_no'] ?></td>
+          <td align="center"><?= ($model['payment_date']) ?></td>
+          <td align="right"><?= count($model['detail']) ?></td>
+          <td align="right"><?= ($model['total']) ?></td>
+          <td align="center"><a href="/manager/payment/detail/id/<?= $model['id'] ?>">Detail</a></td>
+          <td align="center"><a href="/manager/payment/print/id/<?= $model['id'] ?>" target="_blank">Print</a></td>
           <td align="center">
-          <a href="#" onClick="confirmDelete('/manager/purchase/delete/id/<?= $model['id'] ?>');return false;">削除</a>
+          <a href="#" onClick="confirmDelete('/manager/payment/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
           </td>
         </tr>
 <?php endforeach ; ?>

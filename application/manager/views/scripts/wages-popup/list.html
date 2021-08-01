@@ -19,13 +19,13 @@
 <?php if($this->need_close): ?>
 //<![CDATA[
 window.close();
-window.opener.document.form2.action = "/manager/purchase/create?select=1";
+window.opener.document.form2.action = "/manager/wages/create?select=1";
 window.opener.document.form2.submit();
 //]]>
 <?php endif; ?>
 
 function doSelect(id) {
-  document.form2.action = "/manager/purchase-popup/list?select="+id;
+  document.form2.action = "/manager/wages-popup/list?select="+id;
   document.form2.submit();
 }
 
@@ -44,7 +44,7 @@ function doSelect(id) {
 
     <!--検索フォーム-->
     <div class="contents_space">
-      <form name="form2" method="post" action="/manager/purchase-popup/list">
+      <form name="form2" method="post" action="/manager/wages-popup/list">
         <table width="100%" border="0" cellpadding="5">
           <tr>
             <td width="30%" class="color2">ID</td>
@@ -92,7 +92,7 @@ function doSelect(id) {
       </form>
 
       <!--ページャ-->
-      <form name="form1" method="post" action="/manager/purchase-popup/list">
+      <form name="form1" method="post" action="/manager/wages-popup/list">
       <?= $this->render('pager.html') ?>
       <!--一覧-->
       <table width="100%" border="0" cellpadding="5">

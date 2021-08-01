@@ -2,14 +2,14 @@
 /**
  *  カテゴリ管理
  */
-class Manager_PurchaseController extends ManagerBaseController {
-    const NAMESPACE_LIST = '/manager/purchase/list';
+class Manager_WagesController extends ManagerBaseController {
+    const NAMESPACE_LIST = '/manager/wages/list';
 
     /**
      * 検索条件作成
      */
     private function createWherePhrase($order_by = 'create_date desc') {
-        $table = $this->model('Dao_Purchase');
+        $table = $this->model('Dao_Wages');
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
 
         // セッションから検索条件を復元する
@@ -24,8 +24,8 @@ class Manager_PurchaseController extends ManagerBaseController {
                 if ( $key === 'order_no' && $value != null ) {
                     $where['order_id IN (SELECT id FROM dtb_order WHERE order_no = ?)'] = $value;
                 }
-                if ( $key === 'purchase_no' && $value != null ) {
-                    $where['purchase_no LIKE ?'] = '%'.$value.'%';
+                if ( $key === 'wages_no' && $value != null ) {
+                    $where['wages_no LIKE ?'] = '%'.$value.'%';
                 }
                 if ( $key === 'article' && $value != null ) {
                     $where['product_id IN (SELECT id FROM dtb_product WHERE article LIKE ?)'] = '%'.$value.'%';
@@ -33,14 +33,14 @@ class Manager_PurchaseController extends ManagerBaseController {
                 if ( $key === 'project' && $value != null ) {
                     $where['product_id IN (SELECT id FROM dtb_product WHERE project LIKE ?)'] = '%'.$value.'%';
                 }
-                if ( $key === 'purchase_type' && $value != null ) {
-                    $where['purchase_type = ?'] = $value;
+                if ( $key === 'wages_type' && $value != null ) {
+                    $where['wages_type = ?'] = $value;
                 }
-                if ( $key === 'purchase_date_start' && $value != null ) {
-                    $where['date(purchase_date) >= ?'] = $value;
+                if ( $key === 'wages_date_start' && $value != null ) {
+                    $where['date(wages_date) >= ?'] = $value;
                 }
-                if ( $key === 'purchase_date_end' && $value != null ) {
-                    $where['date(purchase_date) <= ?'] = $value;
+                if ( $key === 'wages_date_end' && $value != null ) {
+                    $where['date(wages_date) <= ?'] = $value;
                 }
                 if ( $key === 'create_date_start' && $value != null ) {
                     $where['date(create_date) >= ?'] = $value;
@@ -75,8 +75,8 @@ class Manager_PurchaseController extends ManagerBaseController {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
-        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['order_by']);
+        $form->getElement('wages_type')->setMultiOptions(array('' => '▼Choose') + Dao_Wages::$statics['wages_type']);
+        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Wages::$statics['order_by']);
         
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {
@@ -107,15 +107,15 @@ class Manager_PurchaseController extends ManagerBaseController {
         // print_r($this->view->paginator);
         foreach ($this->view->paginator as $model) {
             $model = $model->toArray();
-            $model['disp_type'] = Dao_Purchase::$statics['purchase_type'][$model['purchase_type']];
+            $model['disp_type'] = Dao_Wages::$statics['wages_type'][$model['wages_type']];
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
-            $this_total = $this->db()->fetchRow("SELECT (SUM(qty*price)+(SUM(qty*price)*10/100)) as total FROM dtb_purchase_detail WHERE purchase_id = ?", $model['id']);
+            $this_total = $this->db()->fetchRow("SELECT (SUM(qty*price)) as total FROM dtb_wages_detail WHERE wages_id = ?", $model['id']);
             $model['total'] = $this_total["total"];
             array_push($models, $model);
         }
         $this->view->models = $models;
-        $this->view->subtitle = "Purchase List";
+        $this->view->subtitle = "Wages List";
     }
 
     /**
@@ -201,7 +201,7 @@ class Manager_PurchaseController extends ManagerBaseController {
     public function detailAction() {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
-            $model = $this->model('Dao_Purchase')->retrieve($id);
+            $model = $this->model('Dao_Wages')->retrieve($id);
             
             if (!$model) {
                 $this->view->error_str = 'Data does not exist or has been deleted.';
@@ -214,17 +214,16 @@ class Manager_PurchaseController extends ManagerBaseController {
             $order = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['order_no'] = $order['order_no'];
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
-            $model['disp_type'] = isset(Dao_Purchase::$statics['purchase_type'][$model['purchase_type']]) ? Dao_Purchase::$statics['purchase_type'][$model['purchase_type']] : "";
             $this->view->model = $model;
             
-            $models = $this->model('Logic_Purchase')->getDetail($id);
+            $models = $this->model('Logic_Wages')->getDetail($id);
             $this->view->models = $models;
         } else {
             $this->view->error_str = 'Data does not exist or has been deleted.';
             $this->_forward('error', 'Error');
             return;
         }
-        $this->view->subtitle = "Purchase Detail";
+        $this->view->subtitle = "Wages Detail";
     }
 
     /**
@@ -252,7 +251,6 @@ class Manager_PurchaseController extends ManagerBaseController {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
         
         if ($session->order_list) {
             // $form = $this->model("Logic_DeliveryDetail")->getAllAsForm(null, $form, $session->order_list['id']);
@@ -260,8 +258,8 @@ class Manager_PurchaseController extends ManagerBaseController {
             $this->view->order_list = $session->order_list;
         }
         
-        if ($session->material_list) {
-            $this->view->material_list = $session->material_list;
+        if ($session->work_list) {
+            $this->view->work_list = $session->work_list;
         }
         
         // エラーチェック
@@ -282,10 +280,10 @@ class Manager_PurchaseController extends ManagerBaseController {
             $session->order_list = null;
             $this->view->models = $session->order_list;
             $this->view->order_list = $session->order_list;
-            $this->view->material_list = $session->material_list;
+            $this->view->work_list = $session->work_list;
             $form->setDefault('quantity', 0);
         }
-        $this->view->subtitle = "Purchase Create";
+        $this->view->subtitle = "Wages Create";
     }
 
     /**
@@ -293,43 +291,27 @@ class Manager_PurchaseController extends ManagerBaseController {
      */
     private function doCreate($form, $params) {
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-        $table = $this->model('Dao_Purchase');
-        $tableDetail = $this->model('Dao_PurchaseDetail');
+        $table = $this->model('Dao_Wages');
+        $tableDetail = $this->model('Dao_WagesDetail');
         
         $order = $this->model('Dao_Order')->retrieve($session->order_list['id']);
 
-        if( $order['status_flag'] == 4 ) {
-            $table_order = $this->model('Dao_Order');
-            $model_id = $table_order->update(
-                array(
-                    'status_flag'       => 0,   //Process
-                    'update_date'       => new Zend_Db_Expr('now()'),
-                ),
-                $table_order->getAdapter()->quoteInto(
-                    'id = ?', $order['id']
-                )
-            );
-        }
-
         $model_id = $table->insert(
             array(
-                'purchase_no'       => $form->getValue('purchase_no'),
-                'purchase_date'     => $form->getValue('purchase_date'),
-                'order_id'          => $session->order_list['id'],
-                'product_id'        => $order['product_id'],
-                'purchase_type'     => $form->getValue('purchase_type'),
-                'description'       => $form->getValue('description'),
-                'update_date'       => new Zend_Db_Expr('now()'),
-                'create_date'       => new Zend_Db_Expr('now()'),
+                'order_id'       => $session->order_list['id'],
+                'product_id'     => $order['product_id'],
+                'description'    => $form->getValue('description'),
+                'update_date'    => new Zend_Db_Expr('now()'),
+                'create_date'    => new Zend_Db_Expr('now()'),
             )
         );
 
         $i = 0;
-        foreach ($_POST['material_id'] as $key => $value) {
+        foreach ($_POST['work_id'] as $key => $value) {
             $detail_id = $tableDetail->insert(
                 array(
-                    'purchase_id'   => $model_id,
-                    'material_id'   => $value,
+                    'wages_id'      => $model_id,
+                    'work_id'       => $value,
                     'qty'           => $_POST['qty'][$i],
                     'bom'           => $_POST['bom'][$i],
                     'price'         => $_POST['price'][$i],
@@ -351,16 +333,16 @@ class Manager_PurchaseController extends ManagerBaseController {
         $id = $this->getRequest()->getParam('id');
         if ( $id && preg_match("/^\d+$/", $id) ) {
 			//get delivery detail
-            $model = $this->model('Dao_Purchase')->retrieve($id);
+            $model = $this->model('Dao_Wages')->retrieve($id);
             $model = $model->toArray();
 			
             // delete delivery
-            $table = $this->model('Dao_Purchase');
+            $table = $this->model('Dao_Wages');
             $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
 			
 			//delete delivery detail
             $this->db()->query(
-                "DELETE FROM `dtb_purchase_detail` WHERE `purchase_id` = ?", $id
+                "DELETE FROM `dtb_wages_detail` WHERE `wages_id` = ?", $id
             );
 			
             $this->gobackList();

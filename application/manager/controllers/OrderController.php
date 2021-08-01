@@ -140,7 +140,8 @@ class Manager_OrderController extends ManagerBaseController {
             
             $this->view->delivery = $this->model('Logic_Delivery')->getAllByOrderId($id);
             $this->view->invoice = $this->model('Logic_Invoice')->getAllByOrderId($id);
-            $this->view->purchase = $this->model('Logic_Purchase')->getAllByOrderId($id);            
+            $this->view->purchase = $this->model('Logic_Purchase')->getAllByOrderId($id);
+            $this->view->wages = $this->model('Logic_Wages')->getAllByOrderId($id);
         } else {
             $this->view->error_str = 'Data does not exist or has been deleted.';
             $this->_forward('error', 'Error');
@@ -164,9 +165,9 @@ class Manager_OrderController extends ManagerBaseController {
             $error_str['description'] = 'Price changed. Please input old price.';
         }
         
-        if( $model['quantity'] > $form->getValue('quantity') && $form->getValue('status_flag') ) {
-            $error_str['status_flag'] = 'Please check this status.';
-        }
+        // if( $model['quantity'] > $form->getValue('quantity') && $form->getValue('status_flag') ) {
+        //     $error_str['status_flag'] = 'Please check this status.';
+        // }
         
         if(count($error_str)) {
             $this->view->error_str = $error_str;

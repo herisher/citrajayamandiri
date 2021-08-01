@@ -19,13 +19,12 @@
 <?php if($this->need_close): ?>
 //<![CDATA[
 window.close();
-window.opener.document.form2.action = "/manager/purchase/create?select=1";
 window.opener.document.form2.submit();
 //]]>
 <?php endif; ?>
 
 function doSelect(id) {
-  document.form2.action = "/manager/purchase-popup/list?select="+id;
+  document.form2.action = "/manager/wages-popup/work?select="+id;
   document.form2.submit();
 }
 
@@ -39,47 +38,23 @@ function doSelect(id) {
   <div id="contents_in">
 
     <div id="contents_title">
-      Order List
+      Type of Work List
     </div>
 
     <!--検索フォーム-->
     <div class="contents_space">
-      <form name="form2" method="post" action="/manager/purchase-popup/list">
+      <form name="form2" method="post" action="/manager/wages-popup/work">
         <table width="100%" border="0" cellpadding="5">
           <tr>
             <td width="30%" class="color2">ID</td>
             <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('id') ?>
+				        <?= $this->form->getElement('id') ?>
             </td>
           </tr>
           <tr>
-            <td width="30%" class="color2">Order No.</td>
+            <td width="30%" class="color2">Name</td>
             <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('order_no') ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="30%" class="color2">Status</td>
-            <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('status_flag') ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="30%" class="color2">Payment</td>
-            <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('payment_flag') ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="30%" class="color2">Project</td>
-            <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('project') ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="30%" class="color2">Article</td>
-            <td width="70%" class="color_gray" colspan="3">
-                <?= $this->form->getElement('article') ?>
+                <?= $this->form->getElement('name') ?>
             </td>
           </tr>
           <tr>
@@ -92,29 +67,19 @@ function doSelect(id) {
       </form>
 
       <!--ページャ-->
-      <form name="form1" method="post" action="/manager/purchase-popup/list">
+      <form name="form1" method="post" action="/manager/wages-popup/work">
       <?= $this->render('pager.html') ?>
       <!--一覧-->
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
           <td class="color">ID</td>
-          <td class="color">Order No.</td>
-          <td class="color">Quantity</td>
-          <td class="color">Status</td>
-          <td class="color">Plan</td>
-          <td class="color">Project</td>
-          <td class="color">Article</td>
+          <td class="color">Name</td>
           <td class="color">Select</td>
         </tr>
 <?php foreach ($this->models as $model) : ?>
         <tr>
           <td align="center"><?= $model['id'] ?></td>
-          <td align="center"><?= $model['order_no'] ?></td>
-          <td align="center"><?= number_format($model['quantity']) ?></td>
-          <td align="center"><?= $model['disp_status'] ?></td>
-          <td align="center"><?= $model['plan'] ?></td>
-          <td align="center"><?= $model['project'] ?></td>
-          <td align="left"><?= $model['article'] ?></td>
+          <td align="left"><?= $model['name'] ?></td>
           <td align="left"><input type="button" onClick="doSelect(<?=$model['id']?>)" class="input_b2" name="select" value="Select"></td>
         </tr>
 <?php endforeach ; ?>
