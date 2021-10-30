@@ -109,22 +109,28 @@
           <td class="color">Edit</td>
           <td class="color">Delete</td>
         </tr>
-<?php foreach ($this->models as $model) : ?>
-        <tr>
-          <td align="left"><?= $model['id'] ?></td>
-          <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
-          <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['product']['project']) ?></a></td>
-          <td align="left"><?= $model['product']['article'] ?></td>
-          <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="left"><?= $model['plan'] ?></td>
-          <td align="left"><?= $model['disp_status'] ?></td>
-          <td align="left"><?= $model['disp_payment'] ?></td>
-          <td align="center"><a href="/manager/order/edit/id/<?= $model['id'] ?>">Edit</a></td>
-          <td align="center">
-          <a href="#" onClick="confirmDelete('/manager/order/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
-          </td>
-        </tr>
-<?php endforeach ; ?>
+        <?php if( count($this->models) ) : ?>
+          <?php foreach ($this->models as $model) : ?>
+            <tr>
+              <td align="left"><?= $model['id'] ?></td>
+              <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
+              <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['product']['project']) ?></a></td>
+              <td align="left"><?= $model['product']['article'] ?></td>
+              <td align="right"><?= number_format($model['quantity']) ?></td>
+              <td align="left"><?= $model['plan'] ?></td>
+              <td align="left"><?= $model['disp_status'] ?></td>
+              <td align="left"><?= $model['disp_payment'] ?></td>
+              <td align="center"><a href="/manager/order/edit/id/<?= $model['id'] ?>">Edit</a></td>
+              <td align="center">
+              <a href="#" onClick="confirmDelete('/manager/order/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
+              </td>
+            </tr>
+          <?php endforeach ; ?>
+        <?php else : ?>
+          <tr>
+            <td colspan="10">No Data</td>
+          </tr>
+        <?php endif; ?>
       </table>
 
     </div>

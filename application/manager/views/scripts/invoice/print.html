@@ -50,8 +50,7 @@ $(document).ready(function(){
         <td style="height: 5px"></td>
     </tr>
     <tr>
-        <td>Invoice No. : <?= $this->rs["invoice_no"] ?></td>
-        <td>Invoice Date : <?= date('j M Y',strtotime($this->rs["invoice_date"])) ?></td>
+        <td colspan="2">Invoice No. : <?= $this->rs["invoice_no"] ?></td>
     </tr>
     <tr>
         <td colspan="2">
@@ -105,6 +104,8 @@ $(document).ready(function(){
         </table>
         </td>
     </tr>
+        <td>&nbsp;</td>
+        <td align="center"><span>Depok, <?= date('j M Y',strtotime($this->rs["tax_date"])) ?></span></td>
     <tr>
         <td style="height: 25px"></td>
         <td style="height: 25px"></td>

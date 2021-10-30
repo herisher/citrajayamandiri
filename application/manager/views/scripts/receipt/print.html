@@ -49,7 +49,7 @@ $(document).ready(function(){
                     <td>NO. INVOICE</td>
                     <td>NO. FAKTUR PAJAK</td>
                     <td>TANGGAL INVOICE</td>
-                    <td>TANGGAL JATUH TEMPO</td>
+                    <td>TANGGAL KIRIM BARANG</td>
                     <td>QTY</td>
                     <td>DPP (Rp)</td>
                     <td>PPN (Rp)</td>
@@ -67,8 +67,8 @@ $(document).ready(function(){
                     <td align="center"><?= $i++ ?></td>
                     <td><?= $rs3["invoice_no"] ?></td>
                     <td><?= $rs3["tax_no"] ?></td>
+                    <td><?= date('j M Y',strtotime($rs3["tax_date"])) ?></td>
                     <td><?= date('j M Y',strtotime($rs3["invoice_date"])) ?></td>
-                    <td><?= date('j M Y',strtotime($rs3["due_date"])) ?></td>
                     <td align="right"><?= number_format($rs3["quantity"])?></td>
                     <td align="right"><?= number_format($rs3["total_min_discount"])?></td>
                     <td align="right"><?= number_format($rs3["tax"])?></td>

@@ -11,6 +11,9 @@
                 });
             }
         });
+        $("#tax_date").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
         $(".inputwidth1").change(function(){
             var total = $('#quantity').val() * $('#price').val();
             var tot_disc = total - $('#discount').val();
@@ -72,6 +75,13 @@
           <td class="color_gray">
             <?= my_mb_error($this->error_str, 'tax_no') ?>
             <?= $this->form->getElement('tax_no') ?> 
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Tax Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'tax_date') ?>
+            <?= $this->form->getElement('tax_date') ?> 
           </td>
         </tr>
         <tr>
