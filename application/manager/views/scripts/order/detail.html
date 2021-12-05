@@ -284,35 +284,44 @@
           <td class="color">ID</td>
           <td class="color">Invoice No.</td>
           <td class="color">Delivery ID</td>
+          <td class="color">Price</td>
           <td class="color">Invoice Date</td>
           <td class="color">Due Date</td>
+          <td class="color">Qty</td>
           <td class="color">Total (Inc. Discount)</td>
         </tr>
         <?php 
             $total = 0;
+            $total_qty = 0;
             foreach ($this->invoice as $model) : ?>
         <tr>
           <td align="left"><?= $model['id'] ?></td>
           <td align="left"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>"><?= $model['invoice_no'] ?></a></td>
           <td align="left"><?= $model['delivery_id'] ?></td>
+          <td align="right"><?= number_format($model['price']) ?></td>
           <td align="left"><?= $model['invoice_date'] ?></td>
           <td align="left"><?= $model['due_date'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
           <td align="right"><?= number_format($model['total_min_discount']) ?></td>
         </tr>
         <?php 
             $total += $model['total_min_discount'];
+            $total_qty += $model['quantity'];
             endforeach ; 
             $ppn = $total/10;
             $all_total_invoice = $total + $ppn;
         ?>
         <tr>
-          <td class="color2" colspan="5">Total</td>
+          <td class="color2" colspan="6">Total</td>
+          <td class="color_gray" align="right">
+            <?= number_format($total_qty) ?>
+          </td>
           <td class="color_gray" align="right">
             <?= number_format($total) ?>
           </td>
         </tr>
         <tr>
-          <td class="color2" colspan="5">Total + PPn</td>
+          <td class="color2" colspan="7">Total + PPn</td>
           <td class="color_gray" align="right">
             <?= number_format($all_total_invoice) ?>
           </td>
