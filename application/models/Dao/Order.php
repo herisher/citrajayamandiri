@@ -26,9 +26,13 @@ class Dao_Order extends Dao_Base {
             '1' => 'Received',
         ),
         'order_by' => array(
-            'plan desc' => 'plan',
-            'order_no desc' => 'order no',
-            'update_date desc' => 'update date'
+            'plan desc' => 'Plan',
+            'order_no desc' => 'Order No',
+            'update_date desc' => 'Update Date'
+        ),
+        'outstanding_order' => array(
+            "`p`.`project`" => 'Project'
         ),
     );
 }
+ 

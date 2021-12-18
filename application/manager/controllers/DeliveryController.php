@@ -288,18 +288,22 @@ class Manager_DeliveryController extends ManagerBaseController {
         $this->model("Logic_DeliveryDetail")->doSave($model_id, $params, $session->order_list['id']);
         
         if( $form->getValue('quantity_ori') == $form->getValue('quantity') ) {
-            $model_id = $this->model('Dao_Order')->update(
-                array(
-                    'status_flag'           => 1, //delivery finish
-                    'finish_delivery_date'  => $form->getValue('delivery_date'),
-                    'update_date'           => new Zend_Db_Expr('now()'),
-                ),
-                $this->model('Dao_Order')->getAdapter()->quoteInto(
-                    'id = ?', $session->order_list['id']
-                )
-            );
+            $status = 1;
+        } else {
+            $status = 0;
         }
         
+        $model_id = $this->model('Dao_Order')->update(
+            array(
+                'status_flag'           => $status, //delivery finish
+                'finish_delivery_date'  => $form->getValue('delivery_date'),
+                'update_date'           => new Zend_Db_Expr('now()'),
+            ),
+            $this->model('Dao_Order')->getAdapter()->quoteInto(
+                'id = ?', $session->order_list['id']
+            )
+        );
+
         Zend_Session::namespaceUnset(self::NAMESPACE_LIST);
         $this->gobackList();
     }

@@ -29,17 +29,17 @@
           </td>
         </tr>
         <tr>
-          <td class="color2">Price</td>
-          <td class="color_gray">
-            <?php if (isset($this->error_str['price'])) : ?><font color="#FF0000"><?= $this->error_str['price'] ?></font><br><?php endif ?>
-            <?= $this->form->getElement('price') ?> 
-          </td>
-        </tr>
-        <tr>
           <td class="color2">BOM</td>
           <td class="color_gray">
             <?php if (isset($this->error_str['bom'])) : ?><font color="#FF0000"><?= $this->error_str['bom'] ?></font><br><?php endif ?>
             <?= $this->form->getElement('bom') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Price</td>
+          <td class="color_gray">
+            <?php if (isset($this->error_str['price'])) : ?><font color="#FF0000"><?= $this->error_str['price'] ?></font><br><?php endif ?>
+            <?= $this->form->getElement('price') ?> 
           </td>
         </tr>
         <tr>

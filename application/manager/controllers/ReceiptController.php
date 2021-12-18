@@ -335,7 +335,7 @@ class Manager_ReceiptController extends ManagerBaseController {
             $this->_forward('error', 'Error');
             return;
         }
-        $this->view->subtitle = "Receipt Edit";
+        $this->view->subtitle = "Receipt Print";
     }
 
 }

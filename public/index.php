@@ -24,7 +24,7 @@ if (get_magic_quotes_gpc()) {
 */
 
 // デフォルトタイムゾーンの設定
-date_default_timezone_set('Asia/Tokyo');
+date_default_timezone_set('Asia/Jakarta');
 
 // エラーチェックを非常に厳密に行う
 error_reporting(E_ALL|E_STRICT);

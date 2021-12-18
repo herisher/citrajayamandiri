@@ -153,7 +153,9 @@
           <td colspan="2" align="center">
             <input type="button" class="input_b2" value="Back" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/goback-list';" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="button" class="input_b2" name="edit" value="Edit" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/edit/id/<?= $this->model['id'] ?>';" /></td>
+            <input type="button" class="input_b2" name="edit" value="Edit" onClick="javascript:window.location='/manager/<?= $this->class_name ?>/edit/id/<?= $this->model['id'] ?>';" />
+            <a class="input_b2" href="/manager/order/print" target="_blank">Print</a>
+          </td>
         </tr>
       </table>
     </form>

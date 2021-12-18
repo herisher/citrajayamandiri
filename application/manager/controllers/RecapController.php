@@ -107,20 +107,11 @@ class Manager_RecapController extends ManagerBaseController {
                 if ( $key === 'status' && $value != null ) {
                     $where['status = ?'] = $value;
                 }
-                if ( $key === 'payment_status' && $value != null ) {
-                    $where['payment_status = ?'] = $value;
-                }
                 if ( $key === 'invoice_date_start' && $value != null ) {
                     $where['date(delivery_date) >= ?'] = $value;
                 }
                 if ( $key === 'invoice_date_end' && $value != null ) {
                     $where['date(delivery_date) <= ?'] = $value;
-                }
-                if ( $key === 'due_date_start' && $value != null ) {
-                    $where['date(due_date) >= ?'] = $value;
-                }
-                if ( $key === 'due_date_end' && $value != null ) {
-                    $where['date(due_date) <= ?'] = $value;
                 }
                 if ( $key === 'order_by' && $value != null ) {
                     $order_by = $value;
@@ -230,7 +221,7 @@ class Manager_RecapController extends ManagerBaseController {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['status']);
+        $form->getElement('status')->setMultiOptions(array('' => '▼Choose') + Dao_Delivery::$statics['status']); 
         $form->getElement('payment_status')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['payment_status']);
         $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Invoice::$statics['order_by']);
         
@@ -266,6 +257,7 @@ class Manager_RecapController extends ManagerBaseController {
         foreach ($mod as $model) {
             $model['order'] = $this->model('Dao_Order')->retrieve($model['order_id']);
             $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $model['disp_status'] = Dao_Delivery::$statics['status'][$model['status']];
             $total += $model['quantity'];
             array_push($models, $model);
         }

@@ -1,0 +1,119 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#delivery_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#delivery_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/outstanding/list">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">Year</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('year') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Status</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('status_flag') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order By</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_by') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="clear" value="Clear" />&nbsp;&nbsp;
+            <a class="input_b2" href="/manager/outstanding/print" target="_blank">Print</a>&nbsp;&nbsp;
+            <a class="input_b2" href="/manager/outstanding/print-purchase" target="_blank">Print Purchase</a>
+          </td>
+        </tr>
+      </table>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">No.</td>
+          <td class="color">Week</td>
+          <td class="color">Plan</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Total (Ps)</td>
+          <td class="color">Delivery (Ps)</td>
+          <td class="color">Outstanding (Ps)</td>
+        </tr>
+<?php 
+    $quantity = 0;
+    $delivery = 0;
+    $outstanding = 0;
+    $i = 1;
+    foreach ($this->models as $model) : 
+?>
+        <tr class="color_gray">
+          <td align="left"><?= $i++ ?></td>
+          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= $model['plan'] ?></td>
+          <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
+          <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['project']) ?></a></td>
+          <td align="left"><?= $model['article'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="right"><?= number_format($model['delivery']) ?></td>
+          <td align="right"><?= number_format($model['outstanding']) ?></td>
+        </tr>
+        <tr>
+          <td colspan="9">
+            <?php
+              foreach( $model["order_detail"] as $ord_det ) :
+            ?>
+            <div style="margin: 10px; float: left;">
+            <?php if( count($model['delivery_detail']) ) : ?>
+            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] - $model['delivery_detail'][$ord_det['size']] ?>
+            <?php else : ?>
+            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] ?>
+            <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+          </td>
+        </tr>
+<?php 
+    $quantity += $model['quantity'];
+    $delivery += $model['delivery'];
+    $outstanding += $model['outstanding'];
+    endforeach ; 
+?>
+        <tr>
+          <td class="color2" colspan="6">Total</td>
+          <td class="color_gray" align="right"><?= number_format($quantity) ?></td>
+          <td class="color_gray" align="right"><?= number_format($delivery) ?></td>
+          <td class="color_gray" align="right"><?= number_format($outstanding) ?></td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->

@@ -10,17 +10,17 @@
     <form name="form2" method="post" enctype="multipart/form-data" action="/manager/product/create">
       <table width="100%" border="0" cellpadding="5">
         <tr>
-          <td width="20%" class="color2">Project</td>
-          <td width="80%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'project') ?>
-            <?= $this->form->getElement('project') ?>
-          </td>
-        </tr>
-        <tr>
           <td class="color2">Item No.</td>
           <td class="color_gray">
             <?= my_mb_error($this->error_str, 'product_no') ?>
             <?= $this->form->getElement('product_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="20%" class="color2">Project</td>
+          <td width="80%" class="color_gray">
+            <?= my_mb_error($this->error_str, 'project') ?>
+            <?= $this->form->getElement('project') ?>
           </td>
         </tr>
         <tr>

@@ -72,21 +72,9 @@
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">Payment Status</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('payment_status') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Invoice Date</td>
+          <td class="color2">Delivery Date</td>
           <td class="color_gray" colspan="3">
             <?= $this->form->getElement('invoice_date_start') ?> - <?= $this->form->getElement('invoice_date_end') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Due Date</td>
-          <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('due_date_start') ?> - <?= $this->form->getElement('due_date_end') ?>
           </td>
         </tr>
         <tr>
@@ -120,6 +108,7 @@
           <td class="color">Project</td>
           <td class="color">Article</td>		  
           <td class="color">Qty</td>
+          <td class="color">Status</td>
           <td class="color">Edit</td>
           <td class="color">Print</td>
           <td class="color">Delete</td>
@@ -134,6 +123,7 @@
           <td align="left"><?= h($model['product']['project']) ?></td>
           <td align="left"><?= $model['product']['article'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="left"><?= $model['disp_status'] ?></td>
           <td align="center"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>">Edit</a></td>
           <td align="center"><a href="/manager/invoice/print/id/<?= $model['id'] ?>">Print</a></td>
           <td align="center">

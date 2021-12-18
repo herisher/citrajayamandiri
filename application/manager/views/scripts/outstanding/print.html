@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Citra Jaya Mandiri</title>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<style type="text/css">
+    #detail tr td{
+        padding: 5px;
+    }
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+     window.print();
+});
+</script>
+</head>
+
+<body>
+
+<table align="center">
+    <tr>
+        <td colspan="3">Sasak Panjang, <?php echo date('j M Y');?></td>
+    </tr>
+    <tr>
+        <td colspan="3" style="font-size:16pt">
+          <strong>OUTSTANDING CV. CITRA JAYA MANDIRI</strong>
+          <strong>YEAR : <?= $this->year ?></strong>
+        </td>
+    </tr>
+    <!-- <tr>
+        <td colspan="3" style="font-size:16pt">
+          <strong>DELIVERY PLAN CV. CITRA JAYA MANDIRI</strong><br>
+          <strong>DATE : 21-12-2021</strong>
+        </td>
+    </tr> -->
+    <tr>
+        <td colspan="3" style="font-size:0pt"><hr/></td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <table border="1" cellpadding="0" cellspacing="0" id="detail">
+              <thead>
+                <tr align="center" style="font-weight:bold">
+                  <th class="color">No.</th>
+                  <th class="color">Week</th>
+                  <th class="color">Plan</th>
+                  <th class="color">Order No.</th>
+                  <th class="color">Project</th>
+                  <th class="color">Article</th>
+                  <th class="color">Total (Ps)</th>
+                  <th class="color">Delivery (Ps)</th>
+                  <th class="color">Outstanding (Ps)</th>
+                </tr>
+              </thead>
+<?php 
+    $quantity = 0;
+    $delivery = 0;
+    $outstanding = 0;
+    $i = 1;
+    foreach ($this->models as $model) : 
+?>
+        <tr class="color_gray" style="font-weight: bolder;">
+          <td align="left" style="height: 35px"><?= $i++ ?>.</td>
+          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= $model['plan'] ?></td>
+          <td align="left"><?= $model['order_no'] ?></td>
+          <td align="left"><?= ($model['project']) ?></td>
+          <td align="left"><?= $model['article'] ?></td>
+          <td align="right"><?= number_format($model['quantity']) ?></td>
+          <td align="right"><?= number_format($model['delivery']) ?></td>
+          <td align="right"><?= number_format($model['outstanding']) ?></td>
+        </tr>
+        <tr>
+          <td colspan="9">
+            <?php
+              foreach( $model["order_detail"] as $ord_det ) :
+            ?>
+            <div style="margin: 5px; float: left;">
+            <?php if( count($model['delivery_detail']) ) : ?>
+            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] - $model['delivery_detail'][$ord_det['size']] ?>;
+            <?php else : ?>
+            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] ?>;
+            <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+          </td>
+        </tr>
+<?php 
+    $quantity += $model['quantity'];
+    $delivery += $model['delivery'];
+    $outstanding += $model['outstanding'];
+    endforeach ; 
+?>
+        <tr style="font-weight: bolder;">
+          <td class="color2" colspan="6">Total</td>
+          <td class="color_gray" align="right"><?= number_format($quantity) ?></td>
+          <td class="color_gray" align="right"><?= number_format($delivery) ?></td>
+          <td class="color_gray" align="right"><?= number_format($outstanding) ?></td>
+        </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>
