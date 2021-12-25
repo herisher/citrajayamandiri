@@ -86,7 +86,9 @@ class Manager_OutstandingController extends ManagerBaseController {
         $model = $this->model('Logic_Order')->getOutstandingByYear($session);
         $this->view->subtitle = "Outstanding List";
         $year = (isset($session->post['year']) && ($session->post['year']!='')) ? $session->post['year'] : date('Y');
+        $status = (isset($param->post['status_flag']) && ($param->post['status_flag']!='')) ? Dao_Order::$statics['status_flag'][$param->post['status_flag']] : "MATERIAL READY";
         $this->view->year = $year;
+        $this->view->status = $status;
         $this->view->models = $model;
     }
 

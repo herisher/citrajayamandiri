@@ -1,9 +1,9 @@
-<?= $this->render('sidemenu/purchase.html') ?>
+<?= $this->render('sidemenu/product.html') ?>
 
 <script type="text/javascript" language="javascript">
 <!--
     $(function() {
-        $("#purchase_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#delivery_plan_date").datepicker({dateFormat: 'yy-mm-dd'});
 
         $('#material_table input').on('input', function() {
             var $tr = $(this).closest('tr'); // get tr which contains the input
@@ -28,21 +28,12 @@
         document.getElementById("quantity").value = sum;
     }
 
-    function openPopup() {
-        window.open("/manager/purchase-popup/list",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
+    function openPopupOrder() {
+        window.open("/manager/delivery-plan-popup",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
     }
     
-    function openPopupMaterial() {
-        window.open("/manager/purchase-popup/material",null,'width=800, height=500, menubar=no, toolbar=no, scrollbars=yes');
-    }
-    
-    function doDelete() {
-      document.form2.action = "/manager/purchase/create?delete=1";
-      document.form2.submit();
-    }
-    
-    function doDelete2($id) {
-      document.getElementById("material_"+$id).remove();
+    function doDelete($id) {
+      document.getElementById("order_"+$id).remove();
     }
     
 //-->
@@ -56,101 +47,68 @@
             <?= $this->subtitle ?>
     </div>
     <?=$this->tes?>
-    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/purchase/create">
+    <form name="form2" method="post" enctype="multipart/form-data" action="/manager/delivery-plan/create">
       <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td class="color2">Delivery Plan Date</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'delivery_plan_date') ?>
+            <?= $this->form->getElement('delivery_plan_date') ?>※YYYY-MM-DD
+          </td>
+        </tr>
         <tr>
           <td width="40%" class="color2">Order</td>
           <td width="60%" class="color_gray">
             <?= my_mb_error($this->error_str, 'order') ?>
-              <table width="100%" border="0" cellpadding="5">
-                <tr align="center">
-                  <td class="color">Order No.</td>
-                  <td class="color">Quantity</td>
-                  <td class="color">Project</td>
-                  <td class="color">Article</td>
-                  <td class="color">Delete</td>
-                </tr>
-              <?php if(count($this->order_list)) : ?>
-                <tr>
-                  <td align="center"><?= $this->order_list['order_no'] ?></td>
-                  <td align="center"><?= number_format($this->order_list['quantity']) ?></td>
-                  <td align="center"><?= h($this->order_list['project']) ?></td>
-                  <td align="center"><?= $this->order_list['article'] ?></td>
-                  <td align="center"><input type="button" onclick="doDelete();" name="delete" class="input_b1" value="Delete"></td>
-                </tr>
-              <?php endif; ?>
-                <tr>
-                  <td align="center" colspan="5">
-                    <input type="button" onclick="openPopup();" class="input_b2" value="Choose Order">
-                  </td>
-                </tr>
-              </table>
-          </td>
-        </tr>
-        <tr>
-          <td width="20%" class="color2">Purchase No</td>
-          <td width="80%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'purchase_no') ?>
-            <?= $this->form->getElement('purchase_no') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Purchase Date</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'purchase_date') ?>
-            <?= $this->form->getElement('purchase_date') ?>※YYYY-MM-DD
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Purchase Type</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'purchase_type') ?>
-            <?= $this->form->getElement('purchase_type') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Description</td>
-          <td class="color_gray">
-            <?= my_mb_error($this->error_str, 'description') ?>
-            <?= $this->form->getElement('description') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="40%" class="color2">Material</td>
-          <td width="60%" class="color_gray">
-            <?= my_mb_error($this->error_str, 'material') ?>
-            <input type="button" onclick="openPopupMaterial();" class="input_b2" value="Choose Material">
+            <input type="button" onclick="openPopupOrder();" class="input_b2" value="Choose Order">
           </td>
         </tr>
         <tr>
           <td width="100%" class="color_gray" colspan="2">
-            <?= my_mb_error($this->error_str, 'material') ?>
-              <table width="100%" border="0" cellpadding="5" id="material_table">
+            <?= my_mb_error($this->error_str, 'order') ?>
+              <table width="100%" border="0" cellpadding="5" id="order_table">
                 <tr align="center">
-                  <td class="color">Part No.</td>
-                  <td class="color">Material Name</td>
-                  <td class="color">Jumlah</td>
-                  <td class="color">Satuan</td>
-                  <td class="color">Harga</td>
-                  <td class="color">Total</td>
+                  <td class="color">No.</td>
+                  <td class="color">Plan</td>
+                  <td class="color">Order No.</td>
+                  <td class="color">Project</td>
+                  <td class="color">Article</td>
+                  <td class="color">Total (Prs)</td>
+                  <td class="color">Delivery (Prs)</td>
+                  <td class="color">Outstanding(Prs)</td>
                   <td class="color">Delete</td>
                 </tr>
-              <?php if(count($this->material_list)) : ?>
-                <?php foreach( $this->material_list as $material_list ) : ?>
-                <tr id="material_<?=$material_list['id']?>">
-                  <td align="center"><?= $material_list['part_no'] ?></td>
-                  <td align="center"><?= h($material_list['material_desc']) ?></td>
+              <?php if(count($this->order_list)) : ?>
+                <?php $no = 1; ?>
+                <?php $total_po = 1; ?>
+                <?php $total_delivery = 1; ?>
+                <?php $total_outstanding = 1; ?>
+                <?php foreach( $this->order_list as $model ) : ?>
+                <tr id="order_<?=$model['id']?>">
+                  <td align="center"><?= $no++ ?></td>
+                  <td align="center"><?= $model['plan'] ?></td>
+                  <td align="center"><?= $model['order_no'] ?></td>
+                  <td align="center"><?= $model['project'] ?></td>
+                  <td align="left"><?= $model['article'] ?></td>
+                  <td align="right"><?= number_format($model['quantity']) ?></td>
+                  <td align="right"><?= number_format($model['delivery']) ?></td>
+                  <td align="right"><?= number_format($model['outstanding']) ?></td>
                   <td align="center">
-                    <input class="number-only qty-tr" name="qty[]" value=""/>
-                    <input type="hidden" name="material_id[]" value="<?= $material_list['id'] ?>" />
+                    <input type="button" onclick="doDelete(<?=$model['id']?>);" name="delete" class="input_b1" value="Delete">
+                    <input type="hidden" name="order_id[]" value="<?= $model['id'] ?>">
                   </td>
-                  <td align="center"><input class="number-only" name="bom[]" value="<?= $material_list['bom'] ?>" readonly /></td>
-                  <td align="center"><input class="number-only price-tr" name="price[]" value="<?= $material_list['price'] ?>"/></td>
-                  <td align="left"><input class="number-only total-tr" name="total" value="" readonly="" /></td>
-                  <td align="center"><input type="button" onclick="doDelete2(<?=$material_list['id']?>);" name="delete" class="input_b1" value="Delete"></td>
                 </tr>
+                <?php $total_po += $model['quantity']; ?>
+                <?php $total_delivery += $model['delivery']; ?>
+                <?php $total_outstanding += $model['outstanding']; ?>
                 <?php endforeach; ?>
               <?php endif; ?>
+                <tr>
+                  <td class="color2" colspan="5">Total</td>
+                  <td class="color_gray total_qty" align="right"><?= number_format($total_po) ?></td>
+                  <td class="color_gray total_delivery" align="right"><?= number_format($total_delivery) ?></td>
+                  <td class="color_gray total_outstanding" align="right"><?= number_format($total_outstanding) ?></td>
+                </tr>
               </table>
           </td>
         </tr>

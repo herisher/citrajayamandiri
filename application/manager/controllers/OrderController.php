@@ -413,4 +413,40 @@ class Manager_OrderController extends ManagerBaseController {
         $model = $this->model('Logic_Order')->getOutstanding();
         $this->view->models = $model;
     }
+
+    public function printTicketAction() {
+        $this->_helper->layout()->disableLayout();
+        $id = $this->getRequest()->getParam('id');
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            $model = $this->model('Dao_Order')->retrieve($id);
+            
+            if (!$model) {
+                $this->view->error_str = 'Data does not exist or has been deleted.';
+                $this->_forward('error', 'Error');
+                return;
+            }
+
+            // 初期値設定
+            $model = $model->toArray();
+            $model['product'] = $this->model('Dao_Product')->retrieve($model['product_id']);
+            $model['status_disp'] = isset(Dao_Order::$statics['status_flag'][$model['status_flag']]) ? Dao_Order::$statics['status_flag'][$model['status_flag']] : "";
+            $model['payment_disp'] = isset(Dao_Order::$statics['payment_flag'][$model['payment_flag']]) ? Dao_Order::$statics['payment_flag'][$model['payment_flag']] : "";
+            $model['document_disp'] = isset(Dao_Order::$statics['document_flag'][$model['document_flag']]) ? Dao_Order::$statics['document_flag'][$model['document_flag']] : "";
+            $this->view->model = $model;
+            
+            $models = $this->model('Logic_Order')->getDetail($id);
+            $this->view->models = $models;
+            
+            $this->view->delivery = $this->model('Logic_Delivery')->getAllByOrderId($id);
+            $this->view->invoice = $this->model('Logic_Invoice')->getAllByOrderId($id);
+            $this->view->purchase = $this->model('Logic_Purchase')->getAllByOrderId($id);
+            $this->view->wages = $this->model('Logic_Wages')->getAllByOrderId($id);
+        } else {
+            $this->view->error_str = 'Data does not exist or has been deleted.';
+            $this->_forward('error', 'Error');
+            return;
+        }
+        $this->view->subtitle = "Order Detail";
+    }
+
 }

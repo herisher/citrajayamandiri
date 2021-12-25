@@ -30,52 +30,9 @@
           </td>
         </tr>
         <tr>
-          <td width="30%" class="color2">Order No.</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('order_no') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">Delivery No.</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('delivery_no') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">Article</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('article') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">Project</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('project') ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="30%" class="color2">Status</td>
-          <td width="70%" class="color_gray" colspan="3">
-            <?= $this->form->getElement('status') ?>
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Delivery Date</td>
+          <td class="color2">Delivery Plan Date</td>
           <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('delivery_date_start') ?> - <?= $this->form->getElement('delivery_date_end') ?>※YYYY-MM-DD
-          </td>
-        </tr>
-        <tr>
-        <tr>
-          <td class="color2">Create Date</td>
-          <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('create_date_start') ?> - <?= $this->form->getElement('create_date_end') ?>※YYYY-MM-DD
-          </td>
-        </tr>
-        <tr>
-          <td class="color2">Order By</td>
-          <td class="color_gray" colspan="3">
-            <?= $this->form->getElement('order_by') ?>
+            <?= $this->form->getElement('delivery_plan_date') ?> ※YYYY-MM-DD
           </td>
         </tr>
         <tr>
@@ -98,7 +55,7 @@
           <td class="color">ID</td>
           <td class="color">Delivery Plan Date</td>
           <td class="color">Quantity (Prs)</td>
-          <td class="color">Edit</td>
+          <td class="color">Print</td>
           <td class="color">Delete</td>
         </tr>
 <?php foreach ($this->models as $model) : ?>
@@ -106,7 +63,7 @@
           <td align="left"><?= $model['id'] ?></td>
           <td align="left"><?= $model['delivery_plan_date'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="center"><a href="/manager/delivery-plan/edit/id/<?= $model['id'] ?>">Edit</a></td>
+          <td align="center"><a href="/manager/delivery-plan/print/id/<?= $model['id'] ?>">Print</a></td>
           <td align="center"><a href="#" onClick="confirmDelete('/manager/delivery-plan/delete/id/<?= $model['id'] ?>');return false;">Delete</a></td>
         </tr>
 <?php endforeach ; ?>

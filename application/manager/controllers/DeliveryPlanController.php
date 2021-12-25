@@ -6,6 +6,29 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
     const NAMESPACE_LIST = '/manager/delivery-plan/list';
 
     /**
+     * 検索条件作成
+     */
+    private function createWherePhrase($order_by = 'id desc') {
+        $table = $this->model('Dao_DeliveryPlan');
+        $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
+
+        // セッションから検索条件を復元する
+        $where = array();
+        if ($session->post) {
+            foreach ((array)$session->post as $key => $value) {
+                // 検索条件セット
+                if ( $key === 'id' && $value != null ) {
+                    $where['id = ?'] = $value;
+                }
+                if ( $key === 'delivery_plan_date' && $value != null ) {
+                    $where['delivery_plan_date = ?'] = $value;
+                }
+            }
+        }
+        return $table->createWherePhrase($where, $order_by);
+    }
+
+    /**
      * 検索条件復元
      */
     private function restoreSearchForm($form) {
@@ -14,9 +37,10 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
             $form->setDefaults($session->post);
         }
     }
+    
 
     /**
-     * デフォルト
+     *  カテゴリ一覧
      */
     public function listAction() {
         // 整列
@@ -24,9 +48,6 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-
-        $form->getElement('status_flag')->setMultiOptions(array('' => '▼Choose') + Dao_Order::$statics['status_flag']);
-        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Order::$statics['outstanding_order']);
 
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {
@@ -48,9 +69,19 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
             $this->restoreSearchForm($form);
         }
         
-        $model = $this->model('Logic_Order')->getOutstandingByYear($session);
-        $this->view->subtitle = "Outstanding List";
-        $this->view->models = $model;
+        $this->createNavigator(
+            $this->createWherePhrase()
+        );
+
+        // 表示用カスタマイズ
+        $models = array();
+        foreach ($this->view->paginator as $model) {
+            $model = $model->toArray();
+            $model["quantity"] = $this->model('Logic_DeliveryPlan')->getQuantity($model["id"]);
+            array_push($models, $model);
+        }
+        $this->view->models = $models;
+        $this->view->subtitle = "Delivery Plan List";
     }
 
     /**
@@ -78,19 +109,14 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
 
         // フォーム設定読み込み
         $form = $this->view->form;
-        $form->getElement('purchase_type')->setMultiOptions(array('' => '▼Choose') + Dao_Purchase::$statics['purchase_type']);
         
         if ($session->order_list) {
-            // $form = $this->model("Logic_DeliveryDetail")->getAllAsForm(null, $form, $session->order_list['id']);
-            $this->view->models = $this->model('Logic_Order')->getDetail($session->order_list['id']);
-            $this->view->order_list = $session->order_list;
+            $order_list = $session->order_list;
+            $outstanding_list = $this->model('Logic_Order')->getOutstandingByOrder($order_list);
+            $this->view->order_list = $outstanding_list;
         }
         
-        if ($session->material_list) {
-            $this->view->material_list = $session->material_list;
-        }
-        
-        // エラーチェック
+        // エラーチェック 
         if ( $this->getRequest()->isPost() ) {
             if ( $this->getRequest()->getParam('delete') ) {
                 $form->isValid($_POST);
@@ -119,55 +145,89 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
      */
     private function doCreate($form, $params) {
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
-        $table = $this->model('Dao_Purchase');
-        $tableDetail = $this->model('Dao_PurchaseDetail');
+        $table = $this->model('Dao_DeliveryPlan');
+        $tableDetail = $this->model('Dao_DeliveryPlanDetail');
+        $tableDetailAssortment = $this->model('Dao_DeliveryPlanDetailAssortment');
         
-        $order = $this->model('Dao_Order')->retrieve($session->order_list['id']);
-
-        if( $order['status_flag'] == 4 ) {
-            $table_order = $this->model('Dao_Order');
-            $model_id = $table_order->update(
-                array(
-                    'status_flag'       => 0,   //Process
-                    'update_date'       => new Zend_Db_Expr('now()'),
-                ),
-                $table_order->getAdapter()->quoteInto(
-                    'id = ?', $order['id']
-                )
-            );
-        }
+        $order_list = $_POST['order_id'];
+        $outstanding_list = $this->model('Logic_Order')->getOutstandingByOrder($order_list);
 
         $model_id = $table->insert(
             array(
-                'purchase_no'       => $form->getValue('purchase_no'),
-                'purchase_date'     => $form->getValue('purchase_date'),
-                'order_id'          => $session->order_list['id'],
-                'product_id'        => $order['product_id'],
-                'purchase_type'     => $form->getValue('purchase_type'),
-                'description'       => $form->getValue('description'),
-                'update_date'       => new Zend_Db_Expr('now()'),
-                'create_date'       => new Zend_Db_Expr('now()'),
+                'delivery_plan_date'    => $form->getValue('delivery_plan_date'),
+                'quantity'              => 0,
+                'update_date'           => new Zend_Db_Expr('now()'),
+                'create_date'           => new Zend_Db_Expr('now()'),
             )
         );
 
-        $i = 0;
-        foreach ($_POST['material_id'] as $key => $value) {
+        foreach ($outstanding_list as $model) {
             $detail_id = $tableDetail->insert(
                 array(
-                    'purchase_id'   => $model_id,
-                    'material_id'   => $value,
-                    'qty'           => $_POST['qty'][$i],
-                    'bom'           => $_POST['bom'][$i],
-                    'price'         => $_POST['price'][$i],
-                    'update_date'   => new Zend_Db_Expr('now()'),
-                    'create_date'   => new Zend_Db_Expr('now()'),
+                    'delivery_plan_id'      => $model_id,
+                    'order_id'              => $model['id'],
+                    'quantity_total'        => $model['quantity'],
+                    'quantity_delivery'     => $model['delivery'],
+                    'quantity_outstanding'  => $model['outstanding'],
+                    'update_date'           => new Zend_Db_Expr('now()'),
+                    'create_date'           => new Zend_Db_Expr('now()'),
                 )
             );
-            $i++;
+
+            foreach( $model["order_detail"] as $ord_det ) :
+                if( count($model['delivery_detail']) ) :
+                    $quantity  =  $ord_det['quantity'] - $model['delivery_detail'][$ord_det['size']];
+                else :
+                    $quantity = $ord_det['quantity'];
+                endif;
+
+                $assortment_id = $tableDetailAssortment->insert(
+                    array(
+                        'delivery_plan_detail_id'   => $detail_id,
+                        'size'                      => $ord_det['size'],
+                        'quantity'                  => $quantity,
+                        'update_date'               => new Zend_Db_Expr('now()'),
+                        'create_date'               => new Zend_Db_Expr('now()'),
+                    )
+                );
+            endforeach;
         }
-        
+
         Zend_Session::namespaceUnset(self::NAMESPACE_LIST);
         $this->gobackList();
     }
     
+    /**
+     * デフォルト
+     */
+    public function printAction() {
+        $this->_helper->layout()->disableLayout();
+
+        $id = $this->getRequest()->getParam('id');
+        
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            $model = $this->model('Dao_DeliveryPlan')->retrieve($id);
+            
+            if (!$model) {
+                $this->view->error_str = 'Data does not exist or has been deleted.';
+                $this->_forward('error', 'Error');
+                return;
+            }
+
+            // 初期値設定
+            $item = $model->toArray();
+            $this->view->model = $item;
+
+            $detail = $this->model('Logic_DeliveryPlan')->getDetail($id);
+            $order_list = array();
+            foreach( $detail as $det ){
+                $order_list[] = $det["order_id"];
+            }
+
+            $models = $this->model('Logic_Order')->getOutstandingByOrder($order_list);
+            $this->view->models = $models;
+
+        }
+    }
+
 }

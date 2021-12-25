@@ -21,21 +21,11 @@ $(document).ready(function(){
 
 <table align="center">
     <tr>
-        <td colspan="3">Sasak Panjang, <?php echo date('j M Y');?></td>
-    </tr>
-    <tr>
-        <td colspan="3" style="font-size:16pt">
-          <strong>OUTSTANDING <?= $this->status ?> CV. CITRA JAYA MANDIRI</strong>
-          <br>
-          <strong>YEAR : <?= $this->year ?></strong>
-        </td>
-    </tr>
-    <!-- <tr>
         <td colspan="3" style="font-size:16pt">
           <strong>DELIVERY PLAN CV. CITRA JAYA MANDIRI</strong><br>
-          <strong>DATE : 21-12-2021</strong>
+          <strong>DATE : <?= $this->model['delivery_plan_date'] ?></strong>
         </td>
-    </tr> -->
+    </tr>
     <tr>
         <td colspan="3" style="font-size:0pt"><hr/></td>
     </tr>
