@@ -78,11 +78,11 @@
                   <td class="color">Outstanding(Prs)</td>
                   <td class="color">Delete</td>
                 </tr>
+              <?php $total_po = 0; ?>
+              <?php $total_delivery = 0; ?>
+              <?php $total_outstanding = 0; ?>
               <?php if(count($this->order_list)) : ?>
                 <?php $no = 1; ?>
-                <?php $total_po = 1; ?>
-                <?php $total_delivery = 1; ?>
-                <?php $total_outstanding = 1; ?>
                 <?php foreach( $this->order_list as $model ) : ?>
                 <tr id="order_<?=$model['id']?>">
                   <td align="center"><?= $no++ ?></td>

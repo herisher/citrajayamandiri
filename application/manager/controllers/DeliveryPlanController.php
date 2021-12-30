@@ -230,4 +230,41 @@ class Manager_DeliveryPlanController extends ManagerBaseController {
         }
     }
 
+    /**
+     * 削除
+     */
+    public function deleteAction() {
+        $id = $this->getRequest()->getParam('id');
+        if ( $id && preg_match("/^\d+$/", $id) ) {
+            //get delivery detail
+            $model = $this->model('Dao_DeliveryPlan')->retrieve($id);
+            $model = $model->toArray();
+            
+            // delete delivery plan
+            $table = $this->model('Dao_DeliveryPlan');
+            $table->delete( $table->getAdapter()->quoteInto('id = ?', $id) );
+
+            $detail = $this->model('Logic_DeliveryPlan')->getDetail($id);
+            
+            //delete delivery plan detail
+            $this->db()->query(
+                "DELETE FROM `dtb_delivery_plan_detail` WHERE `delivery_plan_id` = ?", $id
+            );
+
+            foreach( $detail as $det ) {
+                //delete delivery plan detail assortment
+                $this->db()->query(
+                    "DELETE FROM `dtb_delivery_plan_detail_assortment` WHERE `delivery_plan_detail_id` = ?", $det["id"]
+                );
+            }
+            
+            $this->gobackList();
+        }
+        else {
+            $this->view->error_str = 'It is an illegal URL.';
+            $this->_forward('error', 'Error');
+            return;
+        }
+    }
+
 }

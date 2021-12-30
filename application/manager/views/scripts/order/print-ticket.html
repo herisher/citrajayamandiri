@@ -13,7 +13,6 @@
     }
     hr{
       border-color: #000000;
-      border-width: .3px;
     }
 </style>
 <script type="text/javascript">
@@ -24,6 +23,7 @@ $(document).ready(function(){
 </head>
 
 <body>
+    <?php for($z=0; $z<2; $z++) : ?>
       <h2 style="text-align: center; margin-bottom: 0px">CV. CITRA JAYA MANDIRI</h2>
       <table width="100%" border="1" cellpadding="0" cellspacing="0">
         <tr>
@@ -82,68 +82,10 @@ $(document).ready(function(){
           </td>
         </tr>
       </table>
-
+      <?php if($z==0) : ?>
       <br>
       <hr>
-
-      <h2 style="text-align: center; margin-bottom: 0px">CV. CITRA JAYA MANDIRI</h2>
-      <table width="100%" border="1" cellpadding="0" cellspacing="0">
-        <tr>
-          <td colspan="2" align="center">ABU RECEIVING COMPONENT</td>
-        </tr>
-        <tr>
-          <td>DEPT</td>
-          <td><?= $this->model["dept"] ?></td>
-        </tr>
-        <tr>
-          <td>PO NO.</td>
-          <td><?= $this->model["order_no"] ?></td>
-        </tr>
-        <tr>
-          <td>ITEM NO.</td>
-          <td><?= $this->model['product']['product_no'] ?></td>
-        </tr>
-        <tr>
-          <td>PROJECT</td>
-          <td><?= $this->model['product']['project'] ?></td>
-        </tr>
-        <tr>
-          <td>ARTICLE</td>
-          <td><?= $this->model['product']['article'] ?></td>
-        </tr>
-        <tr>
-          <td>COMPONENT</td>
-          <td>Ready Upper & Insole</td>
-        </tr>
-        <tr>
-          <td>PLAN NUMBER</td>
-          <td><?= $this->model["plan"] ?></td>
-        </tr>
-        <tr>
-          <td>TOTAL PAIRS</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="2" align="center">ASSORTMENT</td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <table width="100%" border="1" cellpadding="0" cellspacing="0">
-              <tr>
-                <? foreach( $this->models as $model ) : ?>
-                <? $id=$model['id'] ?>
-                    <td align="center"><?= $model['size'] ?></td>
-                <?php endforeach; ?>
-              </tr>
-              <tr>
-                <? foreach( $this->models as $model ) : ?>
-                <td>&nbsp;</td>
-                <?php endforeach; ?>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-
+      <?php endif; ?>
+    <?php endfor; ?>
 </body>
 </html>

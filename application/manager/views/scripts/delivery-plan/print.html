@@ -27,9 +27,6 @@ $(document).ready(function(){
         </td>
     </tr>
     <tr>
-        <td colspan="3" style="font-size:0pt"><hr/></td>
-    </tr>
-    <tr>
         <td colspan="3">
             <table border="1" cellpadding="0" cellspacing="0" id="detail">
               <thead>
@@ -40,9 +37,10 @@ $(document).ready(function(){
                   <th class="color">Order No.</th>
                   <th class="color">Project</th>
                   <th class="color">Article</th>
-                  <th class="color">Total (Ps)</th>
-                  <th class="color">Delivery (Ps)</th>
-                  <th class="color">Outstanding (Ps)</th>
+                  <th class="color">Total<br>(Prs)</th>
+                  <th class="color">Delivery<br>(Prs)</th>
+                  <th class="color">Outstanding<br>(Prs)</th>
+                  <!-- <th class="color">Delivery Real<br>(Prs)</th> -->
                 </tr>
               </thead>
 <?php 
@@ -57,25 +55,31 @@ $(document).ready(function(){
           <td align="left"><?= $model['delivery_week'] ?></td>
           <td align="left"><?= $model['plan'] ?></td>
           <td align="left"><?= $model['order_no'] ?></td>
-          <td align="left"><?= ($model['project']) ?></td>
+          <td align="left"><?= $model['project'] ?></td>
           <td align="left"><?= $model['article'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
           <td align="right"><?= number_format($model['delivery']) ?></td>
           <td align="right"><?= number_format($model['outstanding']) ?></td>
+          <!-- <td align="right">&nbsp;</td> -->
         </tr>
         <tr>
           <td colspan="9">
             <?php
               foreach( $model["order_detail"] as $ord_det ) :
             ?>
-            <div style="margin: 5px; float: left;">
+            <div style="display: table-cell; width: 15%; float: left; text-align: center; font-weight: bolder;">
             <?php if( count($model['delivery_detail']) ) : ?>
-            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] - $model['delivery_detail'][$ord_det['size']] ?>;
+            S<?= $ord_det['size'] ?> <br> <?= $ord_det['quantity'] - $model['delivery_detail'][$ord_det['size']] ?>
             <?php else : ?>
-            <?= $ord_det['size'] ?> = <?= $ord_det['quantity'] ?>;
+            S<?= $ord_det['size'] ?> <br> <?= $ord_det['quantity'] ?>
             <?php endif; ?>
             </div>
             <?php endforeach; ?>
+            <!-- <br>&nbsp;
+            <br>&nbsp;
+            <br>&nbsp;
+            <br>&nbsp;
+            <br>&nbsp; -->
           </td>
         </tr>
 <?php 
@@ -89,6 +93,7 @@ $(document).ready(function(){
           <td class="color_gray" align="right"><?= number_format($quantity) ?></td>
           <td class="color_gray" align="right"><?= number_format($delivery) ?></td>
           <td class="color_gray" align="right"><?= number_format($outstanding) ?></td>
+          <!-- <td class="color_gray" align="right">&nbsp;</td> -->
         </tr>
             </table>
         </td>
