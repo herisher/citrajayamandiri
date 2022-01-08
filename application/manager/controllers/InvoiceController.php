@@ -208,7 +208,9 @@ class Manager_InvoiceController extends ManagerBaseController {
                 'id = ?', $id
             )
         );
-        $this->gobackList();
+        // $this->gobackList();
+        $this->_redirect("/manager/invoice/edit/id/" . $id);
+
     }
 
     /**
