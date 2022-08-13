@@ -34,7 +34,7 @@
           <td width="70%" class="color_gray" colspan="3">
             <?= $this->form->getElement('status_flag') ?>
           </td>
-        </tr>
+        </tr> 
         <tr>
           <td width="30%" class="color2">Order By</td>
           <td width="70%" class="color_gray" colspan="3">
@@ -56,7 +56,7 @@
       <table width="100%" border="0" cellpadding="5">
         <tr align="center">
           <td class="color">No.</td>
-          <td class="color">Week</td>
+          <td class="color">Purchase Date</td>
           <td class="color">Plan</td>
           <td class="color">Order No.</td>
           <td class="color">Project</td>
@@ -74,7 +74,7 @@
 ?>
         <tr class="color_gray">
           <td align="left"><?= $i++ ?></td>
-          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= isset($model['first_purchase_date']) ? $model['first_purchase_date'] : '-' ?></td>
           <td align="left"><?= $model['plan'] ?></td>
           <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
           <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['project']) ?></a></td>

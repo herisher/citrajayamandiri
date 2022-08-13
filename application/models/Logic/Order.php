@@ -55,7 +55,10 @@ class Logic_Order extends Logic_Base {
         $order = (isset($param->post['order_by']) && ($param->post['order_by']!='')) ? $param->post['order_by'].', ' : "";
 
         $query = 
-            "SELECT `o`.*, article, project ".
+            "SELECT `o`.*, 
+                    article, 
+                    project,
+                    (SELECT purchase_date FROM dtb_purchase WHERE order_id = o.id ORDER BY purchase_date LIMIT 1) AS first_purchase_date ".
             "FROM `dtb_order` `o`, `dtb_product` `p` ".
             "WHERE `o`.`product_id` = `p`.`id` AND `o`.`status_flag` = " . $status . " " .
             "AND SUBSTRING(delivery_week, 1, 4) = " . $year . " " .
@@ -66,7 +69,7 @@ class Logic_Order extends Logic_Base {
         
         foreach($models as &$model) {
             $delivery = $this->model('Logic_Delivery')->getAllByOrderId($model['id']);
-            $purchase = $this->model('Logic_Purchase')->getDetailByOrderId($model['id']);
+            $purchase = $this->model('Logic_Purchase')->getFirstPurchase($model['id']);
             $total = 0;
             $assortment = array();
 
@@ -91,7 +94,9 @@ class Logic_Order extends Logic_Base {
             $model['outstanding'] = $model['quantity'] - $total;
             $model['order_detail'] = $this->getDetail($model['id']);
             $model['delivery_detail'] = $assortment;
-            $model['purchase'] = $purchase;
+            if( $purchase ) {
+                $model['first_purchase_date'] = $purchase['purchase_date'];
+            }
         }
         return $models;
     }

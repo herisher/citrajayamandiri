@@ -31,7 +31,8 @@ class Dao_Order extends Dao_Base {
             'update_date desc' => 'Update Date'
         ),
         'outstanding_order' => array(
-            "`p`.`project`" => 'Project'
+            "`p`.`project`" => 'Project',
+            "first_purchase_date" => 'First Purchase Date'
         ),
     );
 }

@@ -26,7 +26,7 @@ class Manager_OutstandingController extends ManagerBaseController {
         $form = $this->view->form;
 
         $form->getElement('status_flag')->setMultiOptions(array('' => '▼Choose') + Dao_Order::$statics['status_flag']);
-        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Order::$statics['outstanding_order']);
+        $form->getElement('order_by')->setMultiOptions(array('' => '▼Choose') + Dao_Order::$statics['outstanding_order']); 
 
         // 検索・クリア
         if ( $this->getRequest()->isPost() ) {

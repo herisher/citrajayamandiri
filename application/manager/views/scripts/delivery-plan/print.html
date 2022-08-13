@@ -38,9 +38,8 @@ $(document).ready(function(){
                   <th class="color">Project</th>
                   <th class="color">Article</th>
                   <th class="color">Total<br>(Prs)</th>
-                  <th class="color">Delivery<br>(Prs)</th>
                   <th class="color">Outstanding<br>(Prs)</th>
-                  <!-- <th class="color">Delivery Real<br>(Prs)</th> -->
+                  <th class="color">Delivery Plan<br>(Prs)</th>
                 </tr>
               </thead>
 <?php 
@@ -58,9 +57,8 @@ $(document).ready(function(){
           <td align="left"><?= $model['project'] ?></td>
           <td align="left"><?= $model['article'] ?></td>
           <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="right"><?= number_format($model['delivery']) ?></td>
           <td align="right"><?= number_format($model['outstanding']) ?></td>
-          <!-- <td align="right">&nbsp;</td> -->
+          <td align="right">&nbsp;</td>
         </tr>
         <tr>
           <td colspan="9">
@@ -75,10 +73,10 @@ $(document).ready(function(){
             <?php endif; ?>
             </div>
             <?php endforeach; ?>
+            <br>&nbsp;
+            <br>&nbsp;
+            <br>&nbsp;
             <!-- <br>&nbsp;
-            <br>&nbsp;
-            <br>&nbsp;
-            <br>&nbsp;
             <br>&nbsp; -->
           </td>
         </tr>
@@ -91,9 +89,8 @@ $(document).ready(function(){
         <tr style="font-weight: bolder;">
           <td class="color2" colspan="6">Total</td>
           <td class="color_gray" align="right"><?= number_format($quantity) ?></td>
-          <td class="color_gray" align="right"><?= number_format($delivery) ?></td>
           <td class="color_gray" align="right"><?= number_format($outstanding) ?></td>
-          <!-- <td class="color_gray" align="right">&nbsp;</td> -->
+          <td class="color_gray" align="right">&nbsp;</td>
         </tr>
             </table>
         </td>

@@ -10,15 +10,28 @@
     function sum() {
         var i;
         var sum = parseInt(0);
+        var price = document.getElementById("price").value ? parseInt(document.getElementById("price").value) : 0;
+
         <?php if(count($this->models)) : foreach($this->models as $model) : ?>
             sum = sum + parseInt(document.getElementById("quantity_"+<?=$model['id']?>).value);
         <?php endforeach; else : for($i=1;$i<=13;$i++) : ?>
             sum = sum + parseInt(document.getElementById("quantity_"+<?=$i?>).value);
         <?php endfor; endif; ?>
+
+        var sub_total = (sum * price);
+        var total = sub_total;
+
+        var tax_percent = parseInt(document.getElementById("ppn_percentage").value);
+        var ppn = 0;
+        if( tax_percent ) {
+          ppn =  sub_total * (tax_percent/100);
+          total = total + ppn;
+        }
+
         document.getElementById("quantity").value = sum;
-        document.getElementById("sub_total").value = sum * document.getElementById("price").value;
-        document.getElementById("ppn").value = (sum * document.getElementById("price").value) / 10;
-        document.getElementById("total").value = (sum * document.getElementById("price").value) + ((sum * document.getElementById("price").value) / 10);
+        document.getElementById("sub_total").value = sub_total;
+        document.getElementById("ppn").value = ppn;
+        document.getElementById("total").value = total;
     }
 //-->
 </script>
@@ -198,7 +211,14 @@
           </td>
         </tr>
         <tr>
-          <td class="color2">PPn (Rp)</td>
+          <td class="color2">Tax (%)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'ppn_percentage') ?>
+            <?= $this->form->getElement('ppn_percentage') ?>※automatic calculation, can't be edited
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Tax (Rp)</td>
           <td class="color_gray">
             <?= my_mb_error($this->error_str, 'ppn') ?>
             <?= $this->form->getElement('ppn') ?>※automatic calculation, can't be edited

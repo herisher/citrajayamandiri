@@ -45,7 +45,7 @@ $(document).ready(function(){
               <thead>
                 <tr align="center" style="font-weight:bold">
                   <th class="color">No.</th>
-                  <th class="color">Week</th>
+                  <td class="color">Purchase Date</td>
                   <th class="color">Plan</th>
                   <th class="color">Order No.</th>
                   <th class="color">Project</th>
@@ -64,7 +64,7 @@ $(document).ready(function(){
 ?>
         <tr class="color_gray" style="font-weight: bolder;">
           <td align="left" style="height: 35px"><?= $i++ ?>.</td>
-          <td align="left"><?= $model['delivery_week'] ?></td>
+          <td align="left"><?= isset($model['first_purchase_date']) ? $model['first_purchase_date'] : '-' ?></td>
           <td align="left"><?= $model['plan'] ?></td>
           <td align="left"><?= $model['order_no'] ?></td>
           <td align="left"><?= ($model['project']) ?></td>

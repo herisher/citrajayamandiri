@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex,nofollow" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="copyright" content="CV.CJM" />
+
+<!--????====================-->
+
+<title>CV. Citra Jaya Mandiri | Admin</title>
+
+<!--????====================-->
+
+<link rel="stylesheet" type="text/css" href="/css/manager.css" media="all">
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.9.1.css" media="all">
+<script src="/js/Widget/Dialog.js" type="text/javascript"></script>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<script src="/js/jquery-1.8.2.js"></script>
+<script src="/js/jquery-ui-1.9.1.js"></script>
+</head>
+<body>
+<div id="area">
+<div id="contents_index">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <table width="100%" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+          <th>ID</th>
+          <th>Order No.</th>
+          <th>Project</th>
+          <th>Article</th>
+          <th>Quantity (Ps)</th>
+          <th>Outstanding (Ps)</th>
+          <th>Plan</th>
+          <th>Delivery Week</th>
+          <th>Status</th>
+          <th>First Purchase Date</th>
+          <?php foreach( $this->materials as $material ) : ?>
+              <th><?= $material['material_desc'] ?></th>
+          <?php endforeach; ?>
+        </thead>
+        <?php if( count($this->models) ) : ?>
+        <?php $i = 1; ?>
+          <?php foreach ($this->models as $model) : ?>
+            <tr>
+              <td align="left"><?= $i++ ?></td>
+              <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
+              <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['product']['project']) ?></a></td>
+              <td align="left"><?= $model['product']['article'] ?></td>
+              <td align="right"><?= number_format($model['quantity']) ?></td>
+              <td align="right"><?= number_format($model['outstanding']) ?></td>
+              <td align="left"><?= $model['plan'] ?></td>
+              <td align="left"><?= $model['delivery_week'] ?></td>
+              <td align="left"><?= $model['disp_status'] ?></td>
+              <td align="left"><?= $model['purchase_date'] ?></td>
+              <?php foreach( $this->materials as $material ) : ?>
+                  <td align="right">
+                    <?= isset($model['material_id_'.$material['id']]) ? number_format($model['material_id_'.$material['id']]) . $material['bom']: '-' ?> 
+                  </td>
+              <?php endforeach; ?>
+            </tr>
+          <?php endforeach ; ?>
+        <?php else : ?>
+          <tr>
+            <td colspan="10">No Data</td>
+          </tr>
+        <?php endif; ?>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->
+</div>
+</body>
+</html>

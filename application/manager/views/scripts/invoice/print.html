@@ -94,7 +94,7 @@ $(document).ready(function(){
             <tr>
                 <td>PO No. : <?= $this->rs['order']['order_no'] ?></td>
                 <td>&nbsp;</td>
-                <td>PPN 10%</td>
+                <td>PPN <?= number_format($this->rs["tax_percentage"]) ?>%</td>
                 <td align="right"><?= number_format($this->rs["tax"]) ?></td>
             </tr>
             <tr>

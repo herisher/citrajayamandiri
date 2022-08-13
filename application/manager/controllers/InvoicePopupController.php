@@ -13,6 +13,7 @@ class Manager_InvoicePopupController extends BaseController {
             'price',
             'discount',
             'total',
+            'tax_percentage',
             'tax',
             'total_include_tax',
         ),
@@ -98,6 +99,7 @@ class Manager_InvoicePopupController extends BaseController {
                 $order = $this->model('Dao_Order')->retrieve($delivery['order_id']);
                 $product = $this->model('Dao_Product')->retrieve($delivery['product_id']);
                 $products = $product->toArray();
+                $tax_percentage = $order['ppn_percentage'];
                 
                 $delivery_session->delivery_list = array();
                 $delivery_session->delivery_list = $delivery;
@@ -109,7 +111,8 @@ class Manager_InvoicePopupController extends BaseController {
                 $delivery_session->delivery_list['total'] = $delivery["quantity"]*$order["price"];
                 $delivery_session->delivery_list['discount'] = 0;
                 $delivery_session->delivery_list['total_min_discount'] = $delivery_session->delivery_list['total'];
-                $delivery_session->delivery_list['tax'] = round($delivery_session->delivery_list['total']*0.1);
+                $delivery_session->delivery_list['tax_percentage'] = $tax_percentage;
+                $delivery_session->delivery_list['tax'] = floor($delivery_session->delivery_list['total']*($tax_percentage/100));
                 
                 $delivery_session->delivery_list['total_include_tax'] = intval($delivery_session->delivery_list['total']+$delivery_session->delivery_list['tax']);
                 foreach($products as $key => $value) {

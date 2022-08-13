@@ -100,36 +100,61 @@
 
       <!--一覧-->
       <table width="100%" border="0" cellpadding="5">
-        <tr align="center">
-          <td class="color">No</td>
-          <td class="color">Purchase Date</td>
-          <td class="color">Purchase No.</td>
-          <td class="color">Order No.</td>
-          <td class="color">Project</td>
-          <td class="color">Article</td>
-          <td class="color">Material Name</td>
-          <td class="color">Qty</td>
-          <td class="color">Price (Rp)</td>
-          <td class="color">Total</td>
-          <td class="color">Total Inc. Tax (Rp)</td>
-          <td class="color">Type</td>
-        </tr>
-<?php $i=1; foreach ($this->models as $model) : ?>
+        <thead>
+          <tr align="center">
+            <td class="color">No</td>
+            <td class="color">Purchase Date</td>
+            <td class="color">Purchase No.</td>
+            <td class="color">Type</td>
+            <td class="color">Order No.</td>
+            <td class="color">Project</td>
+            <td class="color">Article</td>
+            <td class="color">Material Name</td>
+            <td class="color">Qty</td>
+            <td class="color">Price (Rp)</td>
+            <td class="color">Total (Rp)</td>
+            <td class="color">Total Inc. Tax (Rp)</td>
+          </tr>
+        </thead>
+        <tbody>
+        <?php 
+          $i=1; 
+          $sum_total = 0;
+          $sum_total_inc_tax = 0;
+          foreach ($this->models as $model) {
+            $total = $model['qty']*$model['price'];
+            $total_inc_tax = $total+($total*0.1);
+
+            $sum_total += $total;
+            $sum_total_inc_tax += $total_inc_tax;
+        ?>
         <tr>
           <td align="left"><?= $i++ ?></td>
           <td align="left"><?= $model['purchase']['purchase_date'] ?></td>
-          <td align="left"><a href="/manager/purchase/detail/id/<?=$model['purchase']['id']?>" target="_blank"><?= $model['purchase']['purchase_no'] ?></a></td>
-          <td align="left"><a href="/manager/order/detail/id/<?=$model['purchase']['order_id']?>" target="_blank"><?= $model['order']['order_no'] ?></a></td>
+          <td align="left">
+            <a href="/manager/purchase/detail/id/<?=$model['purchase']['id']?>" target="_blank"><?= $model['purchase']['purchase_no'] ?></a>
+          </td>
+          <td align="left"><?= $model['disp_type'] ?></td>
+          <td align="left">
+            <a href="/manager/order/detail/id/<?=$model['purchase']['order_id']?>" target="_blank"><?= $model['order']['order_no'] ?></a>
+          </td>
           <td align="left"><?= h($model['product']['project']) ?></td>
           <td align="left"><?= $model['product']['article'] ?></td>
           <td align="left"><?= $model['material']['material_desc'] ?></td>
           <td align="right"><?= number_format($model['qty']) . ' ' . $model['bom'] ?></td>
           <td align="right"><?= number_format($model['price']) ?></td>
-          <td align="right"><?= number_format($model['qty']*$model['price']) ?></td>
-          <td align="right"><?= number_format($model['total']) ?></td>
-          <td align="left"><?= $model['disp_type'] ?></td>
+          <td align="right"><?= number_format($total) ?></td>
+          <td align="right"><?= number_format($total_inc_tax) ?></td>
         </tr>
-<?php endforeach ; ?>
+        <?php } ; ?>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="10" align="center">TOTAL THIS PAGE</td>
+            <td align="right"><?= number_format($sum_total) ?></td>
+            <td align="right"><?= number_format($sum_total_inc_tax) ?></td>
+          </tr>
+        </tfoot>
       </table>
 
     </div>

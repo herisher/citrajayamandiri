@@ -99,43 +99,63 @@
         -->
       <!--一覧-->
       <table width="100%" border="0" cellpadding="5">
-        <tr align="center">
-          <td class="color">No.</td>
-          <td class="color">ID</td>
-          <td class="color">Delivery No.</td>
-          <td class="color">Delivery Date</td>
-          <td class="color">Order No.</td>
-          <td class="color">Project</td>
-          <td class="color">Article</td>		  
-          <td class="color">Qty</td>
-          <td class="color">Status</td>
-          <td class="color">Edit</td>
-          <td class="color">Print</td>
-          <td class="color">Delete</td>
-        </tr>
-<?php $i=1;foreach ($this->models as $model) : ?>
-        <tr>
-          <td align="center"><?= $i++ ?></td>
-          <td align="center"><?= $model['id'] ?></td>
-          <td align="left"><?= $model['delivery_no'] ?></td>
-          <td align="center"><?= $model['delivery_date'] ?></td>
-          <td align="left"><a href="/manager/order/edit/id/<?=$model['order_id']?>"><?= $model['order']['order_no'] ?></a></td>
-          <td align="left"><?= h($model['product']['project']) ?></td>
-          <td align="left"><?= $model['product']['article'] ?></td>
-          <td align="right"><?= number_format($model['quantity']) ?></td>
-          <td align="left"><?= $model['disp_status'] ?></td>
-          <td align="center"><a href="/manager/invoice/edit/id/<?= $model['id'] ?>">Edit</a></td>
-          <td align="center"><a href="/manager/invoice/print/id/<?= $model['id'] ?>">Print</a></td>
-          <td align="center">
-          <a href="#" onClick="confirmDelete('/manager/purchase/delete/id/<?= $model['id'] ?>');return false;">Delete</a>
-          </td>
-        </tr>
-<?php endforeach ; ?>
-        <tr>
-          <td colspan="7" align="center">TOTAL</td>
-          <td align="right"><?= number_format($this->total) ?></td>
-          <td colspan="3" align="right"></td>
-        </tr>
+        <thead>
+          <tr align="center">
+            <td class="color">No.</td>
+            <td class="color">ID</td>
+            <td class="color">Delivery No.</td>
+            <td class="color">Delivery Date</td>
+            <td class="color">Status</td>
+            <td class="color">Order No.</td>
+            <td class="color">Project</td>
+            <td class="color">Article</td>		 
+            <td class="color">Price (Rp)</td> 
+            <td class="color">Qty (Prs)</td>
+            <td class="color">Total (Rp)</td>
+            <td class="color">Total inc Tax (Rp)</td>
+          </tr>
+        </thead>
+        <tbody>
+        <?php 
+          $i=1;
+          $sum_total = 0;
+          $sum_total_inc_tax = 0;
+          foreach ($this->models as $model) : 
+            $total = $model['quantity']*$model['order']['price'];
+            $total_inc_tax = $total + ($total*0.1);
+
+            $sum_total += $total;
+            $sum_total_inc_tax += $total_inc_tax;
+        ?>
+          <tr>
+            <td align="center"><?= $i++ ?></td>
+            <td align="center"><?= $model['id'] ?></td>
+            <td align="left">
+              <a href="/manager/invoice/edit/id/<?= $model['id'] ?>"><?= $model['delivery_no'] ?></a>
+            </td>
+            <td align="center"><?= $model['delivery_date'] ?></td>
+            <td align="left"><?= $model['disp_status'] ?></td>
+            <td align="left">
+              <a href="/manager/order/edit/id/<?=$model['order_id']?>"><?= $model['order']['order_no'] ?></a>
+            </td>
+            <td align="left"><?= h($model['product']['project']) ?></td>
+            <td align="left"><?= $model['product']['article'] ?></td>
+            <td align="right"><?= number_format($model['order']['price']) ?></td>
+            <td align="right"><?= number_format($model['quantity']) ?></td>
+            <td align="right"><?= number_format($total) ?></td>
+            <td align="right"><?= number_format($total_inc_tax) ?></td>
+            </td>
+          </tr>
+        <?php endforeach ; ?>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="9" align="center">TOTAL</td>
+            <td align="right"><?= number_format($this->total) ?></td>
+            <td align="right"><?= number_format($sum_total) ?></td>
+            <td align="right"><?= number_format($sum_total_inc_tax) ?></td>
+          </tr>
+        </tfoot>
       </table>
 
     </div>

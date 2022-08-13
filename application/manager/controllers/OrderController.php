@@ -233,7 +233,7 @@ class Manager_OrderController extends ManagerBaseController {
     private function doUpdate($id, $form) {
         $table = $this->model('Dao_Order');
         $sub_total = $form->getValue('price')*$form->getValue('quantity');
-        $ppn = $sub_total/10;
+        $ppn = $sub_total*($form->getValue('ppn_percentage')/100);
         $total = $sub_total + $ppn;
 
         $model = $table->retrieve($id);
@@ -248,6 +248,7 @@ class Manager_OrderController extends ManagerBaseController {
                 'price'             => $form->getValue('price'),
                 'quantity'          => $form->getValue('quantity'),
                 "sub_total"         => $sub_total ,
+                'ppn_percentage'    => $form->getValue('ppn_percentage'),
                 "ppn"               => $ppn,
                 "total"             => $total,
                 'payment_term'      => $form->getValue('payment_term'),
@@ -347,22 +348,23 @@ class Manager_OrderController extends ManagerBaseController {
         $session = new Zend_Session_Namespace(self::NAMESPACE_LIST);
         $table = $this->model('Dao_Order');
         $sub_total = $form->getValue('price')*$form->getValue('quantity');
-        $ppn = $sub_total/10;
+        $ppn = $sub_total*($form->getValue('ppn_percentage')/100);
         $total = $sub_total + $ppn;
         $model_id = $table->insert(
             array(
                 'product_id'        => $session->product_list['id'],
                 'order_no'          => $form->getValue('order_no'),
-                'order_date'        => $form->getValue('order_date'),
+                'order_date'        => date("Y-m-d", strtotime($form->getValue('order_date'))),
                 'price'             => $form->getValue('price'),
                 'quantity'          => $form->getValue('quantity'),
                 "sub_total"         => $sub_total ,
+                'ppn_percentage'    => $form->getValue('ppn_percentage'),
                 "ppn"               => $ppn,
                 "total"             => $total,
                 'payment_term'      => $form->getValue('payment_term'),
                 'plan'              => $form->getValue('plan'),
                 'description'       => $form->getValue('description'),
-                'receipt_date'      => $form->getValue('receipt_date'),
+                'receipt_date'      => date("Y-m-d", strtotime($form->getValue('receipt_date'))),
                 'delivery_week'     => $form->getValue('delivery_week'),
                 'dept'              => $form->getValue('dept'),
                 'document_flag'     => $form->getValue('document_flag'),

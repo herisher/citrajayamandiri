@@ -12,6 +12,18 @@ class Logic_Purchase extends Logic_Base {
         return $details;
     }
 
+    public function getFirstPurchase($order_id) {
+        $purchase = $this->db()->fetchRow(
+            "SELECT `dtb_purchase`.purchase_no, `dtb_purchase`.purchase_date
+            FROM dtb_purchase 
+            WHERE `dtb_purchase`.order_id = ?
+            ORDER BY dtb_purchase.purchase_date"
+            , $order_id
+        );
+
+        return $purchase;
+    }
+
     public function getDetailByOrderId($order_id) {
         $details = $this->db()->fetchAll(
             "SELECT `dtb_purchase`.purchase_no, `dtb_purchase`.purchase_date, `dtb_purchase_detail`.*, material_desc as material_name, part_no 

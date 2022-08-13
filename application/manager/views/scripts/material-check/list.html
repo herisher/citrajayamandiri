@@ -1,0 +1,154 @@
+<?= $this->render('sidemenu/product.html') ?>
+
+<script type="text/javascript" language="javascript">
+<!--
+    $(function() {
+        $("#create_date_start").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#create_date_end").datepicker({dateFormat: 'yy-mm-dd'});
+    });
+//-->
+</script>
+    
+<!--コンテンツ-->
+<div id="contents">
+  <div id="contents_in">
+
+    <div id="contents_title">
+            <?= $this->subtitle ?>
+    </div>
+
+    <!--検索フォーム-->
+    <div class="contents_space">
+      <form name="form2" method="post" action="/manager/material-check/list">
+      <table width="100%" border="0" cellpadding="5">
+        <tr>
+          <td width="30%" class="color2">ID</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('id') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Order No.</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_no') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Article</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('article') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Project</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('project') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Plan</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('plan') ?>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%" class="color2">Status</td>
+          <td width="70%" class="color_gray" colspan="3">
+            <?= $this->form->getElement('status_flag') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Payment Status</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('payment_flag') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Document Status</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('document_flag') ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Create Date</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('create_date_start') ?> - <?= $this->form->getElement('create_date_end') ?>※YYYY-MM-DD
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Delivery Week</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('delivery_week_start') ?> - <?= $this->form->getElement('delivery_week_end') ?>※YYYYMM
+          </td>
+        </tr>
+        <tr>
+          <td class="color2">Order By</td>
+          <td class="color_gray" colspan="3">
+            <?= $this->form->getElement('order_by') ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" align="center">
+            <input type="submit" class="input_b2" name="search" value="Search" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="print" value="Print" />&nbsp;&nbsp;
+            <input type="submit" class="input_b2" name="clear" value="Clear" />
+          </td>
+        </tr>
+      </table>
+      </form>
+
+      <!--ページャ-->
+      <form name="form1" method="post" action="/manager/material-check/list">
+      <?= $this->render('pager.html') ?>
+      </form>
+
+      <!--一覧-->
+      <table width="100%" border="0" cellpadding="5">
+        <tr align="center">
+          <td class="color">ID</td>
+          <td class="color">Order No.</td>
+          <td class="color">Project</td>
+          <td class="color">Article</td>
+          <td class="color">Quantity (Ps)</td>
+          <td class="color">Outstanding (Ps)</td>
+          <td class="color">Plan</td>
+          <td class="color">Delivery Week</td>
+          <td class="color">Status</td>
+          <td class="color">First Purchase Date</td>
+          <?php foreach( $this->materials as $material ) : ?>
+              <td class="color"><?= $material['material_desc'] ?></td>
+          <?php endforeach; ?>
+        </tr>
+        <?php if( count($this->models) ) : ?>
+        <?php $i = 1; ?>
+          <?php foreach ($this->models as $model) : ?>
+            <tr>
+              <td align="left"><?= $i++ ?></td>
+              <td align="left"><a href="/manager/order/detail/id/<?= $model['id'] ?>"><?= $model['order_no'] ?></a></td>
+              <td align="left"><a href="/manager/product/edit/id/<?= $model['product_id'] ?>"><?= ($model['product']['project']) ?></a></td>
+              <td align="left"><?= $model['product']['article'] ?></td>
+              <td align="right"><?= number_format($model['quantity']) ?></td>
+              <td align="right"><?= number_format($model['outstanding']) ?></td>
+              <td align="left"><?= $model['plan'] ?></td>
+              <td align="left"><?= $model['delivery_week'] ?></td>
+              <td align="left"><?= $model['disp_status'] ?></td>
+              <td align="left"><?= $model['purchase_date'] ?></td>
+              <?php foreach( $this->materials as $material ) : ?>
+                  <td>
+                    <?= isset($model['material_id_'.$material['id']]) ? $model['material_id_'.$material['id']] : '-' ?>
+                  </td>
+              <?php endforeach; ?>
+            </tr>
+          <?php endforeach ; ?>
+        <?php else : ?>
+          <tr>
+            <td colspan="10">No Data</td>
+          </tr>
+        <?php endif; ?>
+      </table>
+
+    </div>
+  </div>
+</div>
+<br class="cl">
+<!--コンテンツ終-->
