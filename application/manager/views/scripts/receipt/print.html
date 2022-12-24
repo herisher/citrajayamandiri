@@ -69,7 +69,7 @@ $(document).ready(function(){
                 <tr style="font-size:11pt">
                     <td align="center"><?= $i++ ?></td>
                     <td><?= $rs3["invoice_no"] ?></td>
-                    <td><?= $rs3["tax_no"] ?></td>
+                    <td><?= ($rs3["tax_no"]!='99999')?:'' ?></td>
                     <td><?= date('j M Y',strtotime($rs3["tax_date"])) ?></td>
                     <td><?= date('j M Y',strtotime($rs3["invoice_date"])) ?></td>
                     <td align="right"><?= number_format($rs3["quantity"])?></td>

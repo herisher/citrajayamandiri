@@ -3,29 +3,29 @@
 <script type="text/javascript" language="javascript">
 <!--
     $(function() {
-		$("#invoice_date").datepicker({
-			dateFormat: 'yy-mm-dd',
-			onSelect: function(){
-				$.post('/manager/invoice/generate-number/',{ q: $(this).val() }, function(result) {
-					$('#due_date').val(result)
-				});
-			}
-		});
-    $("#tax_date").datepicker({
-        dateFormat: 'yy-mm-dd'
-    });
-		$(".inputwidth1").change(function(){
-      var tax_percentage = $('#tax_percentage').val();
-			var total = $('#quantity').val() * $('#price').val();
-			var tot_disc = total - $('#discount').val();
-			var tax = tot_disc * (tax_percentage/100);
-			var grand_total = tot_disc + tax;
-			
-			$('#total').val(total);
-			$('#total_min_discount').val(tot_disc);
-			$('#tax').val(Math.round(tax));
-			$('#total_include_tax').val(grand_total);
-		});
+    		$("#invoice_date").datepicker({
+    			dateFormat: 'yy-mm-dd',
+    			onSelect: function(){
+    				$.post('/manager/invoice/generate-number/',{ q: $(this).val() }, function(result) {
+    					$('#due_date').val(result)
+    				});
+    			}
+    		});
+        $("#tax_date").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    		$(".inputwidth1").change(function(){
+          var tax_percentage = $('#tax_percentage').val();
+    			var total = $('#quantity').val() * $('#price').val();
+    			var tot_disc = total - $('#discount').val();
+    			var tax = tot_disc * (tax_percentage/100);
+    			var grand_total = tot_disc + tax;
+    			
+    			$('#total').val(total);
+    			$('#total_min_discount').val(tot_disc);
+    			$('#tax').val(Math.round(tax));
+    			$('#total_include_tax').val(grand_total);
+    		});
     });
 	
 	function openPopup() {

@@ -15,15 +15,16 @@
             dateFormat: 'yy-mm-dd'
         });
         $(".inputwidth1").change(function(){
-            var total = $('#quantity').val() * $('#price').val();
-            var tot_disc = total - $('#discount').val();
-            var tax = tot_disc * 0.1;
-            var grand_total = tot_disc + tax;
-            
-            $('#total').val(total);
-            $('#total_min_discount').val(tot_disc);
-            $('#tax').val(Math.round(tax));
-            $('#total_include_tax').val(grand_total);
+          var tax_percentage = $('#tax_percentage').val();
+          var total = $('#quantity').val() * $('#price').val();
+          var tot_disc = total - $('#discount').val();
+          var tax = tot_disc * (tax_percentage/100);
+          var grand_total = tot_disc + tax;
+          
+          $('#total').val(total);
+          $('#total_min_discount').val(tot_disc);
+          $('#tax').val(Math.round(tax));
+          $('#total_include_tax').val(grand_total);
         });
     });
 //-->
@@ -145,6 +146,12 @@
             <?= my_mb_error($this->error_str, 'total_min_discount') ?>
             <?= $this->form->getElement('total_min_discount') ?>
           </td>
+        </tr>
+        <tr>
+          <td class="color2">Tax (%)</td>
+          <td class="color_gray">
+            <?= my_mb_error($this->error_str, 'tax_percentage') ?>
+            <?= $this->form->getElement('tax_percentage') ?></td>
         </tr>
         <tr>
           <td class="color2">Tax (Rp)</td>
